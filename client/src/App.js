@@ -2,11 +2,11 @@ import './App.css';
 import {Route, Routes, Link} from "react-router-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 
-import SignUp from './pages/SignUp.js';
-import Login from './pages/Login.js';
-import Landing from './pages/Landing.js';
-import Calendar from './pages/Calendar.js';
-import ForgotPassword from './pages/ForgotPassword';
+import SignUp from './chloe/pages/SignUp.js';
+import Login from './chloe/pages/Login.js';
+import Landing from './chloe/pages/Landing.js';
+import Calendar from './chloe/pages/Calendar.js';
+import ForgotPassword from './chloe/pages/ForgotPassword';
 
 function App() {
   return (
