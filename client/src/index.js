@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 
-import PageLayout from './GlobalComponents/PageLayout'
+import PageLayout from './globalComponents/PageLayout'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import SignUp from './Home/SignUp';
-import Login from './Home/Login';
-import Landing from './Landing/Landing';
-import Calendar from './Calendar/Calendar';
-import ForgotPassword from './Home/ForgotPassword';
+import SignUp from './home/SignUp';
+import Login from './home/Login';
+import Landing from './landing/Landing';
+import Calendar from './calendar/Calendar';
+import ForgotPassword from './home/ForgotPassword';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

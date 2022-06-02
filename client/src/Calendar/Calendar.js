@@ -1,11 +1,10 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 
-import WeekView from '../Calendar/weekview';
+import WeekView from './weekview';
 
 
 const Calendar = () => {
-
     return (
         <div>
             <Grid container>
@@ -15,8 +14,7 @@ const Calendar = () => {
                 </Grid>
             </Grid>
         </div>
-    )
-    
+    )   
 }
 
 export default Calendar;

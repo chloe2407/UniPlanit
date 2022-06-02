@@ -114,7 +114,7 @@ const SignUp = () => {
             </Grid>
           </Box>
         </Box>
-        <GoogleSignIn style={{margin: "2vh 0vw"}}/>
+        {/* casuing error, removed for now <GoogleSignIn style={{margin: "2vh 0vw"}}/> */}
       </Container>
     </ThemeProvider>
     </div>
