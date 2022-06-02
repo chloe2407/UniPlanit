@@ -13,6 +13,7 @@ import Menu from '@mui/material/Menu'
 import Divider from '@mui/material/Divider'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Profile from './Profile'
+import NavbarButton from './NavbarButton'
 
 export default function Navbar() {
   const [auth, setAuth] = useState(false)
@@ -93,12 +94,12 @@ export default function Navbar() {
       if (matchMd) {
         return (
           <Box sx={{ ml: 'auto' }}>
-            <Button href='login' variant='outlined' color='inherit' sx={{ mr: 2 }}>
+            <NavbarButton href='login' variant='outlined' color='inherit' sx={{ mr: 2 }}>
               Login
-            </Button>
-            <Button href='signup' variant='outlined' color='inherit'>
+            </NavbarButton>
+            <NavbarButton href='signup' variant='outlined' color='inherit'>
               Sign Up
-            </Button>
+            </NavbarButton>
           </Box>
         )
       } else {

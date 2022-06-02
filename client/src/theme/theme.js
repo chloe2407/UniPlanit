@@ -4,7 +4,7 @@ const theme = createTheme({
     // test
     palette: {
         primary: {
-            main: '#5F7161',
+            main: '#2A2C24',
             secondary: '#6D8B74',
         }
     },
