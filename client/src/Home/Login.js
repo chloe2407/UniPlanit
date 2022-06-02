@@ -3,7 +3,7 @@ import { makeStyles, createTheme, ThemeProvider } from '@material-ui/core';
 import { Typography, Box, TextField, FormControlLabel, 
     Checkbox, Button, Grid, Container, CssBaseline, Avatar } from '@material-ui/core';
 import { Link, useNavigate } from 'react-router-dom';
-import GoogleSignIn from '../parts/googlesignin';
+import GoogleSignIn from '../GlobalComponents/googlesignin';
 // import LockOutlinedIcon from '@mui/icons-material';
 
 const useStyles = makeStyles(theme => ({
