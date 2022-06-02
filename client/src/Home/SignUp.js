@@ -3,7 +3,7 @@ import { Typography, Container, Grid, Button, Checkbox, FormControlLabel, Box, T
 import { createTheme, ThemeProvider, } from '@material-ui/core';
 import { Link, useNavigate } from 'react-router-dom';
 
-import GoogleSignIn from '../parts/googlesignin.js';
+import GoogleSignIn from './GoogleButton';
 
 const theme = createTheme();
 
