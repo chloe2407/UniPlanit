@@ -1,13 +1,21 @@
+import "@fontsource/adamina"
 import { createTheme } from '@mui/material/styles'
 
 const theme = createTheme({
     // test
     palette: {
         primary: {
-            main: '#2A2C24',
-            secondary: '#6D8B74',
-        }
+            main: '#22333b',
+        },
+        secondary: {
+            main: '#eae0d5',
+            contrastText: '#eae0d5',
+          },
     },
+    typography: {
+        fontFamily: ['adamina',
+                     'roboto']
+    }
     // other options include
     // typography, spacing, breakpoints, zIndex, transitions, components
     // see https://mui.com/material-ui/customization/theming/#theme-provider

@@ -14,6 +14,7 @@ import Divider from '@mui/material/Divider'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Profile from './Profile'
 import NavbarButton from './NavbarButton'
+import Typography from '@mui/material/Typography'
 
 export default function Navbar() {
   const [auth, setAuth] = useState(false)
@@ -94,10 +95,10 @@ export default function Navbar() {
       if (matchMd) {
         return (
           <Box sx={{ ml: 'auto' }}>
-            <NavbarButton href='login' variant='outlined' color='inherit' sx={{ mr: 2 }}>
+            <NavbarButton size='small' href='login' variant='outlined' color='inherit' sx={{ mr: 2 }}>
               Login
             </NavbarButton>
-            <NavbarButton href='signup' variant='outlined' color='inherit'>
+            <NavbarButton size='small' href='signup' variant='outlined' color='inherit' sx={{ mr: 1 }}>
               Sign Up
             </NavbarButton>
           </Box>
@@ -133,13 +134,16 @@ export default function Navbar() {
         </Menu>
     )
   }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
+      <Typography>
       Tool Bar
       <Switch checked={auth} onChange={handleLogin} aria-label='login switch' />
       {auth ? 'Logout' : 'Login'}
       <Switch checked={friends} onChange={handleFriends} aria-label='friends switch' />
       {friends ? 'Hide friends' : 'Show friends'}
+      </Typography>
       <AppBar position='static'>
         <Toolbar>
           {
@@ -149,7 +153,7 @@ export default function Navbar() {
                 <Link href='/' variant='h5' color='inherit' underline='none' sx={{ mx: 2 }}>
                   MyCalendar
                 </Link>
-                <Button href='/calendar' variant='text' color='inherit'
+                <Button href='/calendar' variant='text' color='inherit' disableRipple
                   sx={{ fontSize: 16, position: 'absolute', left: '50vh', right: '50vh' }}>
                   Calendar!
                 </Button>
