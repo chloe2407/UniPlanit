@@ -9,12 +9,12 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
-import Menu from '@mui/material/Menu'
 import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Profile from './Profile'
 import NavbarButton from './NavbarButton'
-import Typography from '@mui/material/Typography'
+import { StyledMenuItem, NavbarMenu } from './NavbarMenu'
 
 export default function Navbar() {
   const [auth, setAuth] = useState(false)
@@ -66,6 +66,10 @@ export default function Navbar() {
     link && navigate(link)
   }
 
+  const handleMenuClose = () => {
+    setAnchorElNav(null)
+  }
+
   const Profiles = () => {
     if (auth && friends) {
       // if user is authenticated and has friends 
@@ -112,37 +116,33 @@ export default function Navbar() {
 
   const NavMenu = () => {
     // NavMenu changes based on auth
+
+    const NavItems = auth ? 
+      [
+        <StyledMenuItem key='home' onClick={() => handleMenuClick('/')}>Home</StyledMenuItem>,
+        <StyledMenuItem key='calendar' onClick={() => handleMenuClick('calendar')}>Go to My Calendar</StyledMenuItem>,
+        <StyledMenuItem key='logout' onClick={handleLogout}>Logout</StyledMenuItem>
+      ]
+      : 
+      [
+        <StyledMenuItem key='login' onClick={() => handleMenuClick('login')}>Login </StyledMenuItem>,
+        <StyledMenuItem key='signup' onClick={() => handleMenuClick('signup')}>Sign Up </StyledMenuItem>
+      ]
     return (
-      auth ?
-        <Menu id='menu-appbar' anchorEl={anchorElNav}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          keepMounted
-          transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={Boolean(anchorElNav)} onClose={() => setAnchorElNav(null)}>
-          <MenuItem onClick={() => handleMenuClick('/')}>Home</MenuItem>
-          <MenuItem onClick={() => handleMenuClick('calendar')}>Go to My Calendar</MenuItem>
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </Menu>
-        :
-        <Menu id='menu-appbar' anchorEl={anchorElNav}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          keepMounted
-          transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={Boolean(anchorElNav)} onClose={() => setAnchorElNav(null)}>
-          <MenuItem onClick={() => handleMenuClick('login')}>Login</MenuItem>
-          <MenuItem onClick={() => handleMenuClick('signup')}>Sign Up</MenuItem>
-        </Menu>
+      <NavbarMenu id='menu-appbar' anchorElNav={anchorElNav} handleMenuClose={handleMenuClose}>
+        {NavItems}
+      </NavbarMenu>
     )
   }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Typography>
-      Tool Bar
-      <Switch checked={auth} onChange={handleLogin} aria-label='login switch' />
-      {auth ? 'Logout' : 'Login'}
-      <Switch checked={friends} onChange={handleFriends} aria-label='friends switch' />
-      {friends ? 'Hide friends' : 'Show friends'}
+        Tool Bar
+        <Switch checked={auth} onChange={handleLogin} aria-label='login switch' />
+        {auth ? 'Logout' : 'Login'}
+        <Switch checked={friends} onChange={handleFriends} aria-label='friends switch' />
+        {friends ? 'Hide friends' : 'Show friends'}
       </Typography>
       <AppBar position='static'>
         <Toolbar>

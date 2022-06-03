@@ -15,6 +15,13 @@ const theme = createTheme({
     typography: {
         fontFamily: ['adamina',
                      'roboto']
+    },
+    components: {
+        MuiButtonBase: {
+            defaultProps: {
+                disableRipple: true
+            }
+        }
     }
     // other options include
     // typography, spacing, breakpoints, zIndex, transitions, components

@@ -19,6 +19,6 @@ const NavbarButton = styled(Button)(({ theme }) => ({
         backgroundColor: theme.palette.secondary.contrastText,
         "boxShadow": `0 0.25rem 0 0.1rem ${theme.palette.secondary.contrastText}`
     }
-}));
+}))
 
 export default NavbarButton
