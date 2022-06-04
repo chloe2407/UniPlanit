@@ -16,6 +16,7 @@
     "install": "^0.13.0",
     "material-ui-icons": "^1.0.0-beta.36",
     "npm": "^8.12.1",
+    "pathseg": "^1.2.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-google-login": "^5.2.2",
