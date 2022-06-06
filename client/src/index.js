@@ -12,23 +12,24 @@ import Login from './home/Login';
 import Landing from './landing/Landing';
 import Calendar from './calendar/Calendar';
 import ForgotPassword from './home/ForgotPassword';
-
+import About from './about/About';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ThemeProvider theme={theme}>
-  <BrowserRouter>
-    <Routes>
-      <Route path='/' element={<App />}>
-        <Route element={<PageLayout />}>
-          <Route index element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/forgotpassword" element={<ForgotPassword />} />
-          <Route path="/calendar" element={<Calendar />} />
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<App />}>
+          <Route element={<PageLayout />}>
+            <Route index element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/forgotpassword" element={<ForgotPassword />} />
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/about" element={<About />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
-  </BrowserRouter >
+      </Routes>
+    </BrowserRouter >
   </ThemeProvider>
 );

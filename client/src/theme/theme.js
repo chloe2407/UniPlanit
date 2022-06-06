@@ -9,12 +9,19 @@ const theme = createTheme({
         },
         secondary: {
             main: '#eae0d5',
-            contrastText: '#eae0d5',
+            contrastText: '#eae0d5'
           },
     },
     typography: {
         fontFamily: ['adamina',
                      'roboto']
+    },
+    components: {
+        MuiButtonBase: {
+            defaultProps: {
+                disableRipple: true
+            }
+        }
     }
     // other options include
     // typography, spacing, breakpoints, zIndex, transitions, components

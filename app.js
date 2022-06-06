@@ -14,7 +14,19 @@ const app = express();
 // mongoose
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log('Connection open'))
+<<<<<<< HEAD:app.js
   .catch(err => console.err(err))
+=======
+  .catch(err => console.error(err))
+
+mongoose.connection.on('error', err => {
+    console.error(err)
+})
+
+mongoose.connection.on('disconnected', err => {
+  console.log(`disconnected from mongo ${err}`)
+})
+>>>>>>> 564cf6ee3d3b08971e61c6fbeae460fe98c7327c:api/app.js
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
