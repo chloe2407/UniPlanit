@@ -2,6 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8000",
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
@@ -13,10 +14,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
-<<<<<<< HEAD
     "bootstrap": "^5.1.3",
-=======
->>>>>>> 564cf6ee3d3b08971e61c6fbeae460fe98c7327c
     "install": "^0.13.0",
     "material-ui-icons": "^1.0.0-beta.36",
     "npm": "^8.12.1",
