@@ -74,14 +74,16 @@ export default function Scene({ width, height, children }) {
             wall(floorCenter, height - 100, width, 10)
         ])
 
-        Composite.add(world, Bodies.rectangle(floorCenter, wallCenter - 200, 400, 60, {
+        Composite.add(world, Bodies.rectangle(floorCenter, wallCenter - 200, 500, 60, {
             isStatic: true,
             // collisionFilter: {
             //     group: -1
             // },
             render: {
                 sprite: {
-                    texture: './MyCalendar.png'
+                    texture: './MyCalendar.png',
+                    xScale: 0.3,
+                    yScale: 0.3
                 }
             }
         }))
@@ -102,6 +104,31 @@ export default function Scene({ width, height, children }) {
 
         const getRandNum = (min, max) => Math.random() * (max - min) + min
 
+        const addAssetBody = (x, y, w, h, path, xScale, yScale, 
+                            group,force, density, frictionAir) => {
+            Composite.add(world, Bodies.rectangle(x, y, w, h, {
+                density: density,
+                frictionAir: frictionAir || 0,
+                force: force,
+                render: {
+                    sprite: {
+                        texture: path,
+                        xScale: xScale,
+                        yScale: yScale
+                    }
+                },
+                collisionFilter: {
+                    group: group
+                }
+            }))
+        }
+
+        addAssetBody(120, 120, 50, 50, './table.png', 0.1, 0.1, -1, 
+                    getRandForce(0.005, 0.01), 0.0015)
+
+        addAssetBody(120, 120, 50, 50, './calendar.png', 0.2, 0.2, -1, 
+                    getRandForce(0.005, 0.01), 0.0015)
+
         Composite.add(world,
             Composites.stack(150, 100, 4, 2, 5, 5, (x, y, column, row) => {
                 return Bodies.circle(x, y, Math.floor(getRandNum(150, 100)), {
@@ -114,7 +141,7 @@ export default function Scene({ width, height, children }) {
                     },
                     render: {
                         strokeStyle: Common.choose(colors),
-                        opacity: getRandNum(0.6, 0.7)
+                        opacity: getRandNum(0.7, 0.9)
                     }
                 })
             }
