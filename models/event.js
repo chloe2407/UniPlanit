@@ -1,32 +1,35 @@
 const mongoose = require('mongoose')
+const { calibrateTimeToUTC } = require('../utils/time')
 
 const eventSchema = new mongoose.Schema({
     eventName: {
         type: String,
         required: true
     },
+    // include owner?
+    // owner: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'User',
+    //     required: true
+    // },
     location: {
         type: String,
         default: 'N/A'
     },
-    timeZone: {
-        type: String,
-        required: true
+    timeZoneOffset: {
+        type: Number,
     },
     type: {
         type: String,
+        lowercase: true,
         enum: ['personal', 'lecture', 'tutorial']
     },
     course: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Course'
     },
-    day: {
-        type: String,
-        enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 
-              'Friday', 'Saturday', 'Sunday']
-    },
     // date must use markModified(path) and call save after
+    // all dates are stored in UTC-0
     start: {
         type: Date,
     },
@@ -36,7 +39,17 @@ const eventSchema = new mongoose.Schema({
     description: String
 })
 
-// mayneed virutals for converting start and end time according to timezone
+// instead of returning time in UTC 0, we calibrate to current
+// timezone before returning to user
+eventSchema.virtual('calStart').get(function() {
+    console.log(this.start)
+    return calibrateTimeToUTC(this.start)
+})
+
+eventSchema.virtual('calEnd').get(function() {
+    return calibrateTimeToUTC(this.start)
+})
+
 const Event = mongoose.model('Event', eventSchema)
 
-export default Event
+module.exports = Event
