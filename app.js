@@ -5,6 +5,7 @@ const logger = require('morgan');
 
 const usersRouter = require('./routes/users');
 const eventsRouter = require('./routes/events')
+const courseRouter = require('./routes/courses')
 
 const { ExpressError } = require('./utils/ExpressError')
 
