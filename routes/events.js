@@ -1,10 +1,12 @@
 const express = require('express')
 const router = express.Router()
 const { catchAsync } = require('../utils/catchAsync')
-const { getEventById, patchEventById, deleteEventById, newEvent } = require('../controllers/events')
+const { getEventById, patchEventById, deleteEventById, newEvent, getUserEvents } = require('../controllers/events')
 
 // middleware needed
 // user authentication
+
+router.get('/', catchAsync(getUserEvents))
 
 router.route('/:eventId')
     .get(catchAsync(getEventById))
