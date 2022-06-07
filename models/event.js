@@ -6,12 +6,11 @@ const eventSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // include owner?
-    // owner: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'User',
-    //     required: true
-    // },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     location: {
         type: String,
         default: 'N/A'
