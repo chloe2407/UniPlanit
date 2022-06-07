@@ -1,9 +1,15 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const { catchAsync } = require('../utils/catchAsync')
+const { register, login, logout } = require('../controllers/users')
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+// we will have a isLoggedIn middleware, whenever 
+
+router.post('/register', catchAsync(register))
+
+// login logout is done with passport
+router.post('/login', catchAsync(login))
+
+router.post('/logout', catchAsync(logout))
 
 module.exports = router;
