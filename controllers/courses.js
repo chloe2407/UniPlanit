@@ -1,4 +1,4 @@
-const Course = require('../models/course')
+const { Course } = require('../models/course')
 
 module.exports.getCourse = async (req, res, next) => {
     // get course by courseCode and title

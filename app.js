@@ -3,11 +3,13 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+const swaggerJSDoc = require('swagger-jsdoc')
+const swaggerUi = require('swagger-ui-express')
+
 const usersRouter = require('./routes/users');
-const eventsRouter = require('./routes/events')
 const courseRouter = require('./routes/courses')
 
-const { ExpressError } = require('./utils/ExpressError')
+const ExpressError = require('./utils/ExpressError')
 
 const mongoose = require('mongoose')
 const session = require('express-session')
@@ -32,13 +34,13 @@ mongoose.connection.on('disconnected', err => {
 })
 
 // session set up
-mongoStoreOptions = {
+const mongoStoreOptions = {
   mongoUrl: process.env.MONGO_URL,
   autoRemove: 'native',
   touchAfter: 24 * 3600
 }
 
-sessionOptions = {
+const sessionOptions = {
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: false,
@@ -48,8 +50,21 @@ sessionOptions = {
     secure: false
   },
   store: MongoStore.create(mongoStoreOptions),
-
 }
+
+const swaggerDefinition = {
+  openai: '3.0.0',
+  info: {
+    title: 'Event API for MyCalendar',
+    version: '1.0.0',
+    description: 'Event Restful API for MyCalendar. Used for CRUD operations related to events',
+  },
+}
+
+const swaggerSpec = swaggerJSDoc({
+  swaggerDefinition,
+  apis: ['./routes/*.js']
+})
 
 if (app.get('env') === 'production') {
   app.set('trsut proxy', 1)
@@ -64,6 +79,7 @@ app.locals.returnUrl = ''
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
@@ -71,12 +87,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/users', usersRouter);
-app.use('/events', eventsRouter)
 app.use('/courses', courseRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(new ExpressError(404));
+  next(new ExpressError('Page not found', 404));
 });
 
 // error handler
@@ -87,7 +102,8 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   // redirect toerror page in front
-  res.status(err.status || 500).redirect('/error')
+  console.error(err.message)
+  res.status(err.status || 500)
 });
 
 app.listen(port, () => {
