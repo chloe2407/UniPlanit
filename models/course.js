@@ -83,6 +83,80 @@ const courseSchema = new mongoose.Schema({
     ]
 })
 
-const Course = mongoose.model('Course', courseSchema)
+module.exports.courseOneSectionSchema = new mongoose.Schema({
+    courseCode: {
+        type: String,
+        required: true
+    },
+    courseTitle: {
+        type: String,
+        required: true
+    },
+    term: {
+        type: String,
+        enum: ['F', 'S', 'Y'],
+        required: true
+    },
+    section: {
+        sectionCode: {
+            type: String,
+            required: true
+        },
+        term: {
+            type: String,
+            uppercase: true,
+            enum: ['F', 'S', 'Y'],
+            required: true
+        },
+        instructors: [],
+        meetingTime: [{
+            day: {
+                type: String,
+                enum: ['Monday', 'Tuesday', 'Wednesday',
+                    'Thursday', 'Friday', 'Saturday',
+                    'Sunday', 'error']
+            },
+            startTime: {
+                type: String,
+                required: true
+            },
+            endTime: {
+                type: String,
+                required: true
+            },
+            assignedRoom1: String
+        }]
+    },
+    tutorial: [{
+        tutorialCode: {
+            type: String,
+            required: true
+        },
+        term: {
+            type: String,
+            uppercase: true,
+            enum: ['F', 'S', 'Y'],
+            required: true
+        },
+        instructors: [],
+        meetingTime: {
+            day: {
+                type: String,
+                enum: ['Monday', 'Tuesday', 'Wednesday',
+                    'Thursday', 'Friday', 'Saturday',
+                    'Sunday', 'error']
+            },
+            startTime: {
+                type: String,
+                required: true
+            },
+            endTime: {
+                type: String,
+                required: true
+            },
+            assignedRoom1: String
+        }
+    }]
+})
 
-module.exports = Course
+module.exports.Course = mongoose.model('Course', courseSchema)

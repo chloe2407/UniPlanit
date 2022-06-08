@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const { courseOneSectionSchema } = require('../models/course')
 // need to set up cloudinary for user profile img
 
 const userSchema = new mongoose.Schema({
@@ -17,8 +17,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     courses: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Course'
+        courseOneSectionSchema
     }],
     friends: [{
         type: mongoose.Schema.Types.ObjectId,
