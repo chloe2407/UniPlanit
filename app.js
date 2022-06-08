@@ -79,6 +79,10 @@ app.locals.returnUrl = ''
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+app.get('/', (req, res) => {
+  res.render('index.jade', {title:'work goddamit'})
+})
+
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 app.use(logger('dev'));
 app.use(express.json());
@@ -101,13 +105,16 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
+  res.status(err.status || 500);
+  res.render('error.jade', {title:'your_page_title'});
   // redirect toerror page in front
   console.error(err.message)
   res.status(err.status || 500)
 });
 
-app.listen(port, () => {
- console.log(`serving on port ${port}`)
-})
+// redundant since bin/www already makes server listen.
+// app.listen(port, () => {
+//  console.log(`serving on port ${port}`)
+// })
 
 module.exports = app;
