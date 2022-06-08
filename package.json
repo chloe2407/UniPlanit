@@ -17,6 +17,8 @@
     "matter-js": "^0.18.0",
     "mongoose": "^6.3.5",
     "morgan": "~1.9.1",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "swagger-jsdoc": "6.2.1",
+    "swagger-ui-express": "^4.4.0"
   }
 }
