@@ -1,6 +1,4 @@
 import React from 'react';
-//import all time table 
-//import user timetable
 
 //TODO:
 //lock button with function
@@ -11,114 +9,16 @@ import React from 'react';
 
 //user courses
 
-var demoCourses = {
-    "c": {
-        "s": {
-            "k": {
-                "1": {
-                    "1": {
-                        "0" : [
-                            {
-                                code: "LEC101",
-                                time: "place holder",
-                                index: 1
-                            },
-                            {
-                                code: "LEC102",
-                                time: "place holder",
-                                index: 2
-                            },
-                            {
-                                code: "TUT001",
-                                time: "place holder",
-                                index: 3
-                            },
-                            {
-                                code: "TUT002",
-                                time: "place holder",
-                                index: 4
-                            }
-                        ]
-                    }
-                }
-            },
-            "c": {
-                "1": {
-                    "1": {
-                        "0" : [
-                            {
-                                code: "LEC101",
-                                time: "place holder",
-                                index: 1
-                            },
-                            {
-                                code: "LEC102",
-                                time: "place holder",
-                                index: 2
-                            },
-                            {
-                                code: "TUT001",
-                                time: "place holder",
-                                index: 3
-                            },
-                            {
-                                code: "TUT002",
-                                time: "place holder",
-                                index: 4
-                            }
-                        ],
-                        "1" : [
-                            {
-                                code: "LEC201",
-                                time: "place holder",
-                                index: 1
-                            },
-                            {
-                                code: "LEC202",
-                                time: "place holder",
-                                index: 2
-                            },
-                            {
-                                code: "TUT201",
-                                time: "place holder",
-                                index: 3
-                            },
-                            {
-                                code: "TUT202",
-                                time: "place holder",
-                                index: 4
-                            }
-                        ],
-                        "21" : [
-                            {
-                                code: "LEC201",
-                                time: "place holder",
-                                index: 1
-                            },
-                            {
-                                code: "LEC202",
-                                time: "place holder",
-                                index: 2
-                            },
-                            {
-                                code: "TUT201",
-                                time: "place holder",
-                                index: 3
-                            },
-                            {
-                                code: "TUT202",
-                                time: "place holder",
-                                index: 4
-                            }
-                        ]
-                    }
-                }
-            }
-        }
-    }
-};
+const [data, setData] = useState('')
 
-var totalCourses = demoCourses;
+useEffect(() => {
+
+})
+
+
+fetch("/courses",)
+    .then(res => res.json())
+    .then(data => {setData(data)})
 
 var demoUser = [
     {
