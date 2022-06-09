@@ -3,7 +3,7 @@ const router = express.Router();
 const { catchAsync } = require('../utils/catchAsync')
 const { register, login, logout, createNewUserEvent,
         patchUserEventById, deleteUserEventById, getUserEventById,
-        getUserEvents, createNewUserCourse
+        getUserEvents, createNewUserCourse, deleteUserCourseByCode
 } = require('../controllers/users')
 
 // we will have a isLoggedIn middleware, whenever 
@@ -26,6 +26,7 @@ router.post('/logout', catchAsync(logout))
  *              description: A list of events
  */
 
+// get all events owned by user
 router.get('/events', catchAsync(getUserEvents))
 
 /**
@@ -74,11 +75,12 @@ router.route('/events/:eventId')
     .patch(catchAsync(patchUserEventById))
     .delete(catchAsync(deleteUserEventById))
 
-// when a user saves a course this route saves the selected course sections
-
-
+// create a new course for user
 router.post('/courses/new', catchAsync(createNewUserCourse))
 
+router.delete('/courses/delete', catchAsync(deleteUserCourseByCode))
+// get users courses
+// router.get('/courses', catchAsync(getUserCourse))
 
 // friends
 router.post('/friends/new')
