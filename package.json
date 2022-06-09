@@ -8,6 +8,7 @@
   "dependencies": {
     "connect-mongo": "^4.6.0",
     "cookie-parser": "~1.4.4",
+    "dayjs": "^1.11.3",
     "debug": "~2.6.9",
     "dotenv": "^16.0.1",
     "express": "~4.16.1",
