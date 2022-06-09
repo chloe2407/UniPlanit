@@ -97,6 +97,10 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
         enum: ['F', 'S', 'Y'],
         required: true
     },
+    isLocked: {
+        type: Boolean,
+        default: false,
+    },
     section: {
         sectionCode: {
             type: String,
