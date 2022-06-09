@@ -1,22 +1,28 @@
-const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
-const indexRouter = require('./routes/index');
+const swaggerJSDoc = require('swagger-jsdoc')
+const swaggerUi = require('swagger-ui-express')
+
 const usersRouter = require('./routes/users');
+const courseRouter = require('./routes/courses')
+
+const ExpressError = require('./utils/ExpressError')
+
 const mongoose = require('mongoose')
+const session = require('express-session')
+const port = process.env.PORT || 8000
+const MongoStore = require('connect-mongo')
+
 require('dotenv').config()
 
 const app = express();
 
 // mongoose
 mongoose.connect(process.env.MONGO_URL)
-  .then(() => console.log('Connection open'))
-<<<<<<< HEAD:app.js
-  .catch(err => console.err(err))
-=======
+  .then(() => console.log('Mongo connection open'))
   .catch(err => console.error(err))
 
 mongoose.connection.on('error', err => {
@@ -26,24 +32,70 @@ mongoose.connection.on('error', err => {
 mongoose.connection.on('disconnected', err => {
   console.log(`disconnected from mongo ${err}`)
 })
->>>>>>> 564cf6ee3d3b08971e61c6fbeae460fe98c7327c:api/app.js
+
+// session set up
+const mongoStoreOptions = {
+  mongoUrl: process.env.MONGO_URL,
+  autoRemove: 'native',
+  touchAfter: 24 * 3600
+}
+
+const sessionOptions = {
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    // set to true in production
+    secure: false
+  },
+  store: MongoStore.create(mongoStoreOptions),
+}
+
+const swaggerDefinition = {
+  openai: '3.0.0',
+  info: {
+    title: 'Event API for MyCalendar',
+    version: '1.0.0',
+    description: 'Event Restful API for MyCalendar. Used for CRUD operations related to events',
+  },
+}
+
+const swaggerSpec = swaggerJSDoc({
+  swaggerDefinition,
+  apis: ['./routes/*.js']
+})
+
+if (app.get('env') === 'production') {
+  app.set('trsut proxy', 1)
+  sessionOptions.cookie.secure = true
+}
+ 
+app.use(session(sessionOptions))
+
+app.locals.returnUrl = ''
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+app.get('/', (req, res) => {
+  res.render('index.jade', {title:'work goddamit'})
+})
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/courses', courseRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  next(new ExpressError('Page not found', 404));
 });
 
 // error handler
@@ -54,7 +106,15 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error.jade', {title:'your_page_title'});
+  // redirect toerror page in front
+  console.error(err.message)
+  res.status(err.status || 500)
 });
+
+// redundant since bin/www already makes server listen.
+// app.listen(port, () => {
+//  console.log(`serving on port ${port}`)
+// })
 
 module.exports = app;

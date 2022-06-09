@@ -82,8 +82,8 @@ export default function Scene({ width, height, children }) {
             render: {
                 sprite: {
                     texture: './MyCalendar.png',
-                    xScale: 0.3,
-                    yScale: 0.3
+                    // xScale: 0.3,
+                    // yScale: 0.3
                 }
             }
         }))
