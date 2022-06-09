@@ -1,11 +1,19 @@
 const User = require('../models/user')
 const Event = require('../models/event')
-const { calibrateTimeToUTC, getDate, dayToMs } = require('../utils/time')
+const { toUTC, getEventDateTime } = require('../utils/time')
+const dayjs = require('dayjs')
+const duration = require('dayjs/plugin/duration')
+const utc = require('dayjs/plugin/utc')
+const timezone = require('dayjs/plugin/timezone')
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.extend(duration)
 
 module.exports.register = async (req, res, next) => {
     const user = new User(req.body)
     const { password } = req.body
     // register user with passport js
+    // TODO
     console.log(user)
     await user.save()
     // login user then redirect to previous page or home
@@ -110,9 +118,10 @@ module.exports.createNewUserEvent = async (req, res, next) => {
     const event = new Event(req.body)
     // some configurations for the new event
     // event.owner = req.user.id
-    // new Date gives time in UTC
-    event.start = new Date(req.body.start)
-    event.end = calibrateTimeToUTC(new Date(req.body.end))
+    // provide a start and end in local time 
+    // dayjs('2022-06-08T16:05:40-07:00')
+    event.start = new Date(toUTC(dayjs(req.body.start)))
+    event.end = new Date(toUTC(dayjs(req.body.end)))
     console.log(event.start)
     await event.save(err => {
         if (err) {
@@ -125,37 +134,91 @@ module.exports.createNewUserEvent = async (req, res, next) => {
 }
 
 module.exports.createNewUserCourse = async (req, res, next) => {
+    // creates a new course for the user
+    // default end
     // const userId = req.user.id
     // for testing, using req.body
     // course complies to courseOneSectionSchema
     const { userId, course } = req.body
+    console.log(userId)
+    console.log(course)
     const user = await User.findById(userId)
     // need an event for each meeting time for lecture and tutorial
-    course.section.meetingTime.map(m => {
-        const date = new Date()
-        const event = new Event({
-            eventName: course.courseTitle,
-            // owner: req.user.id,
-            location: m.assignedRoom1,
-            type: 'lecture',
-            course: course,
-            // start: getDate(date, m.day, m.startTime),
-            // end: getDate(date, m.day, m.endTime),
-            start: new Date(),
-            end: new Date(),
-            repeat: dayToMs(7)
-        })
-        console.log(event)
+    let isInUserCourses
+    user.courses.map(c => {
+        if (c.courseCode === course.courseCode) {
+            isInUserCourses = true
+        }
     })
-    user.courses.push(course)
-    user.save()
-    res.sendStatus(200)
+    if (isInUserCourses) {
+        return res.send('User already has course!')
+    } else {
+        course.section.meetingTime.map(async (m) => {
+            // for each meeting, create events for a year
+            // get the number of weeks, and make a event with this meeting time
+            // once every week
+            // endDate is one year from today
+            const now = dayjs()
+            const endDate = course.endDate ? course.endDate : now.add(1, 'year')
+            const msInWeek = dayjs.duration(7, 'days').as('ms')
+            let diff = dayjs.duration(endDate.diff(now)).as('ms')
+            let count = 0
+            while (diff >= 0) {
+                diff -= msInWeek
+                const adjustedNowTime = now.add(msInWeek * count, 'ms')
+                const event = new Event({
+                    eventName: course.courseTitle,
+                    // owner: req.user.id,
+                    owner: '629e91f497392e52c801e6ae',
+                    location: m.assignedRoom1,
+                    type: 'lecture',
+                    course: course,
+                    start: new Date(toUTC(getEventDateTime(
+                        adjustedNowTime, m.day, m.startTime))),
+                    end: new Date(toUTC(getEventDateTime(
+                        adjustedNowTime, m.day, m.endTime))),
+                    repeat: {
+                        repeatInterval: msInWeek,
+                        start: new Date(toUTC(now)),
+                        end: new Date(toUTC(endDate))
+                    }
+                })
+                event.save()
+                user.events.push(event)
+                count += 1
+            }
+        })
+        user.courses.push(course)
+        await user.save()
+        res.sendStatus(200)
+    }
 }
 
 module.exports.deleteUserCourseByCode = async (req, res, next) => {
+    // removes the course that belongs to the user
+    // returns the courses after filtering
     const { userId, courseCode } = req.body
+    console.log(userId, courseCode)
     const user = await User.findById(userId)
-    user.courses.filter(course => course.courseCode !== courseCode)
-    user.save()
-    res.sendStatus(200)
+    // filter out all the courses from user
+    user.courses = user.courses.filter(course => course.courseCode !== courseCode)
+    // remove associated events from user events and events
+    await user.populate('events')
+    user.events = user.events.filter(event => {
+        if (event.course) {
+            event.course.courseCode !== courseCode
+        }
+    })
+    console.log(user)
+    await user.save()
+    await Event.deleteMany({
+        $and: [
+            {
+                owner: { $eq: userId },
+            }, {
+                courseCode: { $eq: courseCode }
+            }
+        ]
+    })
+    res.json(user.courses)
 }

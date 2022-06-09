@@ -16,9 +16,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    courses: [{
-        courseOneSectionSchema
-    }],
+    courses: [courseOneSectionSchema],
     friends: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
