@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const cors = require('cors');
 const { catchAsync } = require('../utils/catchAsync')
 const { register, login, logout, createNewUserEvent,
         patchUserEventById, deleteUserEventById, getUserEventById,
@@ -7,6 +8,10 @@ const { register, login, logout, createNewUserEvent,
         saveCourseHolder, lockCourse, saveTimeTable, newTimetable,
         getUserCourse
 } = require('../controllers/users')
+
+
+
+router.use(cors())
 
 /**
  * @swagger
@@ -24,7 +29,9 @@ const { register, login, logout, createNewUserEvent,
  *          200:
  *              description: user has successfully registered
  */
-router.post('/register', catchAsync(register))
+// router.post('/register', catchAsync(register))
+
+router.post('/register', register);
 
 
 /**

@@ -23,7 +23,7 @@ const SignUp = () => {
 
     alert('A form was submitted');
  
-    fetch('http://localhost:8000/store-data', {
+    fetch('http://localhost:8000/users/register', {
         method: 'POST',
         body: JSON.stringify(formData),
         headers: {

@@ -9,15 +9,48 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.extend(duration)
 
+const passport = require('passport')
+const LocalStrategy = require('passport-local')
+
+const checkIfUserExists = async (email) => {
+    let user = User.findOne({ email: email })
+    return user 
+  }
+
 module.exports.register = async (req, res, next) => {
-    const user = new User(req.body)
-    const { password } = req.body
-    // register user with passport js
-    // TODO
-    console.log(user)
-    await user.save()
-    // login user then redirect to previous page or home
-    res.redirect(app.locals.returnUrl || '/')
+    if (checkIfUserExists(req.body.email)){
+        const template = 
+        {email: req.body.email,
+        username: req.body.email,
+        password: req.body.password,
+        first: req.body.firstName,
+        last: req.body.lastName,
+        courses: [],
+        friends: [],
+        university: "utsg",
+        events: [],
+        profileImg: ""}
+        // register user with passport js
+        let user = new User(template)
+        //await user.save()
+        User.register(user, req.body.password, function(err,user){
+            if(err){
+                console.log(err);
+                res.render("register");
+            }
+            passport.authenticate("local")(req, res, function(){
+                console.log("Following User has been registerd");
+                console.log(user)
+            })
+        
+        })
+    
+        
+        
+        
+        // login user then redirect to previous page or home
+        //res.redirect(app.locals.returnUrl || '/')
+    }
 }
 
 module.exports.login = async (req, res, next) => {

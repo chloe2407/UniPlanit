@@ -6,6 +6,10 @@ const logger = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser')
 
+const passport = require('passport')
+const LocalStrategy = require('passport-local')
+const passportLocalMongoose = require('passport-local-mongoose')
+
 const swaggerJSDoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
 
@@ -17,7 +21,9 @@ const ExpressError = require('./utils/ExpressError')
 const mongoose = require('mongoose')
 const session = require('express-session')
 const port = process.env.PORT || 8000
-const MongoStore = require('connect-mongo')
+const MongoStore = require('connect-mongo');
+const User = require('./models/user');
+
 
 require('dotenv').config()
 
@@ -81,6 +87,14 @@ app.use(session(sessionOptions))
 
 app.locals.returnUrl = ''
 
+//passport stuff
+passport.serializeUser(User.serializeUser());       //session encoding
+passport.deserializeUser(User.deserializeUser());   //session decoding
+passport.use(new LocalStrategy(User.authenticate()));
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -100,15 +114,8 @@ app.use('/users', usersRouter);
 app.use('/courses', courseRouter)
 
 app.use(cors())
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended : true}));
-
-//add new user
-app.post('/store-data',(req, res) => {
-  let data = {name: req.body.firstName};
-  console.log(data)
-  console.log(req.body)
-});
+// app.use(bodyParser.json())
+// app.use(bodyParser.urlencoded({extended : true}));
  
 
 // catch 404 and forward to error handler

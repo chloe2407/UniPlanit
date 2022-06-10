@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const passportLocalMongoose = require("passport-local-mongoose");
 const { courseOneSectionSchema } = require('../models/course')
 // need to set up cloudinary for user profile img
 
@@ -38,6 +39,7 @@ const userSchema = new mongoose.Schema({
 })
 
 // passport set up here
+userSchema.plugin(passportLocalMongoose);
 
 userSchema.virtual('fullname').get(() => {
     return `${first} ${last}`
