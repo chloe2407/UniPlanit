@@ -1,7 +1,5 @@
-//import './App.css';
 import { Outlet } from "react-router-dom";
-import About from './about/About';
-// global theme provider here
+import './App.css'
 
 function App() {
   return (
