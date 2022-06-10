@@ -33,7 +33,7 @@ module.exports.logout = async (req, res, next) => {
     res.redirect('/')
 }
 
-module.exports.getUserEvents = async (req, res, next) => {
+module.exports.getUserEventsByDate = async (req, res, next) => {
     // req.params accepts begin or end or both
     // get all events that belongs to the current user
     // to see a event on a day, pass in 'on'
@@ -182,44 +182,6 @@ module.exports.createNewUserCourse = async (req, res, next) => {
     }
 }
 
-const createEventByCourseMeetingTime = async (user, course) => {
-    course.section.meetingTime.map(async (m) => {
-        // for each meeting, create events for a year
-        // get the number of weeks, and make a event with this meeting time
-        // once every week
-        // endDate is one year from today
-        const now = dayjs()
-        const endDate = course.endDate ? course.endDate : now.add(1, 'year')
-        const msInWeek = dayjs.duration(7, 'days').as('ms')
-        let diff = dayjs.duration(endDate.diff(now)).as('ms')
-        let count = 0
-        while (diff > 0) {
-            const adjustedNowTime = now.add(msInWeek * count, 'ms')
-            const event = new Event({
-                eventName: course.courseTitle,
-                // owner: req.user.id,
-                owner: user.id,
-                location: m.assignedRoom1,
-                type: 'lecture',
-                course: course,
-                start: new Date(toUTC(getEventDateTime(
-                    adjustedNowTime, m.day, m.startTime))),
-                end: new Date(toUTC(getEventDateTime(
-                    adjustedNowTime, m.day, m.endTime))),
-                repeat: {
-                    repeatInterval: msInWeek,
-                    start: new Date(toUTC(now)),
-                    end: new Date(toUTC(endDate))
-                }
-            })
-            event.save()
-            user.events.push(event)
-            diff -= msInWeek
-            count += 1
-        }
-    })
-}
-
 module.exports.deleteUserCourseByCode = async (req, res, next) => {
     // removes the course that belongs to the user
     // returns the courses after filtering
@@ -298,10 +260,11 @@ module.exports.saveTimeTable = async (req, res, next) => {
     // that the user selected. Sent back from front
     // need to create events
     const { timetable } = req.body
-    for (course in timetable) {
+    timetable.forEach(course => {
         user.courses.push(course)
-
-    }
+        createEventByCourseMeetingTime(user, course)
+    })
+    await user.save()
 }
 
 module.exports.newTimetable = async (req, res, next) => {
@@ -316,4 +279,43 @@ module.exports.newTimetable = async (req, res, next) => {
 module.exports.getUserCourse = async(req, res, next) =>{
     const user = await User.find(req.user.id)
     res.json(user.courses)
+}
+
+
+const createEventByCourseMeetingTime = async (user, course) => {
+    course.section.meetingTime.map(async (m) => {
+        // for each meeting, create events for a year
+        // get the number of weeks, and make a event with this meeting time
+        // once every week
+        // endDate is one year from today
+        const now = dayjs()
+        const endDate = course.endDate ? course.endDate : now.add(1, 'year')
+        const msInWeek = dayjs.duration(7, 'days').as('ms')
+        let diff = dayjs.duration(endDate.diff(now)).as('ms')
+        let count = 0
+        while (diff > 0) {
+            const adjustedNowTime = now.add(msInWeek * count, 'ms')
+            const event = new Event({
+                eventName: course.courseTitle,
+                // owner: req.user.id,
+                owner: user.id,
+                location: m.assignedRoom1,
+                type: 'lecture',
+                course: course,
+                start: new Date(toUTC(getEventDateTime(
+                    adjustedNowTime, m.day, m.startTime))),
+                end: new Date(toUTC(getEventDateTime(
+                    adjustedNowTime, m.day, m.endTime))),
+                repeat: {
+                    repeatInterval: msInWeek,
+                    start: new Date(toUTC(now)),
+                    end: new Date(toUTC(endDate))
+                }
+            })
+            event.save()
+            user.events.push(event)
+            diff -= msInWeek
+            count += 1
+        }
+    })
 }
