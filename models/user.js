@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Event'
     }],
+    // path to cloud server
     profileImg: {
         type: String
     }
