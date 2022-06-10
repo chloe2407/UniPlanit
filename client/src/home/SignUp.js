@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Typography, Container, Grid, Button, Checkbox, FormControlLabel, Box, TextField, CssBaseline } from '@material-ui/core';
 import { createTheme, ThemeProvider, } from '@material-ui/core';
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,7 +10,8 @@ const theme = createTheme();
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const goToCal = () => navigate('/calendar');
+  const goToLogin = () => console.log('test1212')
+  //const goToLogin = () => navigate('/login');
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -19,7 +20,27 @@ const SignUp = () => {
       email: data.get('email'),
       password: data.get('password'),
     });
+
+    alert('A form was submitted');
+ 
+    fetch('http://localhost:8000/store-data', {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(response => {
+        console.log(response)
+        return response.json();
+      });
   };
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: ""
+  })
 
   return (
     <div style={{height: '100vh', display: 'flex', justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}>
@@ -44,7 +65,7 @@ const SignUp = () => {
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <TextField
+                <TextField onChange={(e) => setFormData({...formData, firstName: e.target.value})} value={formData.firstName}
                   autoComplete="given-name"
                   name="firstName"
                   required
@@ -55,7 +76,7 @@ const SignUp = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
+                <TextField onChange={(e) => setFormData({...formData, lastName: e.target.value})} value={formData.lastName}
                   required
                   fullWidth
                   id="lastName"
@@ -65,7 +86,7 @@ const SignUp = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <TextField onChange={(e) => setFormData({...formData, email: e.target.value})} value={formData.email}
                   required
                   fullWidth
                   id="email"
@@ -75,7 +96,7 @@ const SignUp = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <TextField onChange={(e) => setFormData({...formData, password: e.target.value})} value={formData.password}
                   required
                   fullWidth
                   name="password"
@@ -103,7 +124,7 @@ const SignUp = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               style={{margin: '2vh 0vw'}}
-              onClick={goToCal}
+              onClick={goToLogin}
             >Sign Up</Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
