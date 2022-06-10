@@ -1,8 +1,26 @@
 import React from 'react';
-//import all time table 
-//import user timetable
 
-var demo = [
+//TODO:
+//lock button with function
+//search course by code
+//make course buttons
+//edit page
+//course search sucks
+
+//user courses
+
+const [data, setData] = useState('')
+
+useEffect(() => {
+
+})
+
+
+fetch("/courses",)
+    .then(res => res.json())
+    .then(data => {setData(data)})
+
+var demoUser = [
     {
         index: 1,
         name: "foundation of cs",
@@ -34,7 +52,8 @@ var demo = [
     }
 ];
 
-var userTable = demo;
+var userTable = demoUser;
+
 
 function tableToList(table){
     const listItems = table.map(course =>
@@ -52,6 +71,53 @@ function tableToList(table){
     return listItems
 }
 
+//search courses
+
+function searchedToList(target, searched){
+    if(searched instanceof Array){
+        return (
+        <>
+            <li>{target}</li>
+            <ul>
+                {
+                    searched.map(session =>
+                        <li key={session.index}>
+                          {session.code};
+                        </li>
+                    )
+                }
+            </ul>
+        </>
+        )
+    }
+    else{
+        let overall = []
+        for(const sublist in searched){
+            overall.push(searchedToList(target + sublist, searched[sublist]))
+        };
+        return overall;
+    };
+}
+
+function courseSearch(target){
+    let searched = totalCourses;
+    for(var i = 0; i < target.length; i++){
+        searched = searched[target[i]];
+        if(searched === undefined){
+            return;
+        }
+    };
+    
+    return (
+        <>
+            {searchedToList(target, searched)}
+        </>
+      );
+}
+    
+
+//actual side menu
+
 const SideMenu = () => {
     
     return (
@@ -61,7 +127,8 @@ const SideMenu = () => {
             <ul>{tableToList(userTable)}</ul>
         </div>
         <div>
-            <h1>serch for course</h1>
+            <h1>search for course</h1>
+            <ul>{courseSearch("cs")}</ul>
         </div>
     </>
     )};

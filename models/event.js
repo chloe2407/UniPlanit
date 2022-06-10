@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-const { calibrateTimeToUTC } = require('../utils/time')
+const { toLocal } = require('../utils/time')
+const { courseOneSectionSchema } = require('../models/course')
 
 const eventSchema = new mongoose.Schema({
     eventName: {
@@ -23,11 +24,9 @@ const eventSchema = new mongoose.Schema({
         lowercase: true,
         enum: ['personal', 'lecture', 'tutorial']
     },
-    course: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Course'
-    },
-    // date must use markModified(path) and call save after
+    // course with a specified section/tutorial
+    // only allow one section and tutorial
+    course: courseOneSectionSchema,
     // all dates are stored in UTC-0
     start: {
         type: Date,
@@ -35,18 +34,36 @@ const eventSchema = new mongoose.Schema({
     end: {
         type: Date,
     },
-    description: String
+    // repeat interval is given in milliseconds
+    repeat: {
+        // in ms
+        repeatInterval: {
+            type: Number,
+            requried: true
+        },
+        startDate: {
+            type: Date,
+            default: new Date(),
+            requried: true
+        },
+        endDate: {
+            type: Date,
+            default: new Date() ,
+            required: true
+        }
+    },
+    description: String,
 })
 
 // instead of returning time in UTC 0, we calibrate to current
 // timezone before returning to user
-eventSchema.virtual('calStart').get(function() {
+eventSchema.virtual('startLocal').get(function () {
     console.log(this.start)
-    return calibrateTimeToUTC(this.start)
+    return toLocal(this.start)
 })
 
-eventSchema.virtual('calEnd').get(function() {
-    return calibrateTimeToUTC(this.start)
+eventSchema.virtual('endLocal').get(function () {
+    return toLocal(this.start)
 })
 
 const Event = mongoose.model('Event', eventSchema)
