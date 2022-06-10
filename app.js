@@ -59,11 +59,14 @@ const swaggerDefinition = {
     version: '1.0.0',
     description: 'Event Restful API for MyCalendar. Used for CRUD operations related to events',
   },
+  host: `localhost:${port}`,
+  basePath: `/`
 }
 
 const swaggerSpec = swaggerJSDoc({
   swaggerDefinition,
-  apis: ['./routes/*.js']
+  apis: [`${__dirname}/routes/*.js`, 
+        `${__dirname}/routes/parameters.yaml`]
 })
 
 if (app.get('env') === 'production') {

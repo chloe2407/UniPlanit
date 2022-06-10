@@ -1,0 +1,18 @@
+components:
+  schema:
+    Event:
+      type: obejct
+      properties:
+        eventName:
+          type: string
+          required: true
+        location: string
+        course: object
+        start: 
+          type: string
+          required: true
+        end:
+          type: string
+          required: true
+        repeat: object
+        

@@ -3,24 +3,56 @@ const router = express.Router();
 const { catchAsync } = require('../utils/catchAsync')
 const { register, login, logout, createNewUserEvent,
         patchUserEventById, deleteUserEventById, getUserEventById,
-        getUserEvents, createNewUserCourse, deleteUserCourseByCode,
+        getUserEventsByDate, createNewUserCourse, deleteUserCourseByCode,
         saveCourseHolder, lockCourse, saveTimeTable, newTimetable,
         getUserCourse
 } = require('../controllers/users')
 
 /**
  * @swagger
- * /user/register
+ * 
+ *  /users/register:
  *  post:
  *      summary: register a user
- *      description: register a user then redirect to the orginal page
- *      
+ *      parameters:
+ *          - $ref: '#/parameters/email'
+ *          - $ref: '#/parameters/first'
+ *          - $ref: '#/parameters/last'
+ *          - $ref: '#/parameters/university'
+ *          - $ref: '#/parameters/profileImg'
+ *      responses:
+ *          200:
+ *              description: user has successfully registered
  */
 router.post('/register', catchAsync(register))
 
-// login logout is done with passport
+
+/**
+ * @swagger
+ * 
+ *  /users/login:
+ *  post:
+ *      summary: login a user
+ *      parameters:
+ *          - $ref: '#/parameters/email'
+ *          - $ref: '#/parameters/password'
+ *      responses:
+ *          200:
+ *              description: user has successfully logged in
+ */
 router.post('/login', catchAsync(login))
 
+
+/**
+ * @swagger
+ * 
+ *  /users/login:
+ *  post:
+ *      summary: log out a user
+ *      responses:
+ *          200:
+ *              description: user has successfully logged out
+ */
 router.post('/logout', catchAsync(logout))
 
 /**
@@ -29,13 +61,15 @@ router.post('/logout', catchAsync(logout))
  *  get:
  *      summary: Retreive all events owned by the current user
  *      description: Retreive all events owned by the current user in the given date range
+ *      parameters:
+ *          - $ref: '#/parameters/begin'
+ *          - $ref: '#/parameters/end'
+ *          - $ref: '#/parameters/on'
  *      responses:
  *          200:
  *              description: A list of events
  */
-
-// get all events owned by user
-router.get('/events', catchAsync(getUserEvents))
+router.get('/events', catchAsync(getUserEventsByDate))
 
 /**
  * @swagger
@@ -43,16 +77,8 @@ router.get('/events', catchAsync(getUserEvents))
  *  post:
  *      summary: create a new event
  *      description: create a new event
- *      requestBody:
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                          
- *                      properties:
- *                          eventName:
- *                              type: string
- * 
+ *      parameters:
+ *          - $ref: '#/paramters/'
  *      responses:
  *          200:
  *              description: A list of events
