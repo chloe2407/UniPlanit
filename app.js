@@ -15,15 +15,12 @@ const swaggerUi = require('swagger-ui-express')
 
 const usersRouter = require('./routes/users');
 const courseRouter = require('./routes/courses')
-
 const ExpressError = require('./utils/ExpressError')
-
 const mongoose = require('mongoose')
 const session = require('express-session')
 const port = process.env.PORT || 8000
 const MongoStore = require('connect-mongo');
 const User = require('./models/user');
-
 
 require('dotenv').config()
 
@@ -88,9 +85,9 @@ app.use(session(sessionOptions))
 app.locals.returnUrl = ''
 
 //passport stuff
+passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());       //session encoding
 passport.deserializeUser(User.deserializeUser());   //session decoding
-passport.use(new LocalStrategy(User.authenticate()));
 app.use(passport.initialize());
 app.use(passport.session());
 

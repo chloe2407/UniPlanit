@@ -10,10 +10,9 @@ dayjs.extend(timezone)
 dayjs.extend(duration)
 
 const passport = require('passport')
-const LocalStrategy = require('passport-local')
 
 const checkIfUserExists = async (email) => {
-    let user = User.findOne({ email: email })
+    let user = await User.findOne({ email: email })
     return user 
   }
 
@@ -31,23 +30,16 @@ module.exports.register = async (req, res, next) => {
         events: [],
         profileImg: ""}
         // register user with passport js
-        let user = new User(template)
-        //await user.save()
+        const user = new User(template)
         User.register(user, req.body.password, function(err,user){
             if(err){
                 console.log(err);
-                res.render("register");
             }
             passport.authenticate("local")(req, res, function(){
                 console.log("Following User has been registerd");
                 console.log(user)
             })
-        
         })
-    
-        
-        
-        
         // login user then redirect to previous page or home
         //res.redirect(app.locals.returnUrl || '/')
     }
@@ -55,15 +47,22 @@ module.exports.register = async (req, res, next) => {
 
 module.exports.login = async (req, res, next) => {
     // login code
-    res.redirect(app.locals.returnUrl || '/')
+    console.log(req.body)
+    const user = await User.findOne({ email: req.body.username })
+    console.log(user)
+    res.json({
+        email: user.email,
+        fullname: user.fullname,
+        university: user.university
+    })
 }
 
 module.exports.logout = async (req, res, next) => {
     req.session.destroy()
     // logout goes here
-
-    // return to home
-    res.redirect('/')
+    req.logout(() => {
+        res.redirect('/')
+    })
 }
 
 module.exports.getUserEventsByDate = async (req, res, next) => {

@@ -3,11 +3,12 @@ const router = express.Router();
 const cors = require('cors');
 const { catchAsync } = require('../utils/catchAsync')
 const { register, login, logout, createNewUserEvent,
-        patchUserEventById, deleteUserEventById, getUserEventById,
-        getUserEventsByDate, createNewUserCourse, deleteUserCourseByCode,
-        saveCourseHolder, lockCourse, saveTimeTable, newTimetable,
-        getUserCourse
+    patchUserEventById, deleteUserEventById, getUserEventById,
+    getUserEventsByDate, createNewUserCourse, deleteUserCourseByCode,
+    saveCourseHolder, lockCourse, saveTimeTable, newTimetable,
+    getUserCourse
 } = require('../controllers/users')
+const passport = require('passport')
 
 
 
@@ -31,7 +32,7 @@ router.use(cors())
  */
 // router.post('/register', catchAsync(register))
 
-router.post('/register', register);
+router.post('/register', catchAsync(register));
 
 
 /**
@@ -47,7 +48,9 @@ router.post('/register', register);
  *          200:
  *              description: user has successfully logged in
  */
-router.post('/login', catchAsync(login))
+router.post('/login', passport.authenticate('local', {
+    failureMessage: true
+}), catchAsync(login))
 
 
 /**

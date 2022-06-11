@@ -3,10 +3,12 @@ import IconButton from '@mui/material/IconButton';
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import { StyledMenuItem, NavbarMenu, StyledPopover } from './NavbarMenu'
 import Typography from '@mui/material/Typography';
+import useAuth from '../context/Auth'
 
 export default function Profile({ sx, profileInfo, isUser, handleClick }) {
     const [anchorEl, setAnchorEl] = useState(null)
     const open = Boolean(anchorEl)
+    const { user, logout } = useAuth()
     // using md as breakpoints for mobile version
     const handleMenuClose = () => {
         setAnchorEl(null)
@@ -26,6 +28,7 @@ export default function Profile({ sx, profileInfo, isUser, handleClick }) {
                             handleMenuClose={handleMenuClose}>
                             <StyledMenuItem onClick={handleClick}>My Account</StyledMenuItem>
                             <StyledMenuItem onClick={handleClick}>Settings</StyledMenuItem>
+                            <StyledMenuItem onClick={logout}>Logout</StyledMenuItem>
                         </NavbarMenu>
                     </>
                     :
