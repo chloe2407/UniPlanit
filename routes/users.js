@@ -6,7 +6,7 @@ const { register, login, logout, createNewUserEvent,
     patchUserEventById, deleteUserEventById, getUserEventById,
     getUserEventsByDate, createNewUserCourse, deleteUserCourseByCode,
     saveCourseHolder, lockCourse, saveTimeTable, newTimetable,
-    getUserCourse
+    getUserCourse, getLoggedIn
 } = require('../controllers/users')
 const passport = require('passport')
 
@@ -51,6 +51,8 @@ router.post('/register', catchAsync(register));
 router.post('/login', passport.authenticate('local', {
     failureMessage: true
 }), catchAsync(login))
+
+router.post('/getLoggedIn', catchAsync(getLoggedIn))
 
 
 /**

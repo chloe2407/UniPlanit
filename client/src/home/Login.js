@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
@@ -18,7 +18,7 @@ const loginSchema = yup.object().shape({
 
 const Login = () => {
   // const [error, setError] = useState(false)
-  const { login } = useAuth()
+  const { login, err } = useAuth()
 
   // gonna change to fetching from unsplash for some random photo background 
   // every time user refreshes. Just for fun
@@ -37,6 +37,9 @@ const Login = () => {
                 onSubmit={(values, { setSubmitting }) => {
                   setSubmitting(true)
                   login(values)
+                  setTimeout(() => {
+                    setSubmitting(false)
+                  }, 1000)
                   }
                 }
               >
@@ -72,7 +75,7 @@ const Login = () => {
                         error={errors.password ? true: false}
                       />
                       {
-                        // err ? <Typography>Incorrect password or email</Typography>: ''
+                        err ? <Typography sx={{display: 'flex'}}>Incorrect password or email</Typography>: ''
                       }
                       <Button
                         sx={{ m: 2, ml: 0, display: 'flex'}}

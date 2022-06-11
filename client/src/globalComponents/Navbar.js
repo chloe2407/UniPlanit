@@ -4,12 +4,10 @@ import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import Button from '@mui/material/Button'
-import Switch from '@mui/material/Switch'
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
-import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Profile from './Profile'
 import NavbarButton from './NavbarButton'
@@ -17,7 +15,7 @@ import useAuth from '../context/Auth'
 import { StyledMenuItem, NavbarMenu } from './NavbarMenu'
 
 export default function Navbar() {
-  const { user, logout } = useAuth() 
+  const { user, logout, checkLoggedIn } = useAuth() 
   const [friends, setFriends] = useState(false)
   const [anchorElNav, setAnchorElNav] = useState(null)
   const matchMd = useMediaQuery((theme) => theme.breakpoints.up('md'))
@@ -28,7 +26,7 @@ export default function Navbar() {
 
   const handleClick = (e) => {
     // redirect to some page
-    console.log(e)
+    // console.log(e)
   }
 
   // const handleFriends = () => {
@@ -50,6 +48,9 @@ export default function Navbar() {
   //     setAuth(true)
   //   }
   // }
+  useEffect(() => {
+    checkLoggedIn()
+  }, [])
 
   const handleLogout = () => {
     logout()
@@ -152,8 +153,10 @@ export default function Navbar() {
                 <Link href='/' variant='h5' color='inherit' underline='none' sx={{ mx: 2 }}>
                   MyCalendar
                 </Link>
-                <Button href='/calendar' variant='text' color='inherit' disableRipple
-                  sx={{ fontSize: 16, position: 'absolute', left: '50vh', right: '50vh' }}>
+                <Button variant='text' color='inherit' disableRipple
+                  sx={{ fontSize: 16, position: 'absolute', left: '50vh', right: '50vh' }}
+                  onClick={() => navigate('/calendar')}
+                  >
                   Calendar!
                 </Button>
                 <Profiles />
@@ -164,7 +167,7 @@ export default function Navbar() {
                   <MenuIcon />
                 </IconButton>
                 <NavMenu />
-                <Link href='/' variant='h5' color='inherit'
+                <Link onClick={() => navigate('/')} variant='h5' color='inherit'
                   underline='none' sx={{ ml: 'auto' }}>
                   MyCalendar
                 </Link>

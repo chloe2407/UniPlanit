@@ -45,16 +45,24 @@ module.exports.register = async (req, res, next) => {
     }
 }
 
+module.exports.getLoggedIn = async (req, res, next) => {
+    console.log(req.isAuthenticated())
+    console.log(req.user)
+    if (req.isAuthenticated()){
+        const user = await User.findById(req.user.id)
+        console.log(user)
+        res.status(200).send({user})
+    } else {
+        res.status(200).send({message: 'No valid session'})
+    }
+}
+
 module.exports.login = async (req, res, next) => {
     // login code
     console.log(req.body)
     const user = await User.findOne({ email: req.body.username })
     console.log(user)
-    res.json({
-        email: user.email,
-        fullname: user.fullname,
-        university: user.university
-    })
+    res.send({user})
 }
 
 module.exports.logout = async (req, res, next) => {

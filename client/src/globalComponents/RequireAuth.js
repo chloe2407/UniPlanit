@@ -1,13 +1,22 @@
-import React from 'react'
-import useAuth from '../context/Auth' 
+import React, { useEffect, useState } from 'react'
+import useAuth from '../context/Auth'
 import { Navigate, useLocation } from 'react-router-dom'
 
-export default function RequireAuth ({ children }) {
-    const { user } = useAuth()
+export default function RequireAuth({ children }) {
+    const { user, checkLoggedIn } = useAuth()
     const location = useLocation()
-    if (!user){
-        console.log(location)
-        return <Navigate to='/login' replace state={{from: location}}/>
-    }
-    return children
+    const [checked, setChecked] = useState('loading')
+
+    useEffect(() => {
+        // console.log(user)
+        setChecked('checked')
+    }, [])
+    return (
+        <>
+            {
+                checked && user ? children : <Navigate to='/login' replace state={{ from: location }} />
+            }
+        </>
+    )
+
 }

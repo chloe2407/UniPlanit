@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState()
     const [err, setErr] = useState()
     const navigate = useNavigate()
+    const location = useLocation()
 
     const login = (values) => {
         fetch('/users/login', {
@@ -18,14 +19,16 @@ export function AuthProvider({ children }) {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data)
                 setUser(data)
                 // not sure why this is broken, hard coded for now
                 // navigate(location.state.from || '/')
-                navigate('/')
+                // console.log(location)
+                navigate('/calendar')
             }
             )
-            .catch(err => setErr(err))
+            .catch(err => {
+                setErr(err)
+            })
     }
 
     const signup = (values) => {
@@ -36,7 +39,10 @@ export function AuthProvider({ children }) {
             },
             body: JSON.stringify(values)
         })
-            .then(res => res.json())
+            .then(res => {
+                // console.log(res)
+                return res.json()
+            })
             .then(data => {
                 setUser(data)
                 navigate('/')
@@ -50,8 +56,24 @@ export function AuthProvider({ children }) {
             .then(() => setUser(null))
     }
 
+    const checkLoggedIn = (returnPath) => {
+        fetch('users/getLoggedIn', {
+            method: 'POST',
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.message){
+                    setUser(data)
+                }
+            }
+            )
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
     const memo = useMemo(() => ({
-        user, err, login, signup, logout
+        user, err, login, signup, logout, checkLoggedIn
     }), [user, err])
 
     return (
