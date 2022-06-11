@@ -31,8 +31,7 @@ root.render(
               <Route path="/calendar" element={
                 <RequireAuth>
                   <Calendar />
-                </RequireAuth>
-              } />
+                </RequireAuth>} />
               <Route path="/about" element={<About />} />
             </Route>
           </Route>

@@ -29,7 +29,7 @@ const SignUp = () => {
           backgroundColor: 'white',
           borderRadius: 5,
           p: 5,
-          mt: 15
+          mt: 10
         }}>
           <Formik
             initialValues={{ email: '', firstName: '', lastName: '', 

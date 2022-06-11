@@ -20,7 +20,6 @@ export default function Scene({ width, height, children }) {
 
         // const width = canvaRef.current
         // const height = canvaRef.current
-        console.log(canvaRef.current)
         // console.log(height)
         const engine = Engine.create({
             gravity: {
