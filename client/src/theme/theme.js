@@ -14,7 +14,7 @@ const theme = createTheme({
     },
     typography: {
         fontFamily: ['adamina',
-                     'roboto']
+                     'roboto'],
     },
     components: {
         MuiButtonBase: {
