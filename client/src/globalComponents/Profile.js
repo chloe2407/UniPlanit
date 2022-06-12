@@ -20,7 +20,6 @@ export default function Profile({ sx, profileInfo, isUser, handleClick }) {
             {
                 isUser ?
                     <>
-                        {/* User Icon, show at all times */}
                         <IconButton size='large' aria-controls='menu-account' aria-haspopup='true'
                             onClick={e => setAnchorEl(e.currentTarget)} color='inherit'
                             sx={sx}>
@@ -28,8 +27,7 @@ export default function Profile({ sx, profileInfo, isUser, handleClick }) {
                         </IconButton>
                         <NavbarMenu id='menu-account' anchorElNav={anchorEl}
                             handleMenuClose={handleMenuClose}>
-                            <StyledMenuItem onClick={() => navigate('/calendar/account')}>My Account</StyledMenuItem>
-                            <StyledMenuItem onClick={handleClick}>Settings</StyledMenuItem>
+                            <StyledMenuItem onClick={() => navigate('/account')}>My Account</StyledMenuItem>
                             <StyledMenuItem onClick={logout}>Logout</StyledMenuItem>
                         </NavbarMenu>
                     </>

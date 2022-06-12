@@ -10,7 +10,6 @@ const Calendar = () => {
         <div>
             <Grid container>
                 <Grid item xs={1} sm={3} style={{ backgroundColor: 'yellow' }}>
-                    {/* <SideMenu/> */}
                 </Grid>
                 <Grid item xs={12} sm={9}>
                     <WeekView />
