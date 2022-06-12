@@ -19,6 +19,8 @@ const session = require('express-session')
 const port = process.env.PORT || 8000
 const MongoStore = require('connect-mongo');
 const User = require('./models/user');
+const fetch = require('node-fetch');
+const { URLSearchParams } = require('url');
 
 require('dotenv').config()
 
@@ -104,6 +106,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/photo', (req, res) => {
+  // fetch a photo from unsplash
+  fetch('https://api.unsplash.com/photos/random?' + new URLSearchParams({ 
+    query: 'landscape'
+  }),{
+    headers: {
+      'Accept-Version': 'v1',
+      'Authorization': `Client-ID ${process.env.UNSPLASH_ACCESS}`
+    }
+  })
+  .then(response => response.json())
+  .then(data => res.json(data.urls.full))
+})
 app.use('/users', usersRouter);
 app.use('/courses', courseRouter)
 

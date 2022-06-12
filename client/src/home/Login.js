@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { Link } from 'react-router-dom';
@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import useAuth from '../context/Auth'
-import './Login.css'
+import { useImg } from '../hooks/hooks'
 
 const loginSchema = yup.object().shape({
   username: yup.string().email().required(),
@@ -19,15 +19,23 @@ const loginSchema = yup.object().shape({
 const Login = () => {
   // const [error, setError] = useState(false)
   const { login, err } = useAuth()
+  // const [imgUrl, setImgUrl] = useState()
+  const [imgUrl, loadImg] = useImg()
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    loadImg()
+  }, []
+  )
 
-  // gonna change to fetching from unsplash for some random photo background 
-  // every time user refreshes. Just for fun
   return (
-    <div className='background'>
+    <div style={{
+      backgroundImage: imgUrl && `url(${imgUrl})`, height: '100vh',
+      backgroundSize: 'cover'
+    }}>
       <Grid container>
         <Grid item xs={12} md={6}>
           <Container maxWidth='xs'>
-            <Box mt={15} sx={{ backgroundColor: 'white', borderRadius: 5, p: 5 }}>
+            <Box mt={10} sx={{ backgroundColor: 'white', borderRadius: 5, p: 5 }}>
               <Typography sx={{ mb: 1, display: 'flex' }} variant="h3">
                 Login
               </Typography>
@@ -40,12 +48,12 @@ const Login = () => {
                   setTimeout(() => {
                     setSubmitting(false)
                   }, 1000)
-                  }
+                }
                 }
               >
                 {
                   ({ values, errors, touched, onBlur, handleChange,
-                     handleSubmit, isSubmitting }) => (
+                    handleSubmit, isSubmitting }) => (
                     <form onSubmit={handleSubmit}>
                       <TextField
                         margin='normal'
@@ -60,7 +68,7 @@ const Login = () => {
                         autoFocus
                         error={errors.username ? true : false}
                         helperText={errors.username && touched.username &&
-                                    'Incorrect Email Format'}
+                          'Incorrect Email Format'}
                       />
                       <TextField
                         margin='normal'
@@ -69,16 +77,17 @@ const Login = () => {
                         type="password"
                         label='Password'
                         id="password"
+                        autoComplete='current-password'
                         onChange={handleChange}
                         onBlur={onBlur}
                         value={values.password}
-                        error={errors.password ? true: false}
+                        error={errors.password ? true : false}
                       />
                       {
-                        err ? <Typography sx={{display: 'flex'}}>Incorrect password or email</Typography>: ''
+                        err ? <Typography sx={{ display: 'flex' }}>Incorrect password or email</Typography> : ''
                       }
                       <Button
-                        sx={{ m: 2, ml: 0, display: 'flex'}}
+                        sx={{ m: 2, ml: 0, display: 'flex' }}
                         type='submit'
                         variant='contained'
                         disabled={isSubmitting}
@@ -90,8 +99,8 @@ const Login = () => {
                           Forgot password?
                         </Link>
                       </Typography>
-                      <Typography sx={{display: 'flex' }}>
-                        Don't have an account? <Link style={{textDecoration: 'none', color: 'black' }} to="/signup">
+                      <Typography sx={{ display: 'flex' }}>
+                        Don't have an account? <Link style={{ textDecoration: 'none', color: 'black' }} to="/signup">
                           {"Sign Up"}
                         </Link>
                       </Typography>
