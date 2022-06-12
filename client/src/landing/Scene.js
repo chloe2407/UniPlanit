@@ -122,9 +122,6 @@ export default function Scene({ width, height, children }) {
             }))
         }
 
-        addAssetBody(120, 120, 50, 50, './table.png', 0.1, 0.1, -1, 
-                    getRandForce(0.005, 0.01), 0.0015)
-
         addAssetBody(120, 120, 50, 50, './calendar.png', 0.2, 0.2, -1, 
                     getRandForce(0.005, 0.01), 0.0015)
 
