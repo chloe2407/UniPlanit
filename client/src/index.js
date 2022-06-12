@@ -15,6 +15,7 @@ import ForgotPassword from './home/ForgotPassword';
 import About from './about/About';
 import { AuthProvider } from './context/Auth'
 import RequireAuth from './globalComponents/RequireAuth'
+import Account from './account/Account';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -31,7 +32,10 @@ root.render(
               <Route path="/calendar" element={
                 <RequireAuth>
                   <Calendar />
-                </RequireAuth>} />
+                </RequireAuth>}>
+                <Route path="/calendar/account" element={
+                  <RequireAuth><Account /></RequireAuth>} />
+              </Route>
               <Route path="/about" element={<About />} />
             </Route>
           </Route>
