@@ -15,7 +15,7 @@ import useAuth from '../context/Auth'
 import { StyledMenuItem, NavbarMenu } from './NavbarMenu'
 
 export default function Navbar() {
-  const { user, logout, checkLoggedIn } = useAuth() 
+  const { user, logout } = useAuth() 
   const [friends, setFriends] = useState(false)
   const [anchorElNav, setAnchorElNav] = useState(null)
   const matchMd = useMediaQuery((theme) => theme.breakpoints.up('md'))
@@ -26,12 +26,11 @@ export default function Navbar() {
 
   const handleClick = (e) => {
     // redirect to some page
-    // console.log(e)
+    console.log(e)
   }
 
+  // toolbar - will be removed 
   // const handleFriends = () => {
-  //   // if friends is true we'll set it to false
-  //   // if not we will set both auth and friends to true
   //   if (friends) {
   //     setFriends(false)
   //   } else {
@@ -48,9 +47,6 @@ export default function Navbar() {
   //     setAuth(true)
   //   }
   // }
-  useEffect(() => {
-    checkLoggedIn()
-  }, [])
 
   const handleLogout = () => {
     logout()
