@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import useAuth from '../context/Auth'
 
 export default function LoginWrap({ children }) {
     const [checked, setChecked] = useState(null)
     const { user } = useAuth()
+    const location = useLocation()
+
     useEffect(() => {
         setChecked('checked')
+        if (location.state) {
+            console.log('Redirected from: ' + location.state.from.pathname)
+        }
     })
     return (
         <>
         {
-            checked && user ? <Navigate to='/calendar'/> : children
+            checked && user ? <Navigate to={location.state.from.pathname}/> : children
         }
         </>
     )
