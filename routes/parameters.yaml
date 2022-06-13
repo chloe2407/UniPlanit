@@ -1,0 +1,62 @@
+parameters:
+  courseCode:
+    name: courseCode
+    in: formData
+    required: false
+    type: string
+  courseTitle:
+    name: courseTitle
+    in: formData
+    required: false
+    type: string
+  term:
+    name: term
+    in: formData
+    required: true
+    type: string
+  email:
+    name: email
+    in: formData
+    required: true
+    type: string
+  first:
+    name: first
+    in: formData
+    required: true
+    type: string
+  last:
+    name: last
+    in: formData
+    required: true
+    type: string
+  university:
+    name: university
+    in: formData
+    requried: true
+    type: string
+  profileImg:
+    name: profileImg
+    in: formData
+    required: false
+    type: string
+  password:
+    name: password
+    in: formData
+    required: true
+    type: string
+  begin:
+    name: begin
+    in: query
+    type: string
+  end:
+    name: end
+    in: query
+    type: string
+  on:
+    name: on
+    in: query
+    type: string
+  repeat:
+    name: repeat
+    in: formData
+    type: object

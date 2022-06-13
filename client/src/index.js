@@ -12,23 +12,47 @@ import Login from './home/Login';
 import Landing from './landing/Landing';
 import Calendar from './calendar/Calendar';
 import ForgotPassword from './home/ForgotPassword';
-
+import About from './about/About';
+import { AuthProvider } from './context/Auth'
+import RequireAuth from './globalComponents/RequireAuth'
+import LoginWrap from './globalComponents/LoginWrap'
+const Account = () => {
+  return (<h1>Account Information</h1>)
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ThemeProvider theme={theme}>
-  <BrowserRouter>
-    <Routes>
-      <Route path='/' element={<App />}>
-        <Route element={<PageLayout />}>
-          <Route index element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/forgotpassword" element={<ForgotPassword />} />
-          <Route path="/calendar" element={<Calendar />} />
-        </Route>
-      </Route>
-    </Routes>
-  </BrowserRouter >
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path='/' element={<App />}>
+            <Route element={<PageLayout />}>
+              <Route index element={<Landing />} />
+              <Route path="login" element={
+                <LoginWrap>
+                  <Login />
+                </LoginWrap>
+              } />
+              <Route path="signup" element={
+                <LoginWrap>
+                  <SignUp />
+                </LoginWrap>} />
+              <Route path="forgotpassword" element={<ForgotPassword />} />
+              <Route path="calendar" element={
+                <RequireAuth>
+                  <Calendar />
+                </RequireAuth>} />
+              <Route path='account' element={
+                <RequireAuth>
+                  <Account />
+                </RequireAuth>
+              } />
+              <Route path="/about" element={<About />} />
+            </Route>
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter >
   </ThemeProvider>
 );

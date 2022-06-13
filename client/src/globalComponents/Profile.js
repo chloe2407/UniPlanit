@@ -3,10 +3,14 @@ import IconButton from '@mui/material/IconButton';
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import { StyledMenuItem, NavbarMenu, StyledPopover } from './NavbarMenu'
 import Typography from '@mui/material/Typography';
+import useAuth from '../context/Auth'
+import { useNavigate } from 'react-router-dom'
 
 export default function Profile({ sx, profileInfo, isUser, handleClick }) {
     const [anchorEl, setAnchorEl] = useState(null)
     const open = Boolean(anchorEl)
+    const navigate = useNavigate()
+    const { user, logout } = useAuth()
     // using md as breakpoints for mobile version
     const handleMenuClose = () => {
         setAnchorEl(null)
@@ -16,7 +20,6 @@ export default function Profile({ sx, profileInfo, isUser, handleClick }) {
             {
                 isUser ?
                     <>
-                        {/* User Icon, show at all times */}
                         <IconButton size='large' aria-controls='menu-account' aria-haspopup='true'
                             onClick={e => setAnchorEl(e.currentTarget)} color='inherit'
                             sx={sx}>
@@ -24,8 +27,8 @@ export default function Profile({ sx, profileInfo, isUser, handleClick }) {
                         </IconButton>
                         <NavbarMenu id='menu-account' anchorElNav={anchorEl}
                             handleMenuClose={handleMenuClose}>
-                            <StyledMenuItem onClick={handleClick}>My Account</StyledMenuItem>
-                            <StyledMenuItem onClick={handleClick}>Settings</StyledMenuItem>
+                            <StyledMenuItem onClick={() => navigate('/account')}>My Account</StyledMenuItem>
+                            <StyledMenuItem onClick={logout}>Logout</StyledMenuItem>
                         </NavbarMenu>
                     </>
                     :

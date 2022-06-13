@@ -1,122 +1,170 @@
-import React from 'react';
-import { Typography, Container, Grid, Button, Checkbox, FormControlLabel, Box, TextField, CssBaseline } from '@material-ui/core';
-import { createTheme, ThemeProvider, } from '@material-ui/core';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Formik } from 'formik'
+import * as yup from 'yup'
+import Container from '@mui/material/Container'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid'
+import Autocomplete from '@mui/material/Autocomplete';
+import useAuth from '../context/Auth'
+import { useImg } from '../hooks/hooks'
 
-import GoogleSignIn from './GoogleButton';
-
-const theme = createTheme();
-
+const signupSchema = yup.object().shape({
+  email: yup.string().email().required(),
+  firstName: yup.string().required(),
+  lastName: yup.string().required(),
+  password: yup.string().required(),
+  university: yup.string().required()
+})
 
 const SignUp = () => {
-  const navigate = useNavigate();
-  const goToCal = () => navigate('/calendar');
+  const { signup } = useAuth()
+  const [imgUrl, loadImg] = useImg()
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+  // useImg()
+  // .then(res => setImgUrl(res))
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    // uncomment this for getting background photo
+    loadImg()
+  }, []
+  )
 
   return (
-    <div style={{height: '100vh', display: 'flex', justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}>
-    <ThemeProvider theme={theme} >
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar> */}
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="confirmpassword"
-                  label="Confirm Password"
-                  type="password"
-                  id="confirmpassword"
-                  autoComplete="new-password"
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              style={{margin: '2vh 0vw'}}
-              onClick={goToCal}
-            >Sign Up</Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link to="/login">
-                  Already have an account? Login
-                </Link>
-              </Grid>
-            </Grid>
-          </Box>
+    <div style={{
+      backgroundImage: imgUrl && `url(${imgUrl})`, display: 'flex', height: '100vh',
+      backgroundSize: 'cover'
+    }}>
+      <Container maxWidth='xs'>
+        <Box sx={{
+          backgroundColor: 'white',
+          borderRadius: 5,
+          p: 5,
+          mt: 5
+        }}>
+          <Formik
+            initialValues={{
+              email: undefined, firstName: undefined, lastName: undefined,
+              password: undefined, confirmPassword: undefined, university: 'utsg'
+            }}
+            validateSchema={signupSchema}
+            onSubmit={(values, { setSubmitting }) => {
+              setSubmitting(true)
+              signup(values)
+              setTimeout(() => {
+                setSubmitting(false)
+              }, 1000)
+            }}
+          >
+            {
+              ({ values, errors, touched, handleChange,
+                handleSubmit, isSubmitting }) => (
+                <form onSubmit={handleSubmit}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Typography variant="h3">
+                        Sign up
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        onChange={handleChange}
+                        value={values.firstName}
+                        fullWidth
+                        id="firstName"
+                        label="First Name"
+                        name="firstName"
+                        autoComplete='first-name'
+                        error={errors.firstName ? true : false}
+                        helperText={errors.firstName && 'First name is required'}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        onChange={handleChange}
+                        value={values.lastName}
+                        fullWidth
+                        id="lastName"
+                        label="Last Name"
+                        name="lastName"
+                        error={errors.lastName ? true : false}
+                        helperText={errors.lastName &&
+                          'Last name is required'}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        onChange={handleChange}
+                        value={values.email}
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        error={errors.email ? true : false}
+                        helperText={errors.email && touched.email &&
+                          'Email is required'}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Autocomplete
+                        onChange={handleChange}
+                        value={values.university}
+                        fullWidth
+                        options={['utsg']}
+                        label="University"
+                        renderInput={(params) => <TextField
+                          name="university"
+                          id="university"
+                          value={values.university}
+                          {...params} label="University" />}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        onChange={handleChange}
+                        value={values.password}
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="new-password"
+                        error={errors.password ? true : false}
+                        helperText={errors.password &&
+                          'Password is required'}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        name="confirmPassword"
+                        label="Confirm Password"
+                        type="password"
+                        id="confirmpassword"
+                        autoComplete="new-password"
+                        error={values.password !== values.confirmPassword ? true : false}
+                        helperText={values.password !== values.confirmPassword
+                          && 'You password is not correct'}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button
+                        disabled={isSubmitting}
+                        type="submit"
+                        variant="contained"
+                        sx={{ width: '50%' }}
+                      >Sign Up</Button>
+                    </Grid>
+                  </Grid>
+                </form>
+              )}
+          </Formik>
         </Box>
-        {/* casuing error, removed for now <GoogleSignIn style={{margin: "2vh 0vw"}}/> */}
       </Container>
-    </ThemeProvider>
     </div>
   );
 }

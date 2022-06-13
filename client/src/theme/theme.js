@@ -5,16 +5,16 @@ const theme = createTheme({
     // test
     palette: {
         primary: {
-            main: '#22333b',
+            main: 'rgba(0, 0, 0, 1)',
         },
         secondary: {
-            main: '#eae0d5',
-            contrastText: '#eae0d5'
+            main: 'rgba(255, 255, 255, 1)',
+            contrastText: 'rgba(255, 255, 255, 1)'
           },
     },
     typography: {
         fontFamily: ['adamina',
-                     'roboto']
+                     'roboto'],
     },
     components: {
         MuiButtonBase: {
