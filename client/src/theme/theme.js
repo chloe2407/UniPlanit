@@ -1,5 +1,5 @@
-import "@fontsource/adamina"
 import { createTheme } from '@mui/material/styles'
+import "@fontsource/lato/300.css";
 
 const theme = createTheme({
     // test
@@ -10,11 +10,11 @@ const theme = createTheme({
         secondary: {
             main: 'rgba(255, 255, 255, 1)',
             contrastText: 'rgba(255, 255, 255, 1)'
-          },
+        },
     },
     typography: {
-        fontFamily: ['adamina',
-                     'roboto'],
+        fontFamily: ["Lato",
+        ],
     },
     components: {
         MuiButtonBase: {

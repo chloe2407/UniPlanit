@@ -1,10 +1,23 @@
 import React from 'react'
 import { Typography } from '@mui/material'
 import './textbox.css'
-const Textbox = (input) => {
+import { TextField } from '@mui/material'
+
+const Textbox = ({ property, value }) => {
+
     return (
         <div>
-            <Typography className='textbox' invaiant='h6'>{input}</Typography>
+            <Typography>
+                {property}
+            </Typography>
+            <TextField
+                disabled
+                id="outlined-read-only-input"
+                label={value}
+                InputProps={{
+                    readOnly: true,
+                }}
+            />
         </div>
     )
 }

@@ -17,29 +17,47 @@ const AccountInfo = () => {
     return (
         <div>
             <Grid
-                // container
-                direction="row"
+
+
                 justifyContent="flex-start"
                 alignItems="flex-start"
+                textAlign='left'
             >
                 <Typography variant='h4'>Jane Doe</Typography>
+                <Typography variant='h6' display='inline' textAlign='left'>Edit Profile</Typography>
                 <hr></hr>
                 <Grid
                     container
                     direction="row"
-                    textAlign='right'
-                >
-                    <Typography>
-                        First name:
-                    </Typography>
 
-                    {/* <Grid xs={5}>
-                        <Typography>
+                >
+                    <Grid item display='inline' className=' first' md={6} xs={12}>
+                        <Typography xs={3}>
                             First name
                         </Typography>
+                        <TextField xs={5}
+                            disabled
+                            id="outlined-read-only-input"
+                            label={user.first}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
                     </Grid>
-                    <Grid xs={7}> Jane Doe</Grid>
-                    <Grid xs={3}></Grid> */}
+                    <Grid item display='inline' className=' first' md={6} xs={12}>
+                        <Textbox property='First name' value={user.first}></Textbox>
+                        {/* <Typography>
+                            Last name
+                        </Typography>
+                        <TextField
+                            disabled
+                            id="outlined-read-only-input"
+                            label={user.last}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        /> */}
+                    </Grid>
                 </Grid>
 
             </Grid>

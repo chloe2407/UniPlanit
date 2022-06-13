@@ -5,13 +5,15 @@ import { height } from '@mui/system';
 import useAuth from '../../../context/Auth';
 import './ProfileImage.css'
 import { Box } from '@mui/system';
+import { Grid } from '@mui/material';
 
 const ProfileImage = () => {
     const { user } = useAuth();
     return (
         <div>
-            <Box
+            <Grid
                 container
+                direction='column'
                 justifyContent='center'
                 alignItems='center'
                 textAlign='center'>
@@ -30,7 +32,7 @@ const ProfileImage = () => {
 
                 }
                 <Typography variant='h6' textAlign='center'>Edit Picture</Typography>
-            </Box>
+            </Grid>
         </div >
     )
 }
