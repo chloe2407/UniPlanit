@@ -1,5 +1,10 @@
 import React from 'react';
-import { Grid, makeStyles, Typography, Button, IconButton, Card, CardContent, CardActions, Box } from '@material-ui/core';
+// import { Grid, makeStyles, Typography} from '@material-ui/core';
+
+import Grid from '@mui/material/Grid';
+import  { makeStyles } from '@mui/styles';
+import Typography from '@mui/material/Typography';
+
 import schedule from "./schedule.js";
 import EventCard from "./card.js"
 
