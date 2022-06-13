@@ -13,10 +13,11 @@ export default function LoginWrap({ children }) {
             console.log('Redirected from: ' + location.state.from.pathname)
         }
     })
+    const toLocation = location.state ? location.state.from.pathname : 'calendar'
     return (
         <>
         {
-            checked && user ? <Navigate to={location.state.from.pathname}/> : children
+            checked && user ? <Navigate to={toLocation}/> : children
         }
         </>
     )
