@@ -1,5 +1,9 @@
 import React from 'react';
-import { Box, Card, CardActions, CardContent, Button, Typography, IconButton, Grid, makeStyles } from '@material-ui/core';
+
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import { makeStyles } from '@mui/styles';
 
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
