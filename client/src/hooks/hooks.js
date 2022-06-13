@@ -1,14 +1,18 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 export function useImg() {
     const [imgUrl, setImgUrl] = useState()
-    
+
     const loadImg = () => {
-        fetch('photo', { method: 'GET' })
-            .then(res => res.json())
-            .then(data => setImgUrl(data))
-            .catch(err => console.error(err))
+        return new Promise((res, rej) => {
+            fetch('photo', { method: 'GET' })
+                .then(res => res.json())
+                .then(data => {
+                    setImgUrl(data)
+                    res(data)
+                })
+                .catch(err => console.error(err))
+        })
     }
-    
     return [imgUrl, loadImg]
 }
