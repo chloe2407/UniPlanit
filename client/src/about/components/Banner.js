@@ -23,7 +23,7 @@ const Banner = () => {
                 </Typography>
                 <Typography
                     variant='h6'
-                >Thank you for using our cite.
+                >Thank you for using our site.
                 </Typography>
             </Grid>
 

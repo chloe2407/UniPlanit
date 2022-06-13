@@ -9,6 +9,7 @@ import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import useAuth from '../../context/Auth';
+import Textbox from '../Textbox/Textbox';
 
 
 const AccountInfo = () => {
@@ -16,7 +17,7 @@ const AccountInfo = () => {
     return (
         <div>
             <Grid
-                container
+                // container
                 direction="row"
                 justifyContent="flex-start"
                 alignItems="flex-start"
@@ -26,59 +27,21 @@ const AccountInfo = () => {
                 <Grid
                     container
                     direction="row"
-                    justifyContent="flex-start"
-                    alignItems="flex-start"
-                    // component="form"
-                    sx={{
-                        '& .MuiTextField-root': { m: 1, width: '25ch' },
-                    }}
-                    noValidate
-                    autoComplete="off"
+                    textAlign='right'
                 >
-                    <TextField
-                        id="outlined-read-only-input"
-                        label="First name"
-                        defaultValue=''
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                    />
-                    <TextField
-                        id="outlined-read-only-input"
-                        label="Last name"
-                        defaultValue="Doe"
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                    />
-                    <TextField
-                        id="outlined-read-only-input"
-                        label="Email"
-                        type="email"
-                        defaultValue="jane.doe@email.com"
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                    />
-                    <TextField
-                        id="outlined-read-only-input"
-                        label="Password"
-                        type="password"
-                        defaultValue="password"
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                    />
+                    <Typography>
+                        First name:
+                    </Typography>
 
-                    <TextField
-                        id="outlined-number"
-                        label="Email"
-                        type="email"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
+                    {/* <Grid xs={5}>
+                        <Typography>
+                            First name
+                        </Typography>
+                    </Grid>
+                    <Grid xs={7}> Jane Doe</Grid>
+                    <Grid xs={3}></Grid> */}
                 </Grid>
+
             </Grid>
         </div >
     )
@@ -113,3 +76,60 @@ export default AccountInfo
     //                     label='username' />
     //             </Box>
     //         </Box >
+
+    // <Grid
+    //                 container
+    //                 direction="row"
+    //                 justifyContent="flex-start"
+    //                 alignItems="flex-start"
+    //                 // component="form"
+    //                 sx={{
+    //                     '& .MuiTextField-root': { m: 1, width: '25ch' },
+    //                 }}
+    //                 noValidate
+    //                 autoComplete="off"
+    //             >
+    //                 <TextField
+    //                     id="outlined-read-only-input"
+    //                     label="First name"
+    //                     defaultValue={user.first}
+    //                     InputProps={{
+    //                         readOnly: true,
+    //                     }}
+    //                 />
+    //                 <TextField
+    //                     id="outlined-read-only-input"
+    //                     label="Last name"
+    //                     defaultValue="Doe"
+    //                     InputProps={{
+    //                         readOnly: true,
+    //                     }}
+    //                 />
+    //                 <TextField
+    //                     id="outlined-read-only-input"
+    //                     label="Email"
+    //                     type="email"
+    //                     defaultValue="jane.doe@email.com"
+    //                     InputProps={{
+    //                         readOnly: true,
+    //                     }}
+    //                 />
+    //                 <TextField
+    //                     id="outlined-read-only-input"
+    //                     label="Password"
+    //                     type="password"
+    //                     defaultValue="password"
+    //                     InputProps={{
+    //                         readOnly: true,
+    //                     }}
+    //                 />
+
+    //                 <TextField
+    //                     id="outlined-number"
+    //                     label="Email"
+    //                     type="email"
+    //                     InputLabelProps={{
+    //                         shrink: true,
+    //                     }}
+    //                 />
+    //             </Grid>

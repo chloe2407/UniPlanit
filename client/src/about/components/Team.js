@@ -55,7 +55,7 @@ const TeamMember = () => {
             <Typography variant='h4' paddingBottom='40px'>Meet the Team</Typography>
             {
                 teamMembers.map((member) => (
-                    <Grid container className='teamMembers' marginY='20px'>
+                    <Grid key={member.id} container className='teamMembers' marginY='20px'>
                         <Grid item md={5}>
                             {member.headshot}
                         </Grid>

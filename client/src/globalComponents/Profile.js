@@ -10,7 +10,7 @@ export default function Profile({ sx, profileInfo, isUser, handleClick }) {
     const [anchorEl, setAnchorEl] = useState(null)
     const open = Boolean(anchorEl)
     const navigate = useNavigate()
-    const { user, logout } = useAuth()
+    const { logout } = useAuth()
     // using md as breakpoints for mobile version
     const handleMenuClose = () => {
         setAnchorEl(null)
