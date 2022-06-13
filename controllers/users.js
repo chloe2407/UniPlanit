@@ -10,7 +10,15 @@ dayjs.extend(timezone)
 dayjs.extend(duration)
 
 const passport = require('passport')
+const cloudinary = require('cloudinary').v2
 
+// cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET
+  })
+  
 const checkIfUserExists = async (email) => {
     let user = await User.findOne({ email: email })
     return user 
@@ -34,10 +42,12 @@ module.exports.register = async (req, res, next) => {
         User.register(user, req.body.password, function(err,user){
             if(err){
                 console.log(err);
+                res.status(200).send({message: 'The username is already registered'})
             }
             passport.authenticate("local")(req, res, function(){
                 console.log("Following User has been registerd");
                 console.log(user)
+                res.sendStatus(200)
             })
         })
         // login user then redirect to previous page or home
@@ -46,8 +56,6 @@ module.exports.register = async (req, res, next) => {
 }
 
 module.exports.getLoggedIn = async (req, res, next) => {
-    console.log(req.isAuthenticated())
-    console.log(req.user)
     if (req.isAuthenticated()){
         const user = await User.findById(req.user.id)
         console.log(user)
@@ -59,7 +67,6 @@ module.exports.getLoggedIn = async (req, res, next) => {
 
 module.exports.login = async (req, res, next) => {
     // login code
-    console.log(req.body)
     const user = await User.findOne({ email: req.body.username })
     console.log(user)
     res.send({user})
@@ -316,11 +323,38 @@ module.exports.newTimetable = async (req, res, next) => {
 
 }
 
-module.exports.getUserCourse = async(req, res, next) =>{
+module.exports.getUserCourse = async(req, res, next) => {
     const user = await User.find(req.user.id)
     res.json(user.courses)
 }
 
+module.exports.uploadImage = async(req, res, next) => {
+    const user = await User.find(req.user.id)
+    const eager_transform = {
+        width: 500, height: 500, crop: 'scale', format: 'jpg'
+    }
+    cloudinary.uploader.upload_stream(req.body.imgStream, {
+        public_id: req.user.id,
+        eager: eager_transform
+    })
+        .then(image => {
+            user.profileImg = image.public_id
+            user.save()
+            res.sendStatus(200)
+        })
+        .catch(err => {
+            console.error(err)
+            res.sendStatus(500)
+        })
+}
+
+module.exports.deleteImage = async(req, res, next) => {
+    const user = await User.find(req.user.id)
+    cloudinary.uploader.destroy(req.user.profileImg)
+    user.profileImg = null
+    await user.save()
+
+}
 
 const createEventByCourseMeetingTime = async (user, course) => {
     course.section.meetingTime.map(async (m) => {
