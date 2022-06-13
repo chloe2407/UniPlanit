@@ -17,51 +17,54 @@ cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,
     api_key: process.env.CLOUDINARY_KEY,
     api_secret: process.env.CLOUDINARY_SECRET
-  })
-  
+})
+
 const checkIfUserExists = async (email) => {
     let user = await User.findOne({ email: email })
-    return user 
-  }
+    return user
+}
 
 module.exports.register = async (req, res, next) => {
-    if (checkIfUserExists(req.body.email)){
-        const template = 
-        {email: req.body.email,
-        username: req.body.email,
-        password: req.body.password,
-        first: req.body.firstName,
-        last: req.body.lastName,
-        courses: [],
-        friends: [],
-        university: "utsg",
-        events: [],
-        profileImg: ""}
+    if (checkIfUserExists(req.body.email)) {
+        const template =
+        {
+            email: req.body.email,
+            username: req.body.email,
+            password: req.body.password,
+            first: req.body.firstName,
+            last: req.body.lastName,
+            courses: [],
+            friends: [],
+            university: "utsg",
+            events: [],
+            profileImg: ""
+        }
         // register user with passport js
         const user = new User(template)
-        User.register(user, req.body.password, function(err,user){
-            if(err){
+        User.register(user, req.body.password, function (err, user) {
+            if (err) {
                 console.log(err);
-                res.status(200).send({message: 'The username is already registered'})
+                return res.send({ 'err': 'The username is already registered' })
+            } else {
+                passport.authenticate("local")(req, res, function () {
+                    console.log("Following User has been registerd");
+                    console.log(user)
+                })
             }
-            passport.authenticate("local")(req, res, function(){
-                console.log("Following User has been registerd");
-                console.log(user)
-                res.sendStatus(200)
-            })
         })
+        return res.send({ user })
         // login user then redirect to previous page or home
         //res.redirect(app.locals.returnUrl || '/')
     }
 }
 
 module.exports.getLoggedIn = async (req, res, next) => {
-    if (req.isAuthenticated()){
+    if (req.isAuthenticated()) {
         const user = await User.findById(req.user.id)
         console.log(user)
-        res.status(200).send({user})
+        res.status(200).send({ user })
     } else {
-        res.status(200).send({message: 'No valid session'})
+        res.status(200).send({ message: 'No valid session' })
     }
 }
 
@@ -69,7 +72,7 @@ module.exports.login = async (req, res, next) => {
     // login code
     const user = await User.findOne({ email: req.body.username })
     console.log(user)
-    res.send({user})
+    res.send({ user })
 }
 
 module.exports.logout = async (req, res, next) => {
@@ -285,7 +288,7 @@ module.exports.saveTimeTable = async (req, res, next) => {
     // remove all previous courses and events and save current timetable
     const user = await User.find(req.user.id)
     user.courses = []
-    await user.populate({path: 'event'})
+    await user.populate({ path: 'event' })
     const eventNotCourse = []
     for (e of user.events) {
         if (!e.course) eventNotCourse.push(e)
@@ -323,12 +326,12 @@ module.exports.newTimetable = async (req, res, next) => {
 
 }
 
-module.exports.getUserCourse = async(req, res, next) => {
+module.exports.getUserCourse = async (req, res, next) => {
     const user = await User.find(req.user.id)
     res.json(user.courses)
 }
 
-module.exports.uploadImage = async(req, res, next) => {
+module.exports.uploadImage = async (req, res, next) => {
     const user = await User.find(req.user.id)
     const eager_transform = {
         width: 500, height: 500, crop: 'scale', format: 'jpg'
@@ -348,7 +351,7 @@ module.exports.uploadImage = async(req, res, next) => {
         })
 }
 
-module.exports.deleteImage = async(req, res, next) => {
+module.exports.deleteImage = async (req, res, next) => {
     const user = await User.find(req.user.id)
     cloudinary.uploader.destroy(req.user.profileImg)
     user.profileImg = null
