@@ -2,6 +2,7 @@ import React from 'react'
 import ProfileImage from './components/ProfileImage/ProfileImage'
 import AccountInfo from './components/AccountInfo'
 import { Grid } from 'matter-js'
+import { Box } from '@mui/system'
 
 const Account = () => {
   // const accountStyles = {
@@ -10,20 +11,20 @@ const Account = () => {
   return (
     <div>
       <h1>Account Information</h1>
-      {/* <Grid
+      <Box
         container
         direction="row"
         justifyContent="center"
         alignItems="flex-start"
       >
-        <Grid item xs={5}>
+        <Grid xs={5}>
           <ProfileImage />
         </Grid>
-        <Grid item xs={7}>
+        <Grid xs={7}>
           <AccountInfo />
         </Grid>
 
-      </Grid> */}
+      </Box>
     </div>
   )
 }
