@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Formik } from 'formik'
+import React, { useEffect, useState } from 'react';
+import { Formik, Form } from 'formik'
 import * as yup from 'yup'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
@@ -10,30 +10,40 @@ import Grid from '@mui/material/Grid'
 import Autocomplete from '@mui/material/Autocomplete';
 import useAuth from '../context/Auth'
 import { useImg } from '../hooks/hooks'
+import Loading from '../globalComponents/Loading'
 
 const signupSchema = yup.object().shape({
   email: yup.string().email().required(),
   firstName: yup.string().required(),
   lastName: yup.string().required(),
   password: yup.string().required(),
+  confirmPassword: yup.string()
+    .test('passwords-match', 'Passwords must match', function (value) {
+      return this.parent.password === value
+    }),
   university: yup.string().required()
 })
 
 const SignUp = () => {
-  const { signup } = useAuth()
+  const { signup, err } = useAuth()
   const [imgUrl, loadImg] = useImg()
+  const [isLoading, setIsLoading] = useState(true)
 
   // useImg()
   // .then(res => setImgUrl(res))
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    // uncomment this for getting background photo
     loadImg()
+      .then(() => {
+        setIsLoading(false)
+      })
+    // eslint-disable-next-line
   }, []
   )
 
   return (
+    isLoading ? <Loading /> :
     <div style={{
       backgroundImage: imgUrl && `url(${imgUrl})`, display: 'flex', height: '100vh',
       backgroundSize: 'cover'
@@ -47,12 +57,13 @@ const SignUp = () => {
         }}>
           <Formik
             initialValues={{
-              email: undefined, firstName: undefined, lastName: undefined,
-              password: undefined, confirmPassword: undefined, university: 'utsg'
+              email: '', firstName: '', lastName: '',
+              password: '', confirmPassword: '', university: 'utsg'
             }}
-            validateSchema={signupSchema}
+            validationSchema={signupSchema}
             onSubmit={(values, { setSubmitting }) => {
               setSubmitting(true)
+              console.log(values)
               signup(values)
               setTimeout(() => {
                 setSubmitting(false)
@@ -60,9 +71,9 @@ const SignUp = () => {
             }}
           >
             {
-              ({ values, errors, touched, handleChange,
+              ({ values, errors, touched, handleChange, setFieldValue,
                 handleSubmit, isSubmitting }) => (
-                <form onSubmit={handleSubmit}>
+                <Form onSubmit={handleSubmit}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <Typography variant="h3">
@@ -79,7 +90,8 @@ const SignUp = () => {
                         name="firstName"
                         autoComplete='first-name'
                         error={errors.firstName ? true : false}
-                        helperText={errors.firstName && 'First name is required'}
+                        helperText={errors.firstName &&
+                          'First name is required'}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -111,16 +123,17 @@ const SignUp = () => {
                     </Grid>
                     <Grid item xs={12}>
                       <Autocomplete
-                        onChange={handleChange}
-                        value={values.university}
                         fullWidth
                         options={['utsg']}
+                        name="university"
+                        id="university"
                         label="University"
-                        renderInput={(params) => <TextField
-                          name="university"
-                          id="university"
-                          value={values.university}
-                          {...params} label="University" />}
+                        onChange={(e, value) => setFieldValue('univeristy', value !== null ?
+                          value : values.university)}
+                        value={values.university}
+                        renderInput={params =>
+                          <TextField name='univeristy'
+                            {...params} label="University" />}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -146,10 +159,16 @@ const SignUp = () => {
                         type="password"
                         id="confirmpassword"
                         autoComplete="new-password"
-                        error={values.password !== values.confirmPassword ? true : false}
-                        helperText={values.password !== values.confirmPassword
-                          && 'You password is not correct'}
+                        onChange={handleChange}
+                        error={errors.confirmPassword ? true : false}
+                        helperText={errors.confirmPassword &&
+                          'Password must match'}
                       />
+                    </Grid>
+                    <Grid item xs={12}>
+                      {
+                        err ? <Typography>{err}</Typography> : ''
+                      }
                     </Grid>
                     <Grid item xs={12}>
                       <Button
@@ -160,7 +179,7 @@ const SignUp = () => {
                       >Sign Up</Button>
                     </Grid>
                   </Grid>
-                </form>
+                </Form>
               )}
           </Formik>
         </Box>

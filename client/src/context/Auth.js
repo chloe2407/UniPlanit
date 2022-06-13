@@ -1,5 +1,5 @@
 import React, { createContext, useMemo, useState, useContext } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const AuthContext = createContext()
 
@@ -7,7 +7,6 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState()
     const [err, setErr] = useState()
     const navigate = useNavigate()
-    const location = useLocation()
 
     const login = (values) => {
         fetch('/users/login', {
@@ -27,7 +26,7 @@ export function AuthProvider({ children }) {
             }
             )
             .catch(err => {
-                setErr(err)
+                setErr(err.message)
             })
     }
 
@@ -39,13 +38,17 @@ export function AuthProvider({ children }) {
             },
             body: JSON.stringify(values)
         })
-            .then(res => {
-                // console.log(res)
-                return res.json()
-            })
+            .then(res => res.json())
             .then(data => {
-                setUser(data)
-                navigate('/')
+                if (!data.message){
+                    setUser(data)
+                    navigate('/')
+                } else {
+                    setErr(data.message)
+                }
+            })
+            .catch(err => {
+                setErr(err.message)
             })
     }
 
@@ -56,7 +59,7 @@ export function AuthProvider({ children }) {
             .then(() => setUser(null))
     }
 
-    const checkLoggedIn = (returnPath) => {
+    const checkLoggedIn = () => {
         fetch('users/getLoggedIn', {
             method: 'POST',
         })
@@ -74,6 +77,7 @@ export function AuthProvider({ children }) {
 
     const memo = useMemo(() => ({
         user, err, login, signup, logout, checkLoggedIn
+        // eslint-disable-next-line
     }), [user, err])
 
     return (

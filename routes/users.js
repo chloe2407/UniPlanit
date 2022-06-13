@@ -6,7 +6,7 @@ const { register, login, logout, createNewUserEvent,
     patchUserEventById, deleteUserEventById, getUserEventById,
     getUserEventsByDate, createNewUserCourse, deleteUserCourseByCode,
     saveCourseHolder, lockCourse, saveTimeTable, newTimetable,
-    getUserCourse, getLoggedIn
+    getUserCourse, getLoggedIn, uploadImage, deleteImage
 } = require('../controllers/users')
 const passport = require('passport')
 
@@ -49,7 +49,7 @@ router.post('/register', catchAsync(register));
  *              description: user has successfully logged in
  */
 router.post('/login', passport.authenticate('local', {
-    failureMessage: true
+    failureMessage: true,
 }), catchAsync(login))
 
 router.post('/getLoggedIn', catchAsync(getLoggedIn))
@@ -58,7 +58,7 @@ router.post('/getLoggedIn', catchAsync(getLoggedIn))
 /**
  * @swagger
  * 
- *  /users/login:
+ *  /users/logout:
  *  post:
  *      summary: log out a user
  *      responses:
@@ -89,8 +89,6 @@ router.get('/events', catchAsync(getUserEventsByDate))
  *  post:
  *      summary: create a new event
  *      description: create a new event
- *      parameters:
- *          - $ref: '#/paramters/'
  *      responses:
  *          200:
  *              description: A list of events
@@ -124,9 +122,14 @@ router.route('/events/:eventId')
 // create a new course for user
 router.post('/courses/new', catchAsync(createNewUserCourse))
 
+router.post('/uploadImage', catchAsync(uploadImage))
+
+router.post('/deleteImage', catchAsync(deleteImage))
+
 // when a use selects a course but does not manually choose a time or 
 // wants to use the generator, save the course code as a placeholder first
 // These courses will be replaced with meeting times when the timetable is generated
+
 router.post('/courses/saveCourseHolder', catchAsync(saveCourseHolder))
 
 // generate new timetables

@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react'
-import Matter, { Bodies, Common, Render, Svg } from 'matter-js'
+import React, { useEffect, useRef } from 'react'
+import Matter, { Common, Render } from 'matter-js'
 import theme from '../theme/theme'
 
-export default function Scene({ width, height, children }) {
+export default function Scene({ width, height }) {
     const canvaRef = useRef()
     // const screenSize = useState([])
     useEffect(() => {
@@ -122,6 +122,7 @@ export default function Scene({ width, height, children }) {
             }))
         }
 
+
         addAssetBody(120, 120, 50, 50, './calendar.png', 0.2, 0.2, -1, 
                     getRandForce(0.005, 0.01), 0.0015)
 
@@ -179,5 +180,5 @@ export default function Scene({ width, height, children }) {
             max: { x: width, y: height }
         })
     }, [])
-    return <div ref={canvaRef} />
+    return <div style={{ backgroundColor: 'black', height: '100vh' }} ref={canvaRef} />
 }
