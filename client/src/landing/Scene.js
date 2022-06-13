@@ -51,11 +51,9 @@ export default function Scene({ width, height }) {
             return Bodies.rectangle(x, y, width, height, {
                 isStatic: true,
                 render: {
-                    lineWidth: 1
-                },
-                render: {
+                    lineWidth: 1,
                     fillStyle: theme.palette.primary.main
-                }
+                },
             })
         }
 
@@ -179,6 +177,7 @@ export default function Scene({ width, height }) {
             min: { x: 0, y: 0 },
             max: { x: width, y: height }
         })
+        // eslint-disable-next-line
     }, [])
     return <div style={{ backgroundColor: 'black', height: '100vh' }} ref={canvaRef} />
 }

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
-import Button from '@mui/material/Button'
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton'
@@ -15,7 +14,7 @@ import useAuth from '../context/Auth'
 import { StyledMenuItem, NavbarMenu } from './NavbarMenu'
 
 export default function Navbar() {
-  const { user, logout } = useAuth() 
+  const { user, logout } = useAuth()
   const [friends, setFriends] = useState(false)
   const [anchorElNav, setAnchorElNav] = useState(null)
   const matchMd = useMediaQuery((theme) => theme.breakpoints.up('md'))
@@ -28,25 +27,6 @@ export default function Navbar() {
     // redirect to some page
     console.log(e)
   }
-
-  // toolbar - will be removed 
-  // const handleFriends = () => {
-  //   if (friends) {
-  //     setFriends(false)
-  //   } else {
-  //     setFriends(true)
-  //     setAuth(true)
-  //   }
-  // }
-
-  // const handleLogin = () => {
-  //   if (auth) {
-  //     setAuth(false)
-  //     setFriends(false)
-  //   } else {
-  //     setAuth(true)
-  //   }
-  // }
 
   const handleLogout = () => {
     logout()
@@ -73,6 +53,9 @@ export default function Navbar() {
       // if size is larger than medium, show friends
       return (
         <>
+          <NavbarButton size='small' variant='outlined' color='inherit' sx={{ mr: 2 }} onClick={() => navigate('/calendar')}>
+            Calendar!
+          </NavbarButton>
           {matchMd && friendProfiles}
           {matchMd &&
             <Divider sx={{ m: 1, display: { xs: 'none', md: 'flex' } }}
@@ -84,13 +67,21 @@ export default function Navbar() {
     else if (user) {
       // if user is authenticated
       return (
-        <Profile isUser sx={{ ml: 'auto' }} handleClick={handleClick} />
+        <>
+          <NavbarButton size='small' variant='outlined' color='inherit' sx={{ ml: 'auto', mr: 2 }} onClick={() => navigate('/calendar')}>
+            Calendar!
+          </NavbarButton>
+          <Profile isUser handleClick={handleClick} />
+        </>
       )
     } else {
       // if user is not authenticated and screen size is larger than medium
       if (matchMd) {
         return (
           <Box sx={{ ml: 'auto' }}>
+            <NavbarButton size='small' variant='outlined' color='inherit' sx={{ mr: 2 }} onClick={() => navigate('/calendar')}>
+              Calendar!
+            </NavbarButton>
             <NavbarButton size='small' href='about' variant='outlined' color='inherit' sx={{ mr: 2 }}>
               About us
             </NavbarButton>
@@ -112,13 +103,13 @@ export default function Navbar() {
   const NavMenu = () => {
     // NavMenu changes based on auth
 
-    const NavItems = user ? 
+    const NavItems = user ?
       [
         <StyledMenuItem key='home' onClick={() => handleMenuClick('/')}>Home</StyledMenuItem>,
         <StyledMenuItem key='calendar' onClick={() => handleMenuClick('calendar')}>Go to My Calendar</StyledMenuItem>,
         <StyledMenuItem key='logout' onClick={handleLogout}>Logout</StyledMenuItem>
       ]
-      : 
+      :
       [
         <StyledMenuItem key='about' onClick={() => handleMenuClick('about')}>About</StyledMenuItem>,
         <StyledMenuItem key='login' onClick={() => handleMenuClick('login')}>Login </StyledMenuItem>,
@@ -133,13 +124,6 @@ export default function Navbar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      {/* <Typography>
-        Tool Bar
-        <Switch checked={auth} onChange={handleLogin} aria-label='login switch' />
-        {auth ? 'Logout' : 'Login'}
-        <Switch checked={friends} onChange={handleFriends} aria-label='friends switch' />
-        {friends ? 'Hide friends' : 'Show friends'}
-      </Typography> */}
       <AppBar position='static'>
         <Toolbar>
           {
@@ -149,12 +133,6 @@ export default function Navbar() {
                 <Link href='/' variant='h5' color='inherit' underline='none' sx={{ mx: 2 }}>
                   MyCalendar
                 </Link>
-                <Button variant='text' color='inherit' disableRipple
-                  sx={{ fontSize: 16, position: 'absolute', left: '50vh', right: '50vh' }}
-                  onClick={() => navigate('/calendar')}
-                  >
-                  Calendar!
-                </Button>
                 <Profiles />
               </> :
               <>
@@ -163,7 +141,7 @@ export default function Navbar() {
                   <MenuIcon />
                 </IconButton>
                 <NavMenu />
-                <Link onClick={() => navigate('/')} variant='h5' color='inherit'
+                <Link href='/' variant='h5' color='inherit'
                   underline='none' sx={{ ml: 'auto' }}>
                   MyCalendar
                 </Link>
