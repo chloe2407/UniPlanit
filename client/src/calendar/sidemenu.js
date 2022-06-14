@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const demo = [
     {code:'csc110', name:'foundation of cs', index:1, select: false, attendance: [{index: 3, select:true, code: 'tut100'}, {index: 2, select:false, code: 'lec100'}]},
@@ -7,10 +7,15 @@ const demo = [
 
 const SideMenu = () => {
 
-    const [input, setInput] = useState({code:"", university:"utsg", term:""});
+    const [input, setInput] = useState({code:"", university:"uoft", term:""});
     const [data, setData] = useState()
     const [userData, setUserData] = useState(demo)
     const [edit, setEdit] = useState(false)
+
+    useEffect(() => {
+        fetchStuff()
+    }, [input])
+
     function handleChange(option, e){
         if (option === 'code'){
             setInput({
@@ -68,28 +73,25 @@ const SideMenu = () => {
         
     }
 
-    function handleEditButtonClick(){
-        setEdit(!edit);
+    const fetchStuff = () => {
+        fetch("/courses", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                courseCode: input.code,
+                university: input.university,
+                term: input.term
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                setData(data)
+                console.log(data)
+            });
+        // fetchUser;
     }
-    // const fetchStuff = () => {
-    //     fetch("/courses", {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify({
-    //             courseCode: input.code,
-    //             university: input.university,
-    //             term: input.term
-    //         })
-    //     })
-    //         .then(res => res.json())
-    //         .then(data => {
-    //             setData(data)
-    //             console.log(data)
-    //         });
-    //     fetchUser;
-    // }
 
     // const fetchUser = () =>{
     //     fetch("/users/getUserCourse", {
@@ -100,19 +102,6 @@ const SideMenu = () => {
     //             setUserData(userData)
     //         })
     // }
-    
-    function NotEditing(){
-        return(
-            <>
-            <div>
-            <UserCourses userData={userData} handleClick={handleBoxClick}/>
-            </div>
-            <SearchBar handleChange={handleChange}/>
-            <p>{input.code}</p>
-            <p>{input.term}</p>
-            </>
-        )
-    }
 
     function Editing(){
         return(
@@ -133,8 +122,18 @@ const SideMenu = () => {
                 <div>{d}</div>
             }) : ''
         } */}
-        {edit ? <Editing/> : <NotEditing/>}
-        <button onClick={handleEditButtonClick}>
+        {edit ? 
+            <Editing/> 
+            : 
+            <>
+            <div>
+            <UserCourses userData={userData} handleClick={handleBoxClick}/>
+            </div>
+            <SearchBar handleChange={handleChange} input={input}/>
+            <p>{input.code}</p>
+            <p>{input.term}</p>
+            </>}
+        <button onClick={() => setEdit(!edit)}>
             click to edit or end edit
         </button>
         </>
@@ -173,18 +172,20 @@ function UserCourses ({userData, handleClick}){
     )
 }
 
-function SearchBar ({handleChange}){
+function SearchBar ({handleChange, input}){
       return (
         <div>
         <label>
             <input
             placeholder="Search Course Code..."
+            value={input.code}
             onChange={e => handleChange('code', e)}
             />
         </label>
         <label>
             <input
             placeholder="Search Course Term..."
+            value={input.term}
             onChange={e => handleChange('term', e)}
             />
         </label>
