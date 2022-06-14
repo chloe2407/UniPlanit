@@ -144,7 +144,7 @@ const SideMenu = () => {
                 <div>{d}</div>
             }) : ''
         } */}
-            <Typography variant='h4'>Course Search</Typography>
+            <Typography variant='h5'>Course Search</Typography>
             {edit
                 ? <Editing />
                 :
@@ -218,16 +218,17 @@ function SearchBar() {
                         filterOptions={filterOptions}
                         renderInput={(params) => <TextField {...params} label='Search Course' />} />
                     <FormLabel id="term-label" sx={{ textAlign: 'left' }}>Term</FormLabel>
-                    <RadioGroup row>
+                    <RadioGroup row sx={{ mx: 1 }}>
                         {
                             terms.map(t =>
                                 <FormControlLabel key={t}
                                     value={t}
-                                    control={<Radio />}
+                                    control={<Radio size='small'/>}
                                     label={t}
                                 />
                             )
-                        }</RadioGroup>
+                        }
+                    </RadioGroup>
                 </FormGroup>
                 <Button color='primary' variant='outlined'>
                     Add course
