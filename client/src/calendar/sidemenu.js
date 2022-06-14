@@ -14,9 +14,9 @@ import Checkbox from '@mui/material/Checkbox'
 import FormLabel from '@mui/material/FormLabel'
 import FormGroup from '@mui/material/FormGroup'
 import Radio from '@mui/material/Radio'
+import Divider from '@mui/material/Divider'
 import RadioGroup from '@mui/material/RadioGroup'
 import useAuth from '../context/Auth'
-import theme from '../theme/theme'
 
 const demo = [
     { code: 'csc110', name: 'foundation of cs', index: 1, select: false, attendance: [{ index: 3, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
@@ -132,10 +132,10 @@ const SideMenu = () => {
 
     return (
 
-        <Box mt={2}  sx={{
+        <Box mt={2} sx={{
             // backgroundColor: theme.palette.primary.main, 
             // color: theme.palette.secondary.contrastText
-            }}>
+        }}>
             {/* <button onClick={fetchStuff}>
             Click me
         </button>
@@ -164,28 +164,31 @@ function UserCourses({ userData, handleClick }) {
     return (
         <List>
             {userData.map(course =>
-                <ListItem sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}>
-                    <Typography>
-                        <Checkbox
-                            checked={course.select}
-                            onChange={e => {
-                                handleClick(course.index, undefined, e.target.checked)
-                            }}
-                        />
-                        [{course.code}] {course.name}
-                    </Typography>
-                    <List>
-                        {course.attendance.map(attendance =>
-                            <ListItem key={attendance.index}>
-                                <Checkbox
-                                    checked={course.select || attendance.select}
-                                    onChange={e => handleClick(course.index, attendance.index, e.target.checked)}
-                                />
-                                <Typography>{attendance.code} </Typography>
-                            </ListItem>
-                        )}
-                    </List>
-                </ListItem>
+                <>
+                    <ListItem sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}>
+                        <Typography>
+                            <Checkbox
+                                checked={course.select}
+                                onChange={e => {
+                                    handleClick(course.index, undefined, e.target.checked)
+                                }}
+                            />
+                            [{course.code}] {course.name}
+                        </Typography>
+                        <List sx={{ p: 0 }}>
+                            {course.attendance.map(attendance =>
+                                <ListItem sx={{ pb: 0, pt: 0 }} key={attendance.index}>
+                                    <Checkbox
+                                        checked={course.select || attendance.select}
+                                        onChange={e => handleClick(course.index, attendance.index, e.target.checked)}
+                                    />
+                                    <Typography>{attendance.code} </Typography>
+                                </ListItem>
+                            )}
+                        </List>
+                    </ListItem>
+                    <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
+                </>
             )}
         </List>
     )
@@ -205,9 +208,10 @@ function SearchBar() {
             onChange={e => handleChange('code', e)}
             /> */}
             <Container>
-                <FormGroup >
-                    <FormLabel id='search-label' sx={{ textAlign: 'left' }}>Search Course</FormLabel>
+                <FormGroup sx={{ mb: 1 }}>
+                    <FormLabel id='search-label' sx={{ textAlign: 'left', mb: 2 }}>Search Course</FormLabel>
                     <Autocomplete
+                        sx={{ mb: 2 }}
                         disablePortal
                         id="search-course"
                         options={courseData}

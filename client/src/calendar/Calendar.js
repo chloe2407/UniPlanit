@@ -12,7 +12,7 @@ const Calendar = () => {
     const [currentSession, setCurrentSession] = useState(0);
     return (
         <Grid container sx={{ height: '100vh'}}>
-            <Grid item xs={3} sm={3}>
+            <Grid item xs={3} sm={3} sx={{ p: 2 }}>
                 <SideMenu />
             </Grid>
             <Grid item xs={9} sm={9}>
