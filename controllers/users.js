@@ -52,7 +52,7 @@ module.exports.register = async (req, res, next) => {
                 })
             }
         })
-        return res.send({ user })
+        return res.send( user )
         // login user then redirect to previous page or home
         //res.redirect(app.locals.returnUrl || '/')
     }
@@ -62,7 +62,7 @@ module.exports.getLoggedIn = async (req, res, next) => {
     if (req.isAuthenticated()) {
         const user = await User.findById(req.user.id)
         console.log(user)
-        res.status(200).send({ user })
+        res.status(200).send(user)
     } else {
         res.status(200).send({ message: 'No valid session' })
     }
@@ -72,7 +72,7 @@ module.exports.login = async (req, res, next) => {
     // login code
     const user = await User.findOne({ email: req.body.username })
     console.log(user)
-    res.send({ user })
+    res.send( user )
 }
 
 module.exports.logout = async (req, res, next) => {
@@ -327,32 +327,33 @@ module.exports.newTimetable = async (req, res, next) => {
 }
 
 module.exports.getUserCourse = async (req, res, next) => {
-    const user = await User.find(req.user.id)
+    const user = await User.findById(req.user.id)
     res.json(user.courses)
 }
 
 module.exports.uploadImage = async (req, res, next) => {
-    const user = await User.find(req.user.id)
-    const eager_transform = {
-        width: 500, height: 500, crop: 'scale', format: 'jpg'
-    }
-    cloudinary.uploader.upload_stream(req.body.imgStream, {
-        public_id: req.user.id,
-        eager: eager_transform
-    })
-        .then(image => {
-            user.profileImg = image.public_id
-            user.save()
-            res.sendStatus(200)
-        })
-        .catch(err => {
-            console.error(err)
-            res.sendStatus(500)
-        })
+    const user = await User.findById(req.user.id)
+    console.log(req.body)
+    // const eager_transform = {
+    //     width: 500, height: 500, crop: 'scale', format: 'jpg'
+    // }
+    // cloudinary.uploader.upload_stream(req.body.imgStream, {
+    //     public_id: req.user.id,
+    //     eager: eager_transform
+    // })
+    //     .then(image => {
+    //         user.profileImg = image.public_id
+    //         user.save()
+    //         res.sendStatus(200)
+    //     })
+    //     .catch(err => {
+    //         console.error(err)
+    //         res.sendStatus(500)
+    //     })
 }
 
 module.exports.deleteImage = async (req, res, next) => {
-    const user = await User.find(req.user.id)
+    const user = await User.findById(req.user.id)
     cloudinary.uploader.destroy(req.user.profileImg)
     user.profileImg = null
     await user.save()
