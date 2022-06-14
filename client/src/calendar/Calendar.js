@@ -13,8 +13,7 @@ const Calendar = () => {
         <div>
             <Grid container>
                 <Grid item xs={1} sm={3} style={{ backgroundColor: 'yellow' }}>
-                    side menu
-                    {/* <SideMenu/> */}
+                    <SideMenu/>
                 </Grid>
                 <Grid item xs={11} sm={9}>
                     <OptionsTab setCurrentSession={setCurrentSession} />
