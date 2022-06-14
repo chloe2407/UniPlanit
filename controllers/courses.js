@@ -35,7 +35,7 @@ module.exports.getCourse = async (req, res, next) => {
                     }
                 }
             ]
-    })
+    }).limit(5)
     console.log(foundCourses)
     res.json(foundCourses)
 }
