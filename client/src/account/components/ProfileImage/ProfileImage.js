@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Avatar, Typography } from '@mui/material';
 import { orange } from '@mui/material/colors';
 import { height } from '@mui/system';
@@ -6,9 +6,28 @@ import useAuth from '../../../context/Auth';
 import './ProfileImage.css'
 import { Box } from '@mui/system';
 import { Grid } from '@mui/material';
+import { AdvancedImage } from '@cloudinary/react'
+import { Cloudinary  } from '@cloudinary/url-gen';
+import FileUpload from './FileUpload'
 
 const ProfileImage = () => {
     const { user } = useAuth();
+    const [updateImage, setUpdateImage] = useState(false)
+    const [isUpdating, setIsUpdating] = useState(false)
+    const handleFileUpload = (img) => {
+        console.log(img)
+        // fetch('/users/uploadImage', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         image: img
+        //     })
+        // })
+        // .then(res => res.json())
+        // .catch(err => console.log(err))
+    }
     return (
         <div>
             <Grid
@@ -31,7 +50,7 @@ const ProfileImage = () => {
                     </Avatar>
 
                 }
-                <Typography variant='h6' textAlign='center'>Edit Picture</Typography>
+                    <FileUpload handleFileUpload={handleFileUpload}/>
             </Grid>
         </div >
     )
