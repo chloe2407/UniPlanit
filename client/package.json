@@ -4,6 +4,8 @@
   "private": true,
   "proxy": "http://localhost:8000",
   "dependencies": {
+    "@cloudinary/react": "^1.4.1",
+    "@cloudinary/url-gen": "^1.8.0",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
     "@fontsource/adamina": "^4.5.7",
@@ -13,6 +15,7 @@
     "@material-ui/icons": "^4.11.3",
     "@mui/icons-material": "^5.8.2",
     "@mui/material": "^5.8.2",
+    "@mui/styles": "^5.8.3",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
