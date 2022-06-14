@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react'
-import Matter, { Bodies, Common, Render, Svg } from 'matter-js'
+import React, { useEffect, useRef } from 'react'
+import Matter, { Common, Render } from 'matter-js'
 import theme from '../theme/theme'
 
-export default function Scene({ width, height, children }) {
+export default function Scene({ width, height }) {
     const canvaRef = useRef()
     // const screenSize = useState([])
     useEffect(() => {
@@ -20,7 +20,6 @@ export default function Scene({ width, height, children }) {
 
         // const width = canvaRef.current
         // const height = canvaRef.current
-        console.log(canvaRef.current)
         // console.log(height)
         const engine = Engine.create({
             gravity: {
@@ -52,11 +51,9 @@ export default function Scene({ width, height, children }) {
             return Bodies.rectangle(x, y, width, height, {
                 isStatic: true,
                 render: {
-                    lineWidth: 1
-                },
-                render: {
+                    lineWidth: 1,
                     fillStyle: theme.palette.primary.main
-                }
+                },
             })
         }
 
@@ -123,8 +120,6 @@ export default function Scene({ width, height, children }) {
             }))
         }
 
-        addAssetBody(120, 120, 50, 50, './table.png', 0.1, 0.1, -1, 
-                    getRandForce(0.005, 0.01), 0.0015)
 
         addAssetBody(120, 120, 50, 50, './calendar.png', 0.2, 0.2, -1, 
                     getRandForce(0.005, 0.01), 0.0015)
@@ -182,6 +177,7 @@ export default function Scene({ width, height, children }) {
             min: { x: 0, y: 0 },
             max: { x: width, y: height }
         })
+        // eslint-disable-next-line
     }, [])
-    return <div ref={canvaRef} />
+    return <div style={{ backgroundColor: 'black', height: '100vh' }} ref={canvaRef} />
 }

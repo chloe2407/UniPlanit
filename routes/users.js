@@ -1,18 +1,70 @@
 const express = require('express');
 const router = express.Router();
+const cors = require('cors');
 const { catchAsync } = require('../utils/catchAsync')
 const { register, login, logout, createNewUserEvent,
-        patchUserEventById, deleteUserEventById, getUserEventById,
-        getUserEvents, createNewUserCourse, deleteUserCourseByCode
+    patchUserEventById, deleteUserEventById, getUserEventById,
+    getUserEventsByDate, createNewUserCourse, deleteUserCourseByCode,
+    saveCourseHolder, lockCourse, saveTimeTable, newTimetable,
+    getUserCourse, getLoggedIn, uploadImage, deleteImage
 } = require('../controllers/users')
+const passport = require('passport')
 
-// we will have a isLoggedIn middleware, whenever 
 
-router.post('/register', catchAsync(register))
 
-// login logout is done with passport
-router.post('/login', catchAsync(login))
+router.use(cors())
 
+/**
+ * @swagger
+ * 
+ *  /users/register:
+ *  post:
+ *      summary: register a user
+ *      parameters:
+ *          - $ref: '#/parameters/email'
+ *          - $ref: '#/parameters/first'
+ *          - $ref: '#/parameters/last'
+ *          - $ref: '#/parameters/university'
+ *          - $ref: '#/parameters/profileImg'
+ *      responses:
+ *          200:
+ *              description: user has successfully registered
+ */
+// router.post('/register', catchAsync(register))
+
+router.post('/register', catchAsync(register));
+
+
+/**
+ * @swagger
+ * 
+ *  /users/login:
+ *  post:
+ *      summary: login a user
+ *      parameters:
+ *          - $ref: '#/parameters/email'
+ *          - $ref: '#/parameters/password'
+ *      responses:
+ *          200:
+ *              description: user has successfully logged in
+ */
+router.post('/login', passport.authenticate('local', {
+    failureMessage: true,
+}), catchAsync(login))
+
+router.post('/getLoggedIn', catchAsync(getLoggedIn))
+
+
+/**
+ * @swagger
+ * 
+ *  /users/logout:
+ *  post:
+ *      summary: log out a user
+ *      responses:
+ *          200:
+ *              description: user has successfully logged out
+ */
 router.post('/logout', catchAsync(logout))
 
 /**
@@ -21,13 +73,15 @@ router.post('/logout', catchAsync(logout))
  *  get:
  *      summary: Retreive all events owned by the current user
  *      description: Retreive all events owned by the current user in the given date range
+ *      parameters:
+ *          - $ref: '#/parameters/begin'
+ *          - $ref: '#/parameters/end'
+ *          - $ref: '#/parameters/on'
  *      responses:
  *          200:
  *              description: A list of events
  */
-
-// get all events owned by user
-router.get('/events', catchAsync(getUserEvents))
+router.get('/events', catchAsync(getUserEventsByDate))
 
 /**
  * @swagger
@@ -35,16 +89,6 @@ router.get('/events', catchAsync(getUserEvents))
  *  post:
  *      summary: create a new event
  *      description: create a new event
- *      requestBody:
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                          
- *                      properties:
- *                          eventName:
- *                              type: string
- * 
  *      responses:
  *          200:
  *              description: A list of events
@@ -78,9 +122,29 @@ router.route('/events/:eventId')
 // create a new course for user
 router.post('/courses/new', catchAsync(createNewUserCourse))
 
+router.post('/uploadImage', catchAsync(uploadImage))
+
+router.post('/deleteImage', catchAsync(deleteImage))
+
+// when a use selects a course but does not manually choose a time or 
+// wants to use the generator, save the course code as a placeholder first
+// These courses will be replaced with meeting times when the timetable is generated
+
+router.post('/courses/saveCourseHolder', catchAsync(saveCourseHolder))
+
+// generate new timetables
+router.post('/courses/timetable/new', catchAsync(newTimetable))
+
+// save timetable
+router.post('/courses/timetable/save', catchAsync(saveTimeTable))
+
+// locking a course. Need to manually choose a time first
+router.post('/courses/lockCourse', catchAsync(lockCourse))
+
 router.delete('/courses/delete', catchAsync(deleteUserCourseByCode))
+
 // get users courses
-// router.get('/courses', catchAsync(getUserCourse))
+router.get('/courses', catchAsync(getUserCourse))
 
 // friends
 router.post('/friends/new')

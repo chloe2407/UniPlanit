@@ -16,9 +16,6 @@ const eventSchema = new mongoose.Schema({
         type: String,
         default: 'N/A'
     },
-    timeZoneOffset: {
-        type: Number,
-    },
     type: {
         type: String,
         lowercase: true,

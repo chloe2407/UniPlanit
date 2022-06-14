@@ -1,23 +1,20 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
-import Button from '@mui/material/Button'
-import Switch from '@mui/material/Switch'
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
-import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
-import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Profile from './Profile'
 import NavbarButton from './NavbarButton'
+import useAuth from '../context/Auth'
 import { StyledMenuItem, NavbarMenu } from './NavbarMenu'
 
 export default function Navbar() {
-  const [auth, setAuth] = useState(false)
+  const { user, logout } = useAuth()
   const [friends, setFriends] = useState(false)
   const [anchorElNav, setAnchorElNav] = useState(null)
   const matchMd = useMediaQuery((theme) => theme.breakpoints.up('md'))
@@ -25,39 +22,14 @@ export default function Navbar() {
   const [friendData, _] = useState([...Array(3).keys()])
   // if logged in, request for friend info
   const navigate = useNavigate()
-  useEffect(() => {
-    //fetch
-    console.log('fetching')
-  }, [])
 
   const handleClick = (e) => {
     // redirect to some page
     console.log(e)
   }
 
-  const handleFriends = () => {
-    // if friends is true we'll set it to false
-    // if not we will set both auth and friends to true
-    if (friends) {
-      setFriends(false)
-    } else {
-      setFriends(true)
-      setAuth(true)
-    }
-  }
-
-  const handleLogin = () => {
-    if (auth) {
-      setAuth(false)
-      setFriends(false)
-    } else {
-      setAuth(true)
-    }
-  }
-
   const handleLogout = () => {
-    setAuth(false)
-    setAnchorElNav(null)
+    logout()
     console.log('Handle Logout')
   }
 
@@ -71,7 +43,7 @@ export default function Navbar() {
   }
 
   const Profiles = () => {
-    if (auth && friends) {
+    if (user && friends) {
       // if user is authenticated and has friends 
       const friendProfiles = friendData.map((v, i) => (
         i === 0 ? <Profile key={i} sx={{ m: 1, ml: 'auto' }} handleClick={handleClick} />
@@ -81,6 +53,9 @@ export default function Navbar() {
       // if size is larger than medium, show friends
       return (
         <>
+          <NavbarButton size='small' variant='outlined' color='inherit' sx={{ mr: 2 }} onClick={() => navigate('/calendar')}>
+            Calendar!
+          </NavbarButton>
           {matchMd && friendProfiles}
           {matchMd &&
             <Divider sx={{ m: 1, display: { xs: 'none', md: 'flex' } }}
@@ -89,16 +64,27 @@ export default function Navbar() {
         </>
       )
     }
-    else if (auth) {
+    else if (user) {
       // if user is authenticated
       return (
-        <Profile isUser sx={{ ml: 'auto' }} handleClick={handleClick} />
+        <>
+          <NavbarButton size='small' variant='outlined' color='inherit' sx={{ ml: 'auto', mr: 2 }} onClick={() => navigate('/calendar')}>
+            Calendar!
+          </NavbarButton>
+          <Profile isUser handleClick={handleClick} />
+        </>
       )
     } else {
       // if user is not authenticated and screen size is larger than medium
       if (matchMd) {
         return (
           <Box sx={{ ml: 'auto' }}>
+            <NavbarButton size='small' variant='outlined' color='inherit' sx={{ mr: 2 }} onClick={() => navigate('/calendar')}>
+              Calendar!
+            </NavbarButton>
+            <NavbarButton size='small' href='about' variant='outlined' color='inherit' sx={{ mr: 2 }}>
+              About us
+            </NavbarButton>
             <NavbarButton size='small' href='login' variant='outlined' color='inherit' sx={{ mr: 2 }}>
               Login
             </NavbarButton>
@@ -117,14 +103,15 @@ export default function Navbar() {
   const NavMenu = () => {
     // NavMenu changes based on auth
 
-    const NavItems = auth ? 
+    const NavItems = user ?
       [
         <StyledMenuItem key='home' onClick={() => handleMenuClick('/')}>Home</StyledMenuItem>,
         <StyledMenuItem key='calendar' onClick={() => handleMenuClick('calendar')}>Go to My Calendar</StyledMenuItem>,
         <StyledMenuItem key='logout' onClick={handleLogout}>Logout</StyledMenuItem>
       ]
-      : 
+      :
       [
+        <StyledMenuItem key='about' onClick={() => handleMenuClick('about')}>About</StyledMenuItem>,
         <StyledMenuItem key='login' onClick={() => handleMenuClick('login')}>Login </StyledMenuItem>,
         <StyledMenuItem key='signup' onClick={() => handleMenuClick('signup')}>Sign Up </StyledMenuItem>
       ]
@@ -137,13 +124,6 @@ export default function Navbar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Typography>
-        Tool Bar
-        <Switch checked={auth} onChange={handleLogin} aria-label='login switch' />
-        {auth ? 'Logout' : 'Login'}
-        <Switch checked={friends} onChange={handleFriends} aria-label='friends switch' />
-        {friends ? 'Hide friends' : 'Show friends'}
-      </Typography>
       <AppBar position='static'>
         <Toolbar>
           {
@@ -153,10 +133,6 @@ export default function Navbar() {
                 <Link href='/' variant='h5' color='inherit' underline='none' sx={{ mx: 2 }}>
                   MyCalendar
                 </Link>
-                <Button href='/calendar' variant='text' color='inherit' disableRipple
-                  sx={{ fontSize: 16, position: 'absolute', left: '50vh', right: '50vh' }}>
-                  Calendar!
-                </Button>
                 <Profiles />
               </> :
               <>

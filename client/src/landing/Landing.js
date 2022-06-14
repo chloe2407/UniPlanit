@@ -2,10 +2,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import Cursor from './Cursor'
 import Scene from './Scene'
 import './Cursor.css'
-import './Landing.css'
+import Loading from '../globalComponents/Loading'
 
 const Landing = () => {
     const [addClass, setAddClass] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
+    useEffect(() => {
+        setIsLoading(false)
+    })
     document.body.style.overflow = 'hidden'
     // checking for screen size destroys the computer
     // const [dimensions, setDimensions] = useState({
@@ -33,6 +37,7 @@ const Landing = () => {
         setAddClass(false)
     }
     return (
+        isLoading ? <Loading /> :
         <div onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             style={{ backgroundColor: '#22333b', cursor: 'none' }}>

@@ -1,108 +1,127 @@
-import React from 'react';
-import { makeStyles, createTheme, ThemeProvider } from '@material-ui/core';
-import {
-  Typography, Box, TextField, FormControlLabel,
-  Checkbox, Button, Grid, Container, CssBaseline, Avatar
-} from '@material-ui/core';
-import { Link, useNavigate } from 'react-router-dom';
-import GoogleSignIn from './GoogleButton';
-// import LockOutlinedIcon from '@mui/icons-material';
+import React, { useEffect, useState } from 'react';
+import { Formik } from 'formik'
+import * as yup from 'yup'
+import { Link } from 'react-router-dom';
+import Container from '@mui/material/Container'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid'
+import useAuth from '../context/Auth'
+import { useImg } from '../hooks/hooks'
+import Loading from '../globalComponents/Loading'
 
-const useStyles = makeStyles(theme => ({
-  text: {
-    backgroundColor: 'yellow'
-  }
-}))
-
-const theme = createTheme();
+const loginSchema = yup.object().shape({
+  username: yup.string().email().required(),
+  password: yup.string().required()
+})
 
 const Login = () => {
-  const classes = useStyles();
+  // const [error, setError] = useState(false)
+  const { login, err } = useAuth()
+  // const [imgUrl, setImgUrl] = useState()
+  const [imgUrl, loadImg] = useImg()
+  const [isLoading, setIsLoading] = useState(true)
 
-  const navigate = useNavigate();
-  const goToCal = () => navigate('/calendar');
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    loadImg()
+      .then(() => {
+        setIsLoading(false)
+      })
+    // eslint-disable-next-line
+  }, []
+  )
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
   return (
-    <div>
-      <ThemeProvider theme={theme}>
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <Box
-            sx={{
-              marginTop: 8,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar> */}
-            <Typography component="h1" variant="h5" className={classes.text}>
-              Login
-            </Typography>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                // HAVE TO AUTHENTICATE
-                onClick={goToCal}
-              >
-                Login
-              </Button>
-              <Grid container>
-                <Grid item xs className={classes.text}>
-                  <Link to={"/forgotpassword"} >
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link to="/signup">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
-              </Grid>
-            </Box>
-          </Box>
-          {/* Causing error, removed for now <GoogleSignIn/> */}
-        </Container>
-      </ThemeProvider>
-    </div>
-  );
+    isLoading ? <Loading /> :
+      <div style={{
+        backgroundImage: imgUrl && `url(${imgUrl})`, height: '100vh',
+        backgroundSize: 'cover'
+      }}>
+        <Grid container>
+          <Grid item xs={12} md={6}>
+            <Container maxWidth='xs'>
+              <Box mt={10} sx={{ backgroundColor: 'white', borderRadius: 5, p: 5 }}>
+                <Typography sx={{ mb: 1, display: 'flex' }} variant="h3">
+                  Login
+                </Typography>
+                <Formik
+                  initialValues={{ username: '', password: '' }}
+                  validationSchema={loginSchema}
+                  onSubmit={(values, { setSubmitting }) => {
+                    setSubmitting(true)
+                    login(values)
+                    setTimeout(() => {
+                      setSubmitting(false)
+                    }, 1000)
+                  }
+                  }
+                >
+                  {
+                    ({ values, errors, touched, onBlur, handleChange,
+                      handleSubmit, isSubmitting }) => (
+                      <form onSubmit={handleSubmit}>
+                        <TextField
+                          margin='normal'
+                          fullWidth
+                          id="username"
+                          name="username"
+                          label='Email'
+                          onChange={handleChange}
+                          onBlur={onBlur}
+                          value={values.username}
+                          autoComplete="username"
+                          autoFocus
+                          error={errors.username ? true : false}
+                          helperText={errors.username && touched.username &&
+                            'Incorrect Email Format'}
+                        />
+                        <TextField
+                          margin='normal'
+                          fullWidth
+                          name="password"
+                          type="password"
+                          label='Password'
+                          id="password"
+                          autoComplete='current-password'
+                          onChange={handleChange}
+                          onBlur={onBlur}
+                          value={values.password}
+                          error={errors.password ? true : false}
+                        />
+                        {
+                          err ? <Typography sx={{ display: 'flex' }}>Incorrect password or email</Typography> : ''
+                        }
+                        <Button
+                          sx={{ m: 2, ml: 0, display: 'flex' }}
+                          type='submit'
+                          variant='contained'
+                          disabled={isSubmitting}
+                        >
+                          Login
+                        </Button>
+                        <Typography>
+                          <Link style={{ display: 'flex', textDecoration: 'none', color: 'black' }} to={"/forgotpassword"} >
+                            Forgot password?
+                          </Link>
+                        </Typography>
+                        <Typography sx={{ display: 'flex' }}>
+                          Don't have an account? <Link style={{ textDecoration: 'none', color: 'black' }} to="/signup">
+                            {"Sign Up"}
+                          </Link>
+                        </Typography>
+                      </form>
+                    )
+                  }
+                </Formik>
+              </Box>
+            </Container>
+          </Grid>
+        </Grid>
+      </div>
+  )
 }
 
 export default Login;

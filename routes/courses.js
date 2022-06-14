@@ -5,6 +5,24 @@ const { getCourse } = require('../controllers/courses')
 
 // handles course CRUD
 
-router.get('/', catchAsync(getCourse))
+/**
+ * @swagger
+ * 
+ * /courses:
+ *  post:
+ *      summary:
+ *          returns all courses based on param
+ *      produces:
+ *          - application/json
+ *      parameters:
+ *          - $ref: '#/parameters/courseCode'
+ *          - $ref: '#/parameters/courseTitle'
+ *          - $ref: '#/parameters/university'
+ *          - $ref: '#/parameters/term'
+ *      responses:
+ *          200:
+ *              description: return a course object
+ */
+router.post('/', catchAsync(getCourse))
 
 module.exports = router

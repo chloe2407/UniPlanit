@@ -10,8 +10,7 @@ module.exports.getCourse = async (req, res, next) => {
         university,
         term
     } = req.body
-
-    console.log(courseCode, courseTitle, university)
+    console.log(req.body)
     const foundCourses = await Course.find({
         $and:
             [
@@ -26,16 +25,22 @@ module.exports.getCourse = async (req, res, next) => {
                     }
                 },
                 {
+                    university: {
+                        $eq: university.toLowerCase()
+                    }
+                },
+                {
                     term: {
                         $eq: term
                     }
                 }
             ]
     })
+    console.log(foundCourses)
     res.json(foundCourses)
 }
 
 module.exports.generateCourse = async (req, res, next) => {
     // generate code goes here
-    
+
 }
