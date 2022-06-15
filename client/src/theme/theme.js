@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles'
-import "@fontsource/lato/300.css";
+import "@fontsource/lato/400.css";
 
 const theme = createTheme({
     // test
@@ -13,8 +13,7 @@ const theme = createTheme({
         },
     },
     typography: {
-        fontFamily: ["Lato",
-        ],
+        fontFamily: ["Lato"],
     },
     components: {
         MuiButtonBase: {
