@@ -1,6 +1,7 @@
 import { React, useState } from 'react';
 // import { Grid } from '@material-ui/core';
 import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button'
 
 
 import WeekView from './weekview.js';
@@ -10,17 +11,15 @@ import SideMenu from './sidemenu';
 const Calendar = () => {
     const [currentSession, setCurrentSession] = useState(0);
     return (
-        <div>
-            <Grid container>
-                <Grid item xs={1} sm={3} style={{ backgroundColor: 'yellow' }}>
-                    <SideMenu/>
-                </Grid>
-                <Grid item xs={11} sm={9}>
-                    <OptionsTab setCurrentSession={setCurrentSession} />
-                    <WeekView currentSession={currentSession} />
-                </Grid>
+        <Grid container sx={{ height: '100vh'}}>
+            <Grid item xs={3} sm={3} sx={{ p: 2 }}>
+                <SideMenu />
             </Grid>
-        </div>
+            <Grid item xs={9} sm={9}>
+                <OptionsTab setCurrentSession={setCurrentSession} />
+                <WeekView currentSession={currentSession} />
+            </Grid>
+        </Grid>
     )
 }
 

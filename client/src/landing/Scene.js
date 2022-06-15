@@ -52,8 +52,10 @@ export default function Scene({ width, height }) {
                 isStatic: true,
                 render: {
                     lineWidth: 1,
-                    fillStyle: theme.palette.primary.main
                 },
+                render: {
+                    fillStyle: theme.palette.primary.main
+                }
             })
         }
 

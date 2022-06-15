@@ -5,7 +5,6 @@ export function useImg() {
 
     const loadImg = () => {
         return new Promise((res, rej) => {
-            res('haha')
             fetch('photo', { method: 'GET' })
                 .then(res => res.json())
                 .then(data => {
