@@ -16,11 +16,21 @@ import FormGroup from '@mui/material/FormGroup'
 import Radio from '@mui/material/Radio'
 import Divider from '@mui/material/Divider'
 import RadioGroup from '@mui/material/RadioGroup'
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import IconButton from '@mui/material/IconButton';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import Collapse from '@mui/material/Collapse';
 import useAuth from '../context/Auth'
 
 const demo = [
-    { code: 'csc110', name: 'foundation of cs', index: 1, select: false, attendance: [{ index: 3, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
-    { code: 'mat137', name: 'calculus with proof', index: 2, select: true, attendance: [{ index: 1, select: false, code: 'tut222' }, { index: 2, select: true, code: 'lec601' }] }
+    { code: 'csc110', name: 'foundation of cs', index: 1, select: true, open:true, attendance: [{ index: 3, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
+    { code: 'csc111', name: 'foundation of cs2', index: 2, select: false, open:true, attendance: [{ index: 1, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
+    { code: 'csc1111', name: 'foundation of cs', index: 5, select: false, open:true, attendance: [{ index: 3, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
+    { code: 'mat223', name: 'linear algebra', index: 4, select: false, open:true, attendance: [{ index: 1, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
+    { code: 'mat137', name: 'calculus with proof', index: 3, select: true, open:true, attendance: [{ index: 1, select: false, code: 'tut222' }, { index: 2, select: true, code: 'lec601' }] }
 ]
 
 const SideMenu = () => {
@@ -51,14 +61,22 @@ const SideMenu = () => {
         }
     }
 
-    function handleBoxClick(courseIndex, attendIndex, clicked) {
+    function handleClick(type, courseIndex, attendIndex) {
         if (attendIndex === undefined) {
             setUserData(userData.map(course => {
                 if (course.index === courseIndex) {
-                    return {
-                        ...course,
-                        select: clicked
-                    };
+                    if(type === 'collapse'){
+                        return{
+                            ...course, 
+                            open: !course.open
+                        }
+                    }
+                    else if(type === 'lock'){
+                        return{
+                            ...course, 
+                            select: !course.select
+                        }
+                    }
                 }
                 else {
                     return course;
@@ -74,7 +92,7 @@ const SideMenu = () => {
                             if (attendance.index === attendIndex) {
                                 return {
                                     ...attendance,
-                                    select: clicked
+                                    select: !attendance.select
                                 };
                             }
                             else {
@@ -91,6 +109,11 @@ const SideMenu = () => {
 
     }
 
+    function handleDelete(courseIndex, attendIndex){
+        return(
+            <></>
+        )
+    }
     const fetchCourse = () => {
         fetch("/courses", {
             method: 'POST',
@@ -132,10 +155,7 @@ const SideMenu = () => {
 
     return (
 
-        <Box mt={2} sx={{
-            // backgroundColor: theme.palette.primary.main, 
-            // color: theme.palette.secondary.contrastText
-        }}>
+        <Box mt={2}>
             {/* <button onClick={fetchStuff}>
             Click me
         </button>
@@ -144,12 +164,12 @@ const SideMenu = () => {
                 <div>{d}</div>
             }) : ''
         } */}
-            <Typography variant='h5'>Course Search</Typography>
+            <Typography variant='h5'>Your Courses</Typography>
             {edit
                 ? <Editing />
                 :
                 <>
-                    <UserCourses userData={userData} handleClick={handleBoxClick} />
+                    <UserCourses userData={userData} handleClick={handleClick} handleDelete={handleDelete} sx={{maxHeight: 300}}/>
                     <SearchBar handleChange={handleChange} input={input} />
                 </>
             }
@@ -160,32 +180,48 @@ const SideMenu = () => {
     )
 }
 
-function UserCourses({ userData, handleClick }) {
+function UserCourses({ userData, handleClick, handleDelete }) {
     return (
-        <List>
-            {userData.map(course =>
+        <List sx={{maxHeight: 400, overflow: 'auto'}}>
+            {userData.map((course) =>
                 <>
-                    <ListItem sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}>
+                    <ListItem
+                        key={course.code}
+                        sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}
+                    >
                         <Typography>
-                            <Checkbox
-                                checked={course.select}
-                                onChange={e => {
-                                    handleClick(course.index, undefined, e.target.checked)
-                                }}
-                            />
+                            <IconButton onClick={() => handleClick('lock', course.index)}>
+                                {(course.select) ? <LockIcon /> : <LockOpenIcon />}
+                            </IconButton>
+                            <IconButton onClick={() => handleDelete(course.index)}>
+                                <DeleteOutlineIcon />
+                            </IconButton>
                             [{course.code}] {course.name}
+                            <IconButton onClick={() => handleClick('collapse', course.index)}>
+                                {course.open? <ExpandLess /> : <ExpandMore />}
+                            </IconButton>
                         </Typography>
-                        <List sx={{ p: 0 }}>
-                            {course.attendance.map(attendance =>
-                                <ListItem sx={{ pb: 0, pt: 0 }} key={attendance.index}>
-                                    <Checkbox
-                                        checked={course.select || attendance.select}
-                                        onChange={e => handleClick(course.index, attendance.index, e.target.checked)}
-                                    />
-                                    <Typography>{attendance.code} </Typography>
-                                </ListItem>
-                            )}
-                        </List>
+                        <Collapse in={course.open} timeout="auto" unmountOnExit>
+                            <List sx={{ p: 0 }}>
+                                {course.attendance.map(attendance =>
+                                    <ListItem sx={{ pb: 0, pt: 0 }} key={attendance.index}>
+                                        <Typography>
+                                            <IconButton 
+                                                onClick={() => handleClick('lock', course.index, attendance.index)}
+                                                disabled={course.select}
+                                            >
+                                                {(course.select || attendance.select) ? <LockIcon /> : <LockOpenIcon />}
+                                            </IconButton>
+                                            <IconButton onClick={() => handleDelete(course.index, attendance.index)}>
+                                                <DeleteOutlineIcon />
+                                            </IconButton>
+                                            {attendance.code} 
+                                        </Typography>
+                                    </ListItem>
+                                )}
+                            </List>
+                        </Collapse>
+                        
                     </ListItem>
                     <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
                 </>
