@@ -5,6 +5,7 @@ const dayjs = require('dayjs')
 const duration = require('dayjs/plugin/duration')
 const utc = require('dayjs/plugin/utc')
 const timezone = require('dayjs/plugin/timezone')
+const ExpressError = require('../utils/ExpressError')
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.extend(duration)
@@ -49,6 +50,7 @@ module.exports.register = async (req, res, next) => {
                 passport.authenticate("local")(req, res, function () {
                     console.log("Following User has been registerd");
                     console.log(user)
+                    res.send( user )
                 })
             }
         })
@@ -208,13 +210,9 @@ module.exports.createNewUserEvent = async (req, res, next) => {
 module.exports.createNewUserCourse = async (req, res, next) => {
     // creates a new course for the user
     // default end
-    // const userId = req.user.id
-    // for testing, using req.body
-    // course complies to courseOneSectionSchema
-    const { userId, course } = req.body
-    console.log(userId)
-    console.log(course)
-    const user = await User.findById(userId)
+    // course is a courseOneSectionSchema
+    const { course } = req.body
+    const user = await User.findById(req.user.id)
     // need an event for each meeting time for lecture and tutorial
     let isInUserCourses
     user.courses.map(c => {
@@ -228,6 +226,7 @@ module.exports.createNewUserCourse = async (req, res, next) => {
         await createEventByCourseMeetingTime(user, course, user.id)
         user.courses.push(course)
         await user.save()
+        console.log(user)
         res.sendStatus(200)
     }
 }
@@ -235,10 +234,7 @@ module.exports.createNewUserCourse = async (req, res, next) => {
 module.exports.deleteUserCourseByCode = async (req, res, next) => {
     // removes the course that belongs to the user
     // returns the courses after filtering
-    const { userId, courseCode } = req.body
-    // const userId = req.user.id
-    console.log(userId, courseCode)
-    const user = await User.findById(userId)
+    const user = await User.findById(req.user.id)
     // filter out all the courses from user
     user.courses = user.courses.filter(course => course.courseCode !== courseCode)
     // remove associated events from user events and events
@@ -253,7 +249,7 @@ module.exports.deleteUserCourseByCode = async (req, res, next) => {
     await Event.deleteMany({
         $and: [
             {
-                owner: { $eq: userId },
+                owner: { $eq: user.id },
             }, {
                 courseCode: { $eq: courseCode }
             }
@@ -287,12 +283,10 @@ module.exports.lockCourse = async (req, res, next) => {
 module.exports.saveTimeTable = async (req, res, next) => {
     // remove all previous courses and events and save current timetable
     const user = await User.find(req.user.id)
-    user.courses = []
     await user.populate({ path: 'event' })
-    const eventNotCourse = []
-    for (e of user.events) {
-        if (!e.course) eventNotCourse.push(e)
-        else {
+    user.courses = []
+    user.events = user.events.filter(async(e) => {
+        if (e.course) {
             await Event.findByIdAndDelete({
                 $and: [
                     {
@@ -304,8 +298,8 @@ module.exports.saveTimeTable = async (req, res, next) => {
                 ]
             })
         }
-    }
-    user.events = eventNotCourse
+        return !(e.course)
+    })
     // const timetable = the timetable (an array of courses with one section)
     // that the user selected. Sent back from front
     // need to create events
@@ -315,6 +309,7 @@ module.exports.saveTimeTable = async (req, res, next) => {
         createEventByCourseMeetingTime(user, course)
     })
     await user.save()
+    res.sendStatus(200)
 }
 
 module.exports.newTimetable = async (req, res, next) => {
@@ -356,8 +351,43 @@ module.exports.deleteImage = async (req, res, next) => {
     const user = await User.findById(req.user.id)
     cloudinary.uploader.destroy(req.user.profileImg)
     user.profileImg = null
-    await user.save()
+    user.save()
+        .then(() => res.status(200))
+        .catch(err => {
+            next(new ExpressError(err, 500))
+        })
+}
 
+module.exports.addNewFriend = async(req, res, next) => {
+    const user = await User.findById(req.user && req.user.id || '62a3b4644ca271c2d00c66e7')
+    const { friendEmail } = req.body
+    User.findOne({ email: friendEmail }, (err, friend) => {
+        // mutually add friend
+        console.log(friend.id)
+        console.log(user.friends)
+        if (!friend) res.status(200).send({err: 'Could not find user' })
+        // need to check if they are already friends
+        else if (!user.friends.includes(friend.id)){
+            user.friends.push(friend.id)
+            friend.friends.push(user.id)
+            user.save()
+            friend.save()
+            res.status(200).send({success: 'Success'})
+        } else {
+            res.status(200).send({err: 'Already Friends!'})
+        }
+    })
+
+}
+
+module.exports.getUserFriend = async(req, res, next) => {
+    const user = await User.findById(req.user && req.user.id)
+    if (user){
+        await user.populate('friends')
+        res.json(user.friends)
+    } else {
+        res.send({err: 'No user found'})
+    }
 }
 
 const createEventByCourseMeetingTime = async (user, course) => {

@@ -23,7 +23,7 @@ const AccountInfo = () => {
                 alignItems="flex-start"
                 textAlign='left'
             >
-                <Typography variant='h4'>Jane Doe</Typography>
+                <Typography variant='h4'>{`${user.first} ${user.last}`}</Typography>
                 <Typography variant='h6' display='inline' textAlign='left'>Edit Profile</Typography>
                 <hr></hr>
                 <Grid

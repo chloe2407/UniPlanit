@@ -22,9 +22,8 @@ export function AuthProvider({ children }) {
                 setUser(data)
                 // not sure why this is broken, hard coded for now
                 // navigate(location.state.from || '/')
-                // console.log(location)
                 navigate((location.state && location.state.from.pathname) 
-                        || '/calendar')
+                        || '../calendar')
             }
             )
             .catch(err => {
@@ -45,7 +44,7 @@ export function AuthProvider({ children }) {
                 if (!data.err){
                     setUser(data)
                     navigate((location.state && location.state.from.pathname) 
-                    || '/calendar')
+                    || '../calendar')
                 } else {
                     setErr(data.err)
                 }

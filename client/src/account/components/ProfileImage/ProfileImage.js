@@ -7,7 +7,7 @@ import './ProfileImage.css'
 import { Box } from '@mui/system';
 import { Grid } from '@mui/material';
 import { AdvancedImage } from '@cloudinary/react'
-import { Cloudinary  } from '@cloudinary/url-gen';
+import { Cloudinary } from '@cloudinary/url-gen';
 import FileUpload from './FileUpload'
 
 const ProfileImage = () => {
@@ -36,21 +36,16 @@ const ProfileImage = () => {
                 justifyContent='center'
                 alignItems='center'
                 textAlign='center'>
-                {user.profileImg ?
-                    <div className='profilePic' >
-                        {user.profileImg}
-                    </div>
-                    :
-                    <Avatar sx={{
+                <Avatar
+                    src={user.profileImg}
+                    sx={{
                         bgcolor: orange[500],
                         height: '10rem',
                         width: '10rem',
                         fontSize: '2rem'
                     }}>
-                    </Avatar>
-
-                }
-                    <FileUpload handleFileUpload={handleFileUpload}/>
+                </Avatar>
+                <FileUpload handleFileUpload={handleFileUpload} />
             </Grid>
         </div >
     )
