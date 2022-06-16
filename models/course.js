@@ -112,6 +112,10 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
             enum: ['F', 'S', 'Y'],
             required: true
         },
+        isLocked: {
+            type: Boolean,
+            default: false,
+        },
         instructors: [],
         meetingTime: [{
             day: {
@@ -131,7 +135,11 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
             assignedRoom1: String
         }]
     },
-    tutorial: [{
+    tutorial: {
+        isLocked: {
+            type: Boolean,
+            default: false,
+        },
         tutorialCode: {
             type: String,
             required: true
@@ -160,7 +168,7 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
             },
             assignedRoom1: String
         }
-    }]
+    }
 })
 
 module.exports.Course = mongoose.model('Course', courseSchema)

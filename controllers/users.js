@@ -227,13 +227,13 @@ module.exports.createNewUserCourse = async (req, res, next) => {
         }
     })
     if (isInUserCourses) {
-        return res.send('User already has course!')
+        return res.send({err: 'User already has course!'})
     } else {
         await createEventByCourseMeetingTime(user, course, user.id)
         user.courses.push(course)
         await user.save()
         console.log(user)
-        res.sendStatus(200)
+        res.status(200).send({message: 'Successfully added a new course for user'})
     }
 }
 
@@ -399,7 +399,7 @@ module.exports.getUserFriend = async (req, res, next) => {
 module.exports.getUser = async (req, res, next) => {
     const user = await User.findById(req.user)
     if (user) {
-        await user.populate('friends')
+        await (await user.populate('friends')).populate('courses')
         res.json(user)
     } else {
         res.send({ err: 'No user found' })

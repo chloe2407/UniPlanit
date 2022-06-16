@@ -10,7 +10,6 @@ const Landing = () => {
     useEffect(() => {
         setIsLoading(false)
     })
-    document.body.style.overflow = 'hidden'
     // checking for screen size destroys the computer
     // const [dimensions, setDimensions] = useState({
     //     height: window.innerWidth,

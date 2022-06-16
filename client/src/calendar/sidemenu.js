@@ -26,54 +26,65 @@ import Collapse from '@mui/material/Collapse';
 import useAuth from '../context/Auth'
 
 const demo = [
-    { code: 'csc110', name: 'foundation of cs', index: 1, select: true, open:true, attendance: [{ index: 3, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
-    { code: 'csc111', name: 'foundation of cs2', index: 2, select: false, open:true, attendance: [{ index: 1, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
-    { code: 'csc1111', name: 'foundation of cs', index: 5, select: false, open:true, attendance: [{ index: 3, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
-    { code: 'mat223', name: 'linear algebra', index: 4, select: false, open:true, attendance: [{ index: 1, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
-    { code: 'mat137', name: 'calculus with proof', index: 3, select: true, open:true, attendance: [{ index: 1, select: false, code: 'tut222' }, { index: 2, select: true, code: 'lec601' }] }
+    { code: 'csc110', name: 'foundation of cs', index: 1, select: true, open: true, attendance: [{ index: 3, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
+    { code: 'csc111', name: 'foundation of cs2', index: 2, select: false, open: true, attendance: [{ index: 1, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
+    { code: 'csc1111', name: 'foundation of cs', index: 5, select: false, open: true, attendance: [{ index: 3, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
+    { code: 'mat223', name: 'linear algebra', index: 4, select: false, open: true, attendance: [{ index: 1, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
+    { code: 'mat137', name: 'calculus with proof', index: 3, select: true, open: true, attendance: [{ index: 1, select: false, code: 'tut222' }, { index: 2, select: true, code: 'lec601' }] }
 ]
 
-const SideMenu = () => {
+// users/courses/lockCourse - lock/unlock a course
+// users/course // 
+// from search bars/new - adds a new course to the user
+// users/courses/saveCourseHolder - saves a course with no content
+// users/courses/delete - delets a coures
+// users/courses - gets a course a coures
+// users/courses - gets a course
 
-    const [input, setInput] = useState({ code: "", university: "uoft", term: "" });
-    const [data, setData] = useState()
-    const [tempData, setTempData] = useState()
-    const [userData, setUserData] = useState(demo)
+// 1. search for a course add a course 
+// get actual value of what the user typed - get the first 8 characters, which is the course code
+// button has to call a handle click
+// if a user chooses a lecture section and tutorial and saves, send to request to /users/courses/new
+// with a courseWithOneSection as request body
+// if the user only wants to automatically generate the time, send a request to /users/courses/saveCourseHolder
+// with request body including coursecode, university and term
+
+// 
+
+const SideMenu = ({ open, setOpenEdit }) => {
+    const { user, setUser } = useAuth()
+    const [userData, setUserData] = useState(demo) // whole thing is demo
     const [edit, setEdit] = useState(false)
-    const { user } = useAuth()
+    const [isAddingCourse, setIsAddingCourse] = useState(false)
 
-    function handleChange(option, e) {
-        if (option === 'code') {
-            setInput({
-                ...input,
-                code: e.target.value
-            })
-        } else if (option === 'university') {
-            setInput({
-                ...input,
-                university: e.target.value
-            })
-        } else {
-            setInput({
-                ...input,
-                term: e.target.value
+    const handleAddingCourse = () => {
+        setIsAddingCourse(true)
+    }
+
+    useEffect(() => {
+        if (user) {
+            fetch('users', {method: 'GET'})
+            .then(res => res.json())
+            .then(user => {
+                if(!user.err) setUser(user)
             })
         }
-    }
+    }, [isAddingCourse])
+
 
     function handleClick(type, courseIndex, attendIndex) {
         if (attendIndex === undefined) {
             setUserData(userData.map(course => {
                 if (course.index === courseIndex) {
-                    if(type === 'collapse'){
-                        return{
-                            ...course, 
+                    if (type === 'collapse') {
+                        return {
+                            ...course,
                             open: !course.open
                         }
                     }
-                    else if(type === 'lock'){
-                        return{
-                            ...course, 
+                    else if (type === 'lock') {
+                        return {
+                            ...course,
                             select: !course.select
                         }
                     }
@@ -109,40 +120,11 @@ const SideMenu = () => {
 
     }
 
-    function handleDelete(courseIndex, attendIndex){
-        return(
+    function handleDelete(courseIndex, attendIndex) {
+        return (
             <></>
         )
     }
-    const fetchCourse = () => {
-        fetch("/courses", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                courseCode: input.code,
-                university: input.university,
-                term: input.term
-            })
-        })
-            .then(res => res.json())
-            .then(data => {
-                setData(data)
-                console.log(data)
-            });
-        // fetchUser;
-    }
-
-    // const fetchUser = () =>{
-    //     fetch("/users/getUserCourse", {
-    //         method: 'GET'
-    //     })
-    //         .then(res => res.json())
-    //         .then(userData => {
-    //             setUserData(userData)
-    //         })
-    // }
 
     function Editing() {
         return (
@@ -155,7 +137,7 @@ const SideMenu = () => {
 
     return (
 
-        <Box mt={2}>
+        <Box mt={2} sx={{ overflow: 'auto' }}>
             {/* <button onClick={fetchStuff}>
             Click me
         </button>
@@ -164,16 +146,23 @@ const SideMenu = () => {
                 <div>{d}</div>
             }) : ''
         } */}
-            <Typography variant='h5'>Your Courses</Typography>
             {edit
                 ? <Editing />
                 :
                 <>
-                    <UserCourses userData={userData} handleClick={handleClick} handleDelete={handleDelete} sx={{maxHeight: 300}}/>
-                    <SearchBar handleChange={handleChange} input={input} />
+                    <Typography
+                        variant='h5'
+                        sx={{ display: 'flex', justifyContent: 'start', marginLeft: 3 }}>
+                        Your Courses
+                    </Typography>
+                    <UserCourses
+                        userData={userData}
+                        handleClick={handleClick}
+                        handleDelete={handleDelete} />
+                    <SearchBar handleAddingCourse={handleAddingCourse} />
                 </>
             }
-            <button onClick={() => setEdit(!edit)}>
+            <button onClick={() => setOpenEdit(!open)}>
                 click to edit or end edit
             </button>
         </Box>
@@ -182,7 +171,7 @@ const SideMenu = () => {
 
 function UserCourses({ userData, handleClick, handleDelete }) {
     return (
-        <List sx={{maxHeight: 400, overflow: 'auto'}}>
+        <List sx={{ maxHeight: 300, overflow: 'auto' }}>
             {userData.map((course) =>
                 <>
                     <ListItem
@@ -198,15 +187,15 @@ function UserCourses({ userData, handleClick, handleDelete }) {
                             </IconButton>
                             [{course.code}] {course.name}
                             <IconButton onClick={() => handleClick('collapse', course.index)}>
-                                {course.open? <ExpandLess /> : <ExpandMore />}
+                                {course.open ? <ExpandLess /> : <ExpandMore />}
                             </IconButton>
                         </Typography>
-                        <Collapse in={course.open} timeout="auto" unmountOnExit>
+                        <Collapse in={course.open} timeout="auto">
                             <List sx={{ p: 0 }}>
                                 {course.attendance.map(attendance =>
                                     <ListItem sx={{ pb: 0, pt: 0 }} key={attendance.index}>
                                         <Typography>
-                                            <IconButton 
+                                            <IconButton
                                                 onClick={() => handleClick('lock', course.index, attendance.index)}
                                                 disabled={course.select}
                                             >
@@ -215,34 +204,98 @@ function UserCourses({ userData, handleClick, handleDelete }) {
                                             <IconButton onClick={() => handleDelete(course.index, attendance.index)}>
                                                 <DeleteOutlineIcon />
                                             </IconButton>
-                                            {attendance.code} 
+                                            {attendance.code}
                                         </Typography>
                                     </ListItem>
                                 )}
                             </List>
                         </Collapse>
-                        
                     </ListItem>
                     <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
                 </>
-            )}
+            )
+            }
         </List>
     )
 }
 
-function SearchBar() {
+function SearchBar({ handleAdding }) {
+    const [input, setInput] = useState({ courseCode: "", university: "uoft", term: "F" });
+    const [searchData, setSearchData] = useState(undefined)
     const filterOptions = createFilterOptions({
         limit: 10,
         ignoreCase: true
     })
+
     const terms = ['F', 'S', 'Y']
+
+    useEffect(() => {
+        if (input.courseCode && input.term && input.university) fetchCourse()
+    }, [input])
+
+    const fetchCourse = () => {
+        console.log(input.courseCode.slice(0, 8))
+        console.log(input.university.slice(0, 8))
+        console.log(input.term.slice(0, 8))
+        fetch("/courses", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                courseCode: input.courseCode.slice(0, 8),
+                university: input.university,
+                term: input.term
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                setSearchData(data)
+            })
+            .catch(err => console.error(err))
+    }
+
+    const handleInputChange = (option, v) => {
+        if (option === 'code') {
+            setInput({
+                ...input,
+                courseCode: v
+            })
+        } else if (option === 'term') {
+            setInput({
+                ...input,
+                term: v
+            })
+        } else {
+            setInput({
+                ...input,
+                university: v
+            })
+        }
+    }
+
+    const handleAddCourseWithSection = (course) => {
+        // call server make change
+        // update current state for new user courses
+        // handleAdding
+        fetch('/users/courses/new', {
+            method: 'POST',
+            'Content-Type': 'application/json',
+            body: JSON.stringify({
+                course: course
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    handleAdding(true)
+                }
+            })
+    }
+
     return (
         <Box mb={2}>
-            {/* <input
-            placeholder="Search Course Code..."
-            value={input.code}
-            onChange={e => handleChange('code', e)}
-            /> */}
             <Container>
                 <FormGroup sx={{ mb: 1 }}>
                     <FormLabel id='search-label' sx={{ textAlign: 'left', mb: 2 }}>Search Course</FormLabel>
@@ -252,25 +305,37 @@ function SearchBar() {
                         id="search-course"
                         options={courseData}
                         filterOptions={filterOptions}
+                        onChange={(e, v) => handleInputChange('code', v)}
                         renderInput={(params) => <TextField {...params} label='Search Course' />} />
                     <FormLabel id="term-label" sx={{ textAlign: 'left' }}>Term</FormLabel>
-                    <RadioGroup row sx={{ mx: 1 }}>
+                    <RadioGroup
+                        row
+                        sx={{ mx: 1 }}
+                        value={input.term}
+                        onChange={e => handleInputChange('term', e.target.value)}
+                    >
                         {
                             terms.map(t =>
                                 <FormControlLabel key={t}
                                     value={t}
-                                    control={<Radio size='small'/>}
+                                    control={<Radio size='small' />}
                                     label={t}
                                 />
                             )
                         }
                     </RadioGroup>
                 </FormGroup>
-                <Button color='primary' variant='outlined'>
-                    Add course
-                </Button>
+                <List sx={{ maxHeight: 300, overflow: 'auto' }}>
+                    <ListItem>
+                        <Typography>
+                            List of Lectures
+                            <List>
+
+                            </List>
+                        </Typography>
+                    </ListItem>
+                </List>
             </Container>
-            {/* add the displayed course, on change for button click to add: send request to update backend data*/}
         </Box>
 
     )
