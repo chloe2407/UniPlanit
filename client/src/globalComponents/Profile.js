@@ -39,12 +39,12 @@ export default function Profile({ sx, userInfo }) {
                 anchorElNav={anchorEl}
                 handleMenuClose={handleMenuClose}>
                 <StyledMenuItem disabled
-                    style={{ opacity: 1, paddingBottom: 2 }}>
+                    style={{ opacity: 1, paddingBottom: 5 }}>
                     {`${userInfo.first} ${userInfo.last}`}
                 </StyledMenuItem>
                 <Divider flexItem sx={{ mx: 2 }} 
                          style={{ marginTop: 0, backgroundColor: 'white' }} />
-                <StyledMenuItem onClick={() => navigate('/account')}>
+                <StyledMenuItem style={{ marginBottom: 0}} onClick={() => navigate('/account')}>
                     My Account
                 </StyledMenuItem>
                 <StyledMenuItem onClick={logout}>
