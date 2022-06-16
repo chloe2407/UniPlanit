@@ -27,6 +27,7 @@ const checkIfUserExists = async (email) => {
 
 module.exports.register = async (req, res, next) => {
     if (checkIfUserExists(req.body.email)) {
+        console.log('registering')
         const template =
         {
             email: req.body.email,
@@ -43,18 +44,22 @@ module.exports.register = async (req, res, next) => {
         // register user with passport js
         const user = new User(template)
         User.register(user, req.body.password, function (err, user) {
+            console.log('here')
             if (err) {
+                console.log('error')
                 console.log(err);
                 return res.send({ 'err': 'The username is already registered' })
             } else {
-                passport.authenticate("local")(req, res, function () {
-                    console.log("Following User has been registerd");
-                    console.log(user)
-                    res.send( user )
-                })
+                console.log('authenticating')
+                passport.authenticate("local")
+                    .then((req, res) => {
+                        console.log("Following User has been registerd");
+                        console.log(user)
+                        res.send(user)
+                    })
             }
         })
-        return res.send( user )
+        return res.send(user)
         // login user then redirect to previous page or home
         //res.redirect(app.locals.returnUrl || '/')
     }
@@ -63,7 +68,7 @@ module.exports.register = async (req, res, next) => {
 module.exports.getLoggedIn = async (req, res, next) => {
     if (req.isAuthenticated()) {
         const user = await User.findById(req.user.id)
-        console.log(user)
+        await user.populate('friends')
         res.status(200).send(user)
     } else {
         res.status(200).send({ message: 'No valid session' })
@@ -73,8 +78,9 @@ module.exports.getLoggedIn = async (req, res, next) => {
 module.exports.login = async (req, res, next) => {
     // login code
     const user = await User.findOne({ email: req.body.username })
+    await user.populate('friends')
     console.log(user)
-    res.send( user )
+    res.send(user)
 }
 
 module.exports.logout = async (req, res, next) => {
@@ -285,7 +291,7 @@ module.exports.saveTimeTable = async (req, res, next) => {
     const user = await User.find(req.user.id)
     await user.populate({ path: 'event' })
     user.courses = []
-    user.events = user.events.filter(async(e) => {
+    user.events = user.events.filter(async (e) => {
         if (e.course) {
             await Event.findByIdAndDelete({
                 $and: [
@@ -358,35 +364,45 @@ module.exports.deleteImage = async (req, res, next) => {
         })
 }
 
-module.exports.addNewFriend = async(req, res, next) => {
-    const user = await User.findById(req.user && req.user.id || '62a3b4644ca271c2d00c66e7')
+module.exports.addNewFriend = async (req, res, next) => {
+    const user = await User.findById(req.user && req.user.id)
+    console.log(user)
     const { friendEmail } = req.body
     User.findOne({ email: friendEmail }, (err, friend) => {
         // mutually add friend
-        console.log(friend.id)
-        console.log(user.friends)
-        if (!friend) res.status(200).send({err: 'Could not find user' })
+        if (!friend) res.status(200).send({ err: 'Could not find user' })
         // need to check if they are already friends
-        else if (!user.friends.includes(friend.id)){
+        else if (!user.friends.includes(friend.id)) {
             user.friends.push(friend.id)
             friend.friends.push(user.id)
             user.save()
             friend.save()
-            res.status(200).send({success: 'Success'})
+            res.status(200).send({ success: `Added ${friend.first} ${friend.last}` })
         } else {
-            res.status(200).send({err: 'Already Friends!'})
+            res.status(200).send({ err: 'Already Friends!' })
         }
     })
 
 }
 
-module.exports.getUserFriend = async(req, res, next) => {
+module.exports.getUserFriend = async (req, res, next) => {
     const user = await User.findById(req.user && req.user.id)
-    if (user){
+    console.log(req.user)
+    if (user) {
         await user.populate('friends')
         res.json(user.friends)
     } else {
-        res.send({err: 'No user found'})
+        res.send({ err: 'No user found' })
+    }
+}
+
+module.exports.getUser = async (req, res, next) => {
+    const user = await User.findById(req.user)
+    if (user) {
+        await user.populate('friends')
+        res.json(user)
+    } else {
+        res.send({ err: 'No user found' })
     }
 }
 

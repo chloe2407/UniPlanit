@@ -7,7 +7,7 @@ const { register, login, logout, createNewUserEvent,
     getUserEventsByDate, createNewUserCourse, deleteUserCourseByCode,
     saveCourseHolder, lockCourse, saveTimeTable, newTimetable,
     getUserCourse, getLoggedIn, uploadImage, deleteImage, addNewFriend,
-    getUserFriend
+    getUserFriend, getUser
 } = require('../controllers/users')
 const { isLoggedIn } = require('../controllers/middleware')
 const passport = require('passport')
@@ -15,6 +15,8 @@ const passport = require('passport')
 
 
 router.use(cors())
+
+router.get('/', catchAsync(getUser))
 
 /**
  * @swagger
