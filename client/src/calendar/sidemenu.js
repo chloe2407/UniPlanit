@@ -325,17 +325,66 @@ function SearchBar({ handleAdding }) {
                         }
                     </RadioGroup>
                 </FormGroup>
-                <List sx={{ maxHeight: 300, overflow: 'auto' }}>
-                    <ListItem>
-                        <Typography>
-                            List of Lectures
-                            <List>
-
-                            </List>
-                        </Typography>
-                    </ListItem>
-                </List>
             </Container>
+            {(searchData === undefined) ? 
+                <></>
+                :
+                <List sx={{ maxHeight: 300, overflow: 'auto' }}>
+                    <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
+                    {(searchData.length === 0) ?
+                        <Typography align='center'>No Course With Matching Name And Term</Typography>
+                        :
+                        <>
+                            <ListItem sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}>
+                                <Typography>
+                                    List of Lectures
+                                    <List>
+                                        {searchData[0].sections.map((lecture) => 
+                                        <>
+                                        <ListItem
+                                            key={lecture._id}
+                                            sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}
+                                        >
+                                            <Typography>
+                                                [{lecture.sectionCode}]
+                                                <Button sx={{ border: 1, borderRadius: 2}}>
+                                                    Add/Change
+                                                </Button>
+                                            </Typography>
+                                        </ListItem>
+                                        </>
+                                        )}
+                                    </List>
+                                </Typography>
+                            </ListItem>
+                            <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
+                            <ListItem sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}>
+                                <Typography>
+                                    List of Tutorials
+                                    <List>
+                                        {searchData[0].tutorials.map((tutorial) => 
+                                        <>
+                                        <ListItem
+                                            key={tutorial._id}
+                                            sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}
+                                        >
+                                            <Typography>
+                                                [{tutorial.tutorialCode}]
+                                                <Button sx={{ border: 1, borderRadius: 2}}>
+                                                    Add/Change
+                                                </Button>
+                                            </Typography>
+                                        </ListItem>
+                                        </>
+                                        )}
+                                    </List>
+                                </Typography>
+                            </ListItem>
+                        </>
+                    }
+                    <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
+                </List>
+            }
         </Box>
 
     )
