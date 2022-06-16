@@ -12,7 +12,7 @@ const StyledMenu = styled(Menu)(({ theme }) => ({
     // background: theme.palette.primary.main,
     '& .MuiList-root': {
         backgroundColor: theme.palette.primary.main
-    }
+    },
 }))
 
 const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
@@ -23,7 +23,7 @@ const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
         easing: theme.transitions.easing.easeInOut
     }),
     ":hover": {
-        transform: 'scale(1.1)',
+        transform: 'scale(1.05)',
     }
 }))
 

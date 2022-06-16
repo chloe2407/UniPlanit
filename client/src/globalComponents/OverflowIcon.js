@@ -4,7 +4,6 @@ import { StyledMenuItem, NavbarMenu } from './NavbarMenu'
 import Avatar from '@mui/material/Avatar'
 import initialToColor from './InitialToColor';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider'
 
 export default function OverflowIcon({ sx, remainCount, remainFriends }) {
     const [anchorEl, setAnchorEl] = useState(null)
@@ -24,6 +23,7 @@ export default function OverflowIcon({ sx, remainCount, remainFriends }) {
                     sx={{
                         width: 30,
                         height: 30,
+                        backgroundColor: 'black'
                     }}
                     aria-controls='mouse-over-popover'
                     aria-haspopup='true'
@@ -44,7 +44,7 @@ export default function OverflowIcon({ sx, remainCount, remainFriends }) {
                                     width: 30,
                                     height: 30,
                                     mr: 1,
-                                    backgroundColor: initialToColor(`${v.first[0]}${v.last[0]}`)
+                                    backgroundColor: initialToColor(`${v.first[0]}${v.last[0]}`),  
                                 }}
                                 aria-controls='mouse-over-popover'
                                 aria-haspopup='true'

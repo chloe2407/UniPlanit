@@ -7,7 +7,7 @@ const { register, login, logout, createNewUserEvent,
     getUserEventsByDate, createNewUserCourse, deleteUserCourseByCode,
     saveCourseHolder, lockCourse, saveTimeTable, newTimetable,
     getUserCourse, getLoggedIn, uploadImage, deleteImage, addNewFriend,
-    getUserFriend
+    getUserFriend, getUser, lockSection, deleteSection
 } = require('../controllers/users')
 const { isLoggedIn } = require('../controllers/middleware')
 const passport = require('passport')
@@ -15,6 +15,8 @@ const passport = require('passport')
 
 
 router.use(cors())
+
+router.get('/', catchAsync(getUser))
 
 /**
  * @swagger
@@ -142,9 +144,14 @@ router.post('/courses/timetable/new', isLoggedIn, catchAsync(newTimetable))
 router.post('/courses/timetable/save', isLoggedIn, catchAsync(saveTimeTable))
 
 // locking a course. Need to manually choose a time first
-router.post('/courses/lockCourse', isLoggedIn, catchAsync(lockCourse))
+router.post('/courses/lock', isLoggedIn, catchAsync(lockCourse))
 
 router.delete('/courses/delete', isLoggedIn, catchAsync(deleteUserCourseByCode))
+
+router.post('/courses/lockSection', isLoggedIn, catchAsync(lockSection))
+
+router.post('/courses/deleteSection', isLoggedIn, catchAsync(deleteSection))
+
 
 // get users courses
 router.get('/courses', isLoggedIn, catchAsync(getUserCourse))
