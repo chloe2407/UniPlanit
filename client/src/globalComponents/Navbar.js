@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -11,17 +11,66 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import Profile from './Profile'
 import NavbarButton from './NavbarButton'
 import useAuth from '../context/Auth'
+import FriendProfile from './FriendProfile'
+import AddFriend from './AddFriend'
+import OverflowIcon from './OverflowIcon'
 import { StyledMenuItem, NavbarMenu } from './NavbarMenu'
+import { Typography } from '@mui/material'
+import Snackbar from '@mui/material/Snackbar'
+import Alert from '@mui/material/Alert';
+
 
 export default function Navbar() {
   const { user, logout } = useAuth()
-  const [friends, setFriends] = useState(false)
+  const [userFriend, setUserFriend] = useState([])
   const [anchorElNav, setAnchorElNav] = useState(null)
   const matchMd = useMediaQuery((theme) => theme.breakpoints.up('md'))
+  const [isChangingFriend, setIsChangingFriend] = useState(false)
+  const [err, setErr] = useState()
+  const [success, setSuccess] = useState()
+  const openSuccess = Boolean(success)
+  const openWarning = Boolean(err)
   // fake friend data
-  const [friendData, _] = useState([...Array(3).keys()])
   // if logged in, request for friend info
   const navigate = useNavigate()
+
+  useEffect(() => {
+    console.log('fetching')
+    fetch('users/friends')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.err) {
+          setUserFriend(data)
+        }
+      })
+  }, [user, isChangingFriend])
+
+  const handleAddFriend = (email) => {
+    setIsChangingFriend(true)
+    fetch('users/friends/new', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        friendEmail: email
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.err) {
+          setErr(data.err)
+          setIsChangingFriend(false)
+          console.log(data.err)
+        } else {
+          setSuccess(data.success)
+          setIsChangingFriend(false)
+        }
+      })
+      .catch(err => {
+        console.error(err)
+      })
+  }
 
   const handleClick = (e) => {
     // redirect to some page
@@ -29,6 +78,7 @@ export default function Navbar() {
   }
 
   const handleLogout = () => {
+    setUserFriend([])
     logout()
     console.log('Handle Logout')
   }
@@ -42,60 +92,83 @@ export default function Navbar() {
     setAnchorElNav(null)
   }
 
-  const Profiles = () => {
-    if (user && friends) {
-      // if user is authenticated and has friends 
-      const friendProfiles = friendData.map((v, i) => (
-        i === 0 ? <Profile key={i} sx={{ m: 1, ml: 'auto' }} handleClick={handleClick} />
-          : <Profile key={i} sx={{ m: 1 }} profileInfo handleClick={handleClick} />
-
-      ))
-      // if size is larger than medium, show friends
-      return (
-        <>
-          <NavbarButton size='small' variant='outlined' color='inherit' sx={{ mr: 2 }} onClick={() => navigate('/calendar')}>
-            Calendar!
-          </NavbarButton>
-          {matchMd && friendProfiles}
-          {matchMd &&
-            <Divider sx={{ m: 1, display: { xs: 'none', md: 'flex' } }}
-              orientation='vertical' flexItem />}
-          <Profile isUser sx={{ ml: matchMd ? 0 : 'auto' }} profileInfo handleClick={handleClick} />
-        </>
-      )
+  const handleWarningClose = (e, reason) => {
+    if (reason === 'clickaway') {
+      return
     }
-    else if (user) {
-      // if user is authenticated
-      return (
-        <>
-          <NavbarButton size='small' variant='outlined' color='inherit' sx={{ ml: 'auto', mr: 2 }} onClick={() => navigate('/calendar')}>
-            Calendar!
-          </NavbarButton>
-          <Profile isUser handleClick={handleClick} />
-        </>
-      )
-    } else {
-      // if user is not authenticated and screen size is larger than medium
-      if (matchMd) {
+    setErr(null)
+  }
+
+  const NavProfiles = () => {
+    if (matchMd) {
+      if (user) {
         return (
-          <Box sx={{ ml: 'auto' }}>
-            <NavbarButton size='small' variant='outlined' color='inherit' sx={{ mr: 2 }} onClick={() => navigate('/calendar')}>
-              Calendar!
-            </NavbarButton>
-            <NavbarButton size='small' href='about' variant='outlined' color='inherit' sx={{ mr: 2 }}>
-              About us
-            </NavbarButton>
-            <NavbarButton size='small' href='login' variant='outlined' color='inherit' sx={{ mr: 2 }}>
-              Login
-            </NavbarButton>
-            <NavbarButton size='small' href='signup' variant='outlined' color='inherit' sx={{ mr: 1 }}>
-              Sign Up
-            </NavbarButton>
+          <Box sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            ml: 'auto'
+          }}>
+            <AddFriend sx={{ p: 1 }}
+              handleAddFriend={(val) => handleAddFriend(val)}
+            />
+            <Divider
+              style={{ backgroundColor: 'white' }}
+              sx={{ m: 1 }}
+              orientation='vertical' flexItem />
+            {
+              userFriend.slice(0, 3).map((v, i) => (
+                <FriendProfile key={v._id}
+                  friendInfo={v}
+                  sx={{ p: 1 }}
+                />
+              ))
+            }
+            {
+              userFriend.length - 3 > 0 &&
+              <OverflowIcon remainCount={userFriend.length - 3}
+                remainFriends={userFriend.slice(3)}
+                sx={{ p: 1 }} />
+            }
+            {
+              userFriend.length !== 0 &&
+              <Divider
+                style={{ backgroundColor: 'white' }}
+                sx={{ m: 1 }}
+                orientation='vertical' flexItem />
+            }
+            <Profile
+              userInfo={user}
+              sx={{ p: 1, ml: userFriend ? 0 : 'auto' }}
+              handleClick={handleClick} />
           </Box>
         )
       } else {
-        // placeholder
-        return <Box sx={{ ml: 'auto', mr: 6 }} />
+        return (
+          <>
+            <NavbarButton onClick={() => navigate('/login')} sx={{ mr: 2 }}>
+              <Typography>
+                Login
+              </Typography>
+            </NavbarButton>
+            <NavbarButton onClick={() => navigate('/signup')} sx={{ mr: 1 }}>
+              <Typography>
+                Sign Up
+              </Typography>
+            </NavbarButton>
+          </>
+        )
+      }
+    } else {
+      if (user) {
+        return (
+          <>
+            <Profile
+              userInfo={user}
+              sx={{ ml: 'auto' }}
+              handleClick={handleClick} />
+
+          </>
+        )
       }
     }
   }
@@ -105,18 +178,45 @@ export default function Navbar() {
 
     const NavItems = user ?
       [
-        <StyledMenuItem key='home' onClick={() => handleMenuClick('/')}>Home</StyledMenuItem>,
-        <StyledMenuItem key='calendar' onClick={() => handleMenuClick('calendar')}>Go to My Calendar</StyledMenuItem>,
-        <StyledMenuItem key='logout' onClick={handleLogout}>Logout</StyledMenuItem>
+        <StyledMenuItem key='home'
+          onClick={() => handleMenuClick('/')}>
+          Home
+        </StyledMenuItem>,
+        <StyledMenuItem key='calendar'
+          onClick={() => handleMenuClick('calendar')}>
+          Go to Calendar
+        </StyledMenuItem>,
+        <StyledMenuItem
+          key='about'
+          onClick={() => handleMenuClick('about')}>
+          About us
+        </StyledMenuItem>,
+        <StyledMenuItem key='logout'
+          onClick={handleLogout}>
+          Logout
+        </StyledMenuItem>
       ]
       :
       [
-        <StyledMenuItem key='about' onClick={() => handleMenuClick('about')}>About</StyledMenuItem>,
-        <StyledMenuItem key='login' onClick={() => handleMenuClick('login')}>Login </StyledMenuItem>,
-        <StyledMenuItem key='signup' onClick={() => handleMenuClick('signup')}>Sign Up </StyledMenuItem>
+        <StyledMenuItem
+          key='about'
+          onClick={() => handleMenuClick('about')}>
+          About us
+        </StyledMenuItem>,
+        <StyledMenuItem
+          key='login'
+          onClick={() => handleMenuClick('login')}>
+          Login </StyledMenuItem>,
+        <StyledMenuItem
+          key='signup'
+          onClick={() => handleMenuClick('signup')}>
+          Sign Up
+        </StyledMenuItem>
       ]
     return (
-      <NavbarMenu id='menu-appbar' anchorElNav={anchorElNav} handleMenuClose={handleMenuClose}>
+      <NavbarMenu id='menu-appbar'
+        anchorElNav={anchorElNav}
+        handleMenuClose={handleMenuClose}>
         {NavItems}
       </NavbarMenu>
     )
@@ -128,28 +228,69 @@ export default function Navbar() {
         <Toolbar>
           {
             // change order of items in appbar based on screen size
-            matchMd ?
+            matchMd
+              ?
               <>
-                <Link href='/' variant='h5' color='inherit' underline='none' sx={{ mx: 2 }}>
+                <Link href='/'
+                  variant='h5'
+                  color='inherit'
+                  underline='none'
+                  sx={{ mx: 2 }}>
                   MyCalendar
                 </Link>
-                <Profiles />
-              </> :
+                <NavbarButton onClick={() => navigate('/calendar')}>
+                  <Typography>
+                    Calendar
+                  </Typography>
+                </NavbarButton>
+                <NavbarButton
+                  key='about'
+                  onClick={() => handleMenuClick('about')}>
+                  <Typography>
+                    About Us
+                  </Typography>
+                </NavbarButton>
+                <NavProfiles />
+              </>
+              :
               <>
-                <IconButton size='large' aria-label='nav-menu' aria-controls='menu-appbar' aria-haspopup='true'
-                  onClick={e => setAnchorElNav(e.currentTarget)} color='inherit'>
+                <IconButton size='large'
+                  aria-label='nav-menu'
+                  aria-controls='menu-appbar'
+                  aria-haspopup='true'
+                  onClick={e => setAnchorElNav(e.currentTarget)}
+                  color='inherit'>
                   <MenuIcon />
                 </IconButton>
                 <NavMenu />
-                <Link href='/' variant='h5' color='inherit'
-                  underline='none' sx={{ ml: 'auto' }}>
+                <Link href='/'
+                  variant='h5'
+                  color='inherit'
+                  underline='none'
+                  sx={{ ml: 'auto' }}>
                   MyCalendar
                 </Link>
-                <Profiles />
+                <NavProfiles />
               </>
           }
         </Toolbar>
       </AppBar>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={openWarning}
+        onClose={handleWarningClose}
+        autoHideDuration={5000}
+      >
+        <Alert severity='error' sx={{ width: '100%' }}>{err}</Alert>
+      </Snackbar>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={openSuccess}
+        onClose={handleWarningClose}
+        autoHideDuration={5000}
+      >
+        <Alert severity='success' sx={{ width: '100%' }}>{success}</Alert>
+      </Snackbar>
     </Box>
   )
 }

@@ -1,5 +1,5 @@
 import React, { createContext, useMemo, useState, useContext } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, Navigate } from 'react-router-dom'
 
 const AuthContext = createContext()
 
@@ -22,9 +22,8 @@ export function AuthProvider({ children }) {
                 setUser(data)
                 // not sure why this is broken, hard coded for now
                 // navigate(location.state.from || '/')
-                // console.log(location)
                 navigate((location.state && location.state.from.pathname) 
-                        || '/calendar')
+                        || '../calendar')
             }
             )
             .catch(err => {
@@ -45,7 +44,7 @@ export function AuthProvider({ children }) {
                 if (!data.err){
                     setUser(data)
                     navigate((location.state && location.state.from.pathname) 
-                    || '/calendar')
+                    || '../calendar')
                 } else {
                     setErr(data.err)
                 }
@@ -62,6 +61,7 @@ export function AuthProvider({ children }) {
             .then(() => {
                 setUser(null)
                 navigate('/')
+                window.location.reload()
             })
     }
 
@@ -82,7 +82,7 @@ export function AuthProvider({ children }) {
     }
 
     const memo = useMemo(() => ({
-        user, err, login, signup, logout, checkLoggedIn
+        user, err, login, signup, logout, checkLoggedIn, setUser
         // eslint-disable-next-line
     }), [user, err])
 

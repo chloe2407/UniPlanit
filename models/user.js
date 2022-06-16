@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
 // passport set up here
 userSchema.plugin(passportLocalMongoose);
 
-userSchema.virtual('fullname').get(() => {
+userSchema.virtual('fullName').get(function() {
     return `${this.first} ${this.last}`
 })
 
