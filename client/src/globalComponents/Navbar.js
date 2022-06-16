@@ -43,7 +43,7 @@ export default function Navbar() {
           setUserFriend(data)
         }
       })
-  }, [user, isChangingFriend])
+  }, [isChangingFriend])
 
   const handleAddFriend = (email) => {
     setIsChangingFriend(true)
@@ -144,12 +144,12 @@ export default function Navbar() {
       } else {
         return (
           <>
-            <NavbarButton onClick={() => navigate('/login')} sx={{ mr: 2 }}>
+            <NavbarButton onClick={() => navigate('/login')}>
               <Typography>
                 Login
               </Typography>
             </NavbarButton>
-            <NavbarButton onClick={() => navigate('/signup')} sx={{ mr: 1 }}>
+            <NavbarButton onClick={() => navigate('/signup')}>
               <Typography>
                 Sign Up
               </Typography>

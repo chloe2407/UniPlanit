@@ -234,7 +234,6 @@ module.exports.createNewUserCourse = async (req, res, next) => {
         await createEventByCourseMeetingTime(user, course, user.id)
         user.courses.push(course)
         await user.save()
-        console.log(user)
         res.status(200).send({ message: 'Successfully added a new course for user' })
     }
 }
@@ -243,6 +242,7 @@ module.exports.deleteUserCourseByCode = async (req, res, next) => {
     // removes the course that belongs to the user
     // returns the courses after filtering
     const user = await User.findById(req.user.id)
+    const { courseCode } = req.body
     // filter out all the courses from user
     user.courses = user.courses.filter(course => course.courseCode !== courseCode)
     // remove associated events from user events and events
@@ -252,7 +252,6 @@ module.exports.deleteUserCourseByCode = async (req, res, next) => {
             event.course.courseCode !== courseCode
         }
     })
-    console.log(user)
     await user.save()
     await Event.deleteMany({
         $and: [
@@ -278,14 +277,50 @@ module.exports.saveCourseHolder = async (req, res, next) => {
     res.sendStatus(200)
 }
 
+module.exports.lockSection = async(req, res, next) => {
+    const { type, courseCode } = req.body
+    const user = await User.findById(req.user.id)
+    await user.populate('courses')
+    const course = user.courses.filter(c => c.courseCode === courseCode)[0]
+    if (course.isLocked) {
+        return res.send({ error: 'Cannot lock/unlock section when course is locked!' })
+    }
+    else if (type === 'section') {
+        course.section.isLocked = !course.section.isLocked
+    } else {
+        course.tutorial.isLocked = !course.tutorial.isLocked
+    }
+    await user.save()
+    return res.status(200).send({ success: 'Successfully lock/unlocked section/tutorial' })
+}
+
+module.exports.deleteSection = async(req, res, next) => {
+    const { type, courseCode } = req.body
+    const user = await User.findById(req.user.id)
+    await user.populate('courses')
+    const course = user.courses.filter(c => c.courseCode === courseCode)[0]
+    if (type === 'section') {
+        course.section = undefined
+    } else {
+        course.tutorial = undefined
+    }
+    await user.save()
+    return res.status(200).send({ success: 'Successfully deleted section/tutorial' })
+}
+
 module.exports.lockCourse = async (req, res, next) => {
     const { courseCode } = req.body
-    const user = await User.find(req.user.id)
+    const user = await User.findById(req.user.id)
+    await user.populate('courses')
     user.courses.forEach(c => {
-        if (c.courseCode === courseCode) c.isLocked = !c.isLocked
+        if (c.courseCode === courseCode) {
+            c.isLocked = !c.isLocked
+            if(c.tutorial) c.tutorial.isLocked = true
+            if(c.section) c.section.isLocked = true
+        }
     })
     await user.save()
-    res.sendStatus(200)
+    res.status(200).send({ success: 'Successfully lock/unlocked course' })
 }
 
 module.exports.saveTimeTable = async (req, res, next) => {
@@ -368,28 +403,28 @@ module.exports.deleteImage = async (req, res, next) => {
 
 module.exports.addNewFriend = async (req, res, next) => {
     const user = await User.findById(req.user && req.user.id)
-    console.log(user)
     const { friendEmail } = req.body
-    User.findOne({ email: friendEmail }, (err, friend) => {
-        // mutually add friend
-        if (!friend) res.status(200).send({ err: 'Could not find user' })
-        // need to check if they are already friends
-        else if (!user.friends.includes(friend.id)) {
-            user.friends.push(friend.id)
-            friend.friends.push(user.id)
-            user.save()
-            friend.save()
-            res.status(200).send({ success: `Added ${friend.first} ${friend.last}` })
-        } else {
-            res.status(200).send({ err: 'Already Friends!' })
-        }
-    })
-
+    if (friendEmail === user.email) return res.status(200).send({ err: 'Cannot add yourself' })
+    else {
+        User.findOne({ email: friendEmail }, (err, friend) => {
+            // mutually add friend
+            if (!friend) res.status(200).send({ err: 'Could not find user' })
+            // need to check if they are already friends
+            else if (!user.friends.includes(friend.id)) {
+                user.friends.push(friend.id)
+                friend.friends.push(user.id)
+                user.save()
+                friend.save()
+                res.status(200).send({ success: `Added ${friend.first} ${friend.last}` })
+            } else {
+                res.status(200).send({ err: 'Already Friends!' })
+            }
+        })
+    }
 }
 
 module.exports.getUserFriend = async (req, res, next) => {
     const user = await User.findById(req.user && req.user.id)
-    console.log(req.user)
     if (user) {
         await user.populate('friends')
         res.json(user.friends)
@@ -401,7 +436,8 @@ module.exports.getUserFriend = async (req, res, next) => {
 module.exports.getUser = async (req, res, next) => {
     const user = await User.findById(req.user)
     if (user) {
-        await (await user.populate('friends')).populate('courses')
+        await user.populate('friends')
+        await user.populate('courses')
         res.json(user)
     } else {
         res.send({ err: 'No user found' })

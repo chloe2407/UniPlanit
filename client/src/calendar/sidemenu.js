@@ -25,13 +25,13 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import useAuth from '../context/Auth'
 
-const demo = [
-    { code: 'csc110', name: 'foundation of cs', index: 1, select: true, open: true, attendance: [{ index: 3, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
-    { code: 'csc111', name: 'foundation of cs2', index: 2, select: false, open: true, attendance: [{ index: 1, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
-    { code: 'csc1111', name: 'foundation of cs', index: 5, select: false, open: true, attendance: [{ index: 3, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
-    { code: 'mat223', name: 'linear algebra', index: 4, select: false, open: true, attendance: [{ index: 1, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
-    { code: 'mat137', name: 'calculus with proof', index: 3, select: true, open: true, attendance: [{ index: 1, select: false, code: 'tut222' }, { index: 2, select: true, code: 'lec601' }] }
-]
+// const demo = [
+//     { code: 'csc110', name: 'foundation of cs', index: 1, select: true, open: true, attendance: [{ index: 3, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
+//     { code: 'csc111', name: 'foundation of cs2', index: 2, select: false, open: true, attendance: [{ index: 1, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
+//     { code: 'csc1111', name: 'foundation of cs', index: 5, select: false, open: true, attendance: [{ index: 3, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
+//     { code: 'mat223', name: 'linear algebra', index: 4, select: false, open: true, attendance: [{ index: 1, select: true, code: 'tut100' }, { index: 2, select: false, code: 'lec100' }] },
+//     { code: 'mat137', name: 'calculus with proof', index: 3, select: true, open: true, attendance: [{ index: 1, select: false, code: 'tut222' }, { index: 2, select: true, code: 'lec601' }] }
+// ]
 
 // users/courses/lockCourse - lock/unlock a course
 // users/course // 
@@ -53,78 +53,27 @@ const demo = [
 
 const SideMenu = ({ open, setOpenEdit }) => {
     const { user, setUser } = useAuth()
-    const [userData, setUserData] = useState(demo) // whole thing is demo
+    // const [userData, setUserData] = useState(demo) // whole thing is demo
     const [edit, setEdit] = useState(false)
-    const [isAddingCourse, setIsAddingCourse] = useState(false)
+    const [isChangingCourse, setIsChangingCourse] = useState(false)
 
-    const handleAddingCourse = () => {
-        setIsAddingCourse(true)
+    const handleChangingCourse = () => {
+        setIsChangingCourse(true)
     }
 
     useEffect(() => {
         if (user) {
-            fetch('users', {method: 'GET'})
-            .then(res => res.json())
-            .then(user => {
-                if(!user.err) setUser(user)
-            })
-        }
-    }, [isAddingCourse])
-
-
-    function handleClick(type, courseIndex, attendIndex) {
-        if (attendIndex === undefined) {
-            setUserData(userData.map(course => {
-                if (course.index === courseIndex) {
-                    if (type === 'collapse') {
-                        return {
-                            ...course,
-                            open: !course.open
-                        }
+            fetch('users', { method: 'GET' })
+                .then(res => res.json())
+                .then(user => {
+                    if (!user.err) {
+                        setUser(user)
+                        setIsChangingCourse(false)
+                        console.log(user)
                     }
-                    else if (type === 'lock') {
-                        return {
-                            ...course,
-                            select: !course.select
-                        }
-                    }
-                }
-                else {
-                    return course;
-                }
-            }))
+                })
         }
-        else {
-            setUserData(userData.map(course => {
-                if (course.index === courseIndex) {
-                    return {
-                        ...course,
-                        attendance: course.attendance.map(attendance => {
-                            if (attendance.index === attendIndex) {
-                                return {
-                                    ...attendance,
-                                    select: !attendance.select
-                                };
-                            }
-                            else {
-                                return attendance;
-                            }
-                        })
-                    };
-                }
-                else {
-                    return course;
-                }
-            }))
-        }
-
-    }
-
-    function handleDelete(courseIndex, attendIndex) {
-        return (
-            <></>
-        )
-    }
+    }, [isChangingCourse])
 
     function Editing() {
         return (
@@ -138,14 +87,6 @@ const SideMenu = ({ open, setOpenEdit }) => {
     return (
 
         <Box mt={2} sx={{ overflow: 'auto' }}>
-            {/* <button onClick={fetchStuff}>
-            Click me
-        </button>
-        {
-            data ? data.map(d => {
-                <div>{d}</div>
-            }) : ''
-        } */}
             {edit
                 ? <Editing />
                 :
@@ -155,11 +96,11 @@ const SideMenu = ({ open, setOpenEdit }) => {
                         sx={{ display: 'flex', justifyContent: 'start', marginLeft: 3 }}>
                         Your Courses
                     </Typography>
-                    <UserCourses
-                        userData={userData}
-                        handleClick={handleClick}
-                        handleDelete={handleDelete} />
-                    <SearchBar handleAddingCourse={handleAddingCourse} />
+                    {
+                        user && <UserCourses user={user}
+                            handleChangingCourse={handleChangingCourse} />
+                    }
+                    <SearchBar handleChangingCourse={handleChangingCourse} />
                 </>
             }
             <button onClick={() => setOpenEdit(!open)}>
@@ -169,57 +110,106 @@ const SideMenu = ({ open, setOpenEdit }) => {
     )
 }
 
-function UserCourses({ userData, handleClick, handleDelete }) {
+function UserCourses({ user, handleChangingCourse }) {
+    const [courseCodeShow, setCourseCodeShow] = useState([])
+
+    const handleCourseOperations = (option, courseCode, type) => {
+        fetch(`users/courses/${option}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ type: type, courseCode: courseCode })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    handleChangingCourse(true)
+                }
+            })
+    }
+
+    const handleCourseCollapse = (courseCode) => {
+        courseCodeShow.includes(courseCode)
+            ? setCourseCodeShow([...courseCodeShow.filter(c => c !== courseCode)])
+            : setCourseCodeShow([...courseCodeShow, courseCode])
+    }
+
     return (
         <List sx={{ maxHeight: 300, overflow: 'auto' }}>
-            {userData.map((course) =>
-                <>
-                    <ListItem
-                        key={course.code}
-                        sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}
+            {user.courses.map((course, i) =>
+                <Box key={course.courseCode}>
+                    <ListItem key={course.courseCode} sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}
                     >
                         <Typography>
-                            <IconButton onClick={() => handleClick('lock', course.index)}>
-                                {(course.select) ? <LockIcon /> : <LockOpenIcon />}
+                            <IconButton onClick={() => handleCourseOperations('lock', course.courseCode)}>
+                                {(course.isLocked) ? <LockIcon /> : <LockOpenIcon />}
                             </IconButton>
-                            <IconButton onClick={() => handleDelete(course.index)}>
+                            <IconButton onClick={() => handleCourseOperations('delete', course.courseCode)}>
                                 <DeleteOutlineIcon />
                             </IconButton>
-                            [{course.code}] {course.name}
-                            <IconButton onClick={() => handleClick('collapse', course.index)}>
-                                {course.open ? <ExpandLess /> : <ExpandMore />}
+                            [{course.courseCode}] {course.courseTitle}
+                            <IconButton onClick={() => handleCourseCollapse(course.courseCode)}>
+                                {courseCodeShow.includes(course.courseCode) ? <ExpandLess /> : <ExpandMore />}
                             </IconButton>
                         </Typography>
-                        <Collapse in={course.open} timeout="auto">
-                            <List sx={{ p: 0 }}>
-                                {course.attendance.map(attendance =>
-                                    <ListItem sx={{ pb: 0, pt: 0 }} key={attendance.index}>
+                        {
+                            course.section &&
+                            <Collapse in={courseCodeShow.includes(course.courseCode)} timeout="auto">
+                                <List sx={{ p: 0 }}>
+                                    <ListItem sx={{ pb: 0, pt: 0 }}>
                                         <Typography>
                                             <IconButton
-                                                onClick={() => handleClick('lock', course.index, attendance.index)}
-                                                disabled={course.select}
+                                                onClick={() => handleCourseOperations('lockSection', course.courseCode, 'section')}
+                                                disabled={course.isLocked}
                                             >
-                                                {(course.select || attendance.select) ? <LockIcon /> : <LockOpenIcon />}
+                                                {course.section.isLocked ? <LockIcon /> : <LockOpenIcon />}
                                             </IconButton>
-                                            <IconButton onClick={() => handleDelete(course.index, attendance.index)}>
+                                            <IconButton
+                                                onClick={() => handleCourseOperations('deleteSection', course.courseCode, 'section')}
+                                            >
                                                 <DeleteOutlineIcon />
                                             </IconButton>
-                                            {attendance.code}
+                                            {course.section.sectionCode}
                                         </Typography>
                                     </ListItem>
-                                )}
-                            </List>
-                        </Collapse>
+                                </List>
+                            </Collapse>
+                        }
+                        {
+                            course.tutorial &&
+                            <Collapse in={courseCodeShow.includes(course.courseCode)} timeout="auto">
+                                <List sx={{ p: 0 }}>
+                                    <ListItem sx={{ pb: 0, pt: 0 }}>
+                                        <Typography>
+                                            <IconButton
+                                                // need fix
+                                                onClick={() => handleCourseOperations('lockSection', course.courseCode, 'tutorial')}
+                                                disabled={course.isLocked}
+                                            >
+                                                {course.tutorial.isLocked ? <LockIcon /> : <LockOpenIcon />}
+                                            </IconButton>
+                                            <IconButton
+                                                onClick={() => handleCourseOperations('deleteSection', course.courseCode, 'tutorial')}
+                                            >
+                                                <DeleteOutlineIcon />
+                                            </IconButton>
+                                            {course.tutorial.tutorialCode}
+                                        </Typography>
+                                    </ListItem>
+                                </List>
+                            </Collapse>
+                        }
                     </ListItem>
                     <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
-                </>
+                </Box>
             )
             }
         </List>
     )
 }
 
-function SearchBar({ handleAdding }) {
+function SearchBar({ handleChangingCourse }) {
     const [input, setInput] = useState({ courseCode: "", university: "uoft", term: "F" });
     const [searchData, setSearchData] = useState(undefined)
     const filterOptions = createFilterOptions({
@@ -289,7 +279,7 @@ function SearchBar({ handleAdding }) {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    handleAdding(true)
+                    handleChangingCourse(true)
                 }
             })
     }
@@ -326,7 +316,7 @@ function SearchBar({ handleAdding }) {
                     </RadioGroup>
                 </FormGroup>
             </Container>
-            {(searchData === undefined) ? 
+            {(searchData === undefined) ?
                 <></>
                 :
                 <List sx={{ maxHeight: 300, overflow: 'auto' }}>
@@ -339,20 +329,20 @@ function SearchBar({ handleAdding }) {
                                 <Typography>
                                     List of Lectures
                                     <List>
-                                        {searchData[0].sections.map((lecture) => 
-                                        <>
-                                        <ListItem
-                                            key={lecture._id}
-                                            sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}
-                                        >
-                                            <Typography>
-                                                [{lecture.sectionCode}]
-                                                <Button sx={{ border: 1, borderRadius: 2}}>
-                                                    Add/Change
-                                                </Button>
-                                            </Typography>
-                                        </ListItem>
-                                        </>
+                                        {searchData[0].sections.map((lecture) =>
+                                            <>
+                                                <ListItem
+                                                    key={lecture._id}
+                                                    sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}
+                                                >
+                                                    <Typography>
+                                                        [{lecture.sectionCode}]
+                                                        <Button sx={{ border: 1, borderRadius: 2 }}>
+                                                            Add/Change
+                                                        </Button>
+                                                    </Typography>
+                                                </ListItem>
+                                            </>
                                         )}
                                     </List>
                                 </Typography>
@@ -362,20 +352,20 @@ function SearchBar({ handleAdding }) {
                                 <Typography>
                                     List of Tutorials
                                     <List>
-                                        {searchData[0].tutorials.map((tutorial) => 
-                                        <>
-                                        <ListItem
-                                            key={tutorial._id}
-                                            sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}
-                                        >
-                                            <Typography>
-                                                [{tutorial.tutorialCode}]
-                                                <Button sx={{ border: 1, borderRadius: 2}}>
-                                                    Add/Change
-                                                </Button>
-                                            </Typography>
-                                        </ListItem>
-                                        </>
+                                        {searchData[0].tutorials.map((tutorial) =>
+                                            <>
+                                                <ListItem
+                                                    key={tutorial._id}
+                                                    sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}
+                                                >
+                                                    <Typography>
+                                                        [{tutorial.tutorialCode}]
+                                                        <Button sx={{ border: 1, borderRadius: 2 }}>
+                                                            Add/Change
+                                                        </Button>
+                                                    </Typography>
+                                                </ListItem>
+                                            </>
                                         )}
                                     </List>
                                 </Typography>
