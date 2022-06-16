@@ -47,20 +47,25 @@ module.exports.register = async (req, res, next) => {
     const user = new User(template)
     console.log(user)
     User.register(user, req.body.password, function (err, user) {
+        console.log('registering')
         if (err) {
             console.log(err);
             return res.send({ 'err': 'The username is already registered' })
         } else {
-            passport.authenticate("local")(req, res, function () {
-                console.log("Following User has been registered");
-                console.log(user)
+            console.log('authenticating')
+            req.login(user, err => {
+                if (err) return err
+                else return res.json(user)
             })
+            // passport.authenticate("local", function (err, user) {
+            //     console.log("Following User has been registered");
+            //     console.log(user)
+            //     return res.send(user)
         }
-    })
-    //return res.send({ user })
-    // login user then redirect to previous page or home
-    //res.redirect(app.locals.returnUrl || '/')
+    }
+    )
 }
+
 
 module.exports.getLoggedIn = async (req, res, next) => {
     if (req.isAuthenticated()) {
@@ -224,13 +229,13 @@ module.exports.createNewUserCourse = async (req, res, next) => {
         }
     })
     if (isInUserCourses) {
-        return res.send({err: 'User already has course!'})
+        return res.send({ err: 'User already has course!' })
     } else {
         await createEventByCourseMeetingTime(user, course, user.id)
         user.courses.push(course)
         await user.save()
         console.log(user)
-        res.status(200).send({message: 'Successfully added a new course for user'})
+        res.status(200).send({ message: 'Successfully added a new course for user' })
     }
 }
 

@@ -78,7 +78,6 @@ export default function Navbar() {
   }
 
   const handleLogout = () => {
-    setUserFriend([])
     logout()
     console.log('Handle Logout')
   }
