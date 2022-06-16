@@ -19,43 +19,46 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_SECRET
 })
 
-const checkIfUserExists = async (email) => {
-    let user = await User.findOne({ email: email })
-    return user
-}
 
 module.exports.register = async (req, res, next) => {
-    if (checkIfUserExists(req.body.email)) {
-        const template =
-        {
-            email: req.body.email,
-            username: req.body.email,
-            password: req.body.password,
-            first: req.body.firstName,
-            last: req.body.lastName,
-            courses: [],
-            friends: [],
-            university: "utsg",
-            events: [],
-            profileImg: ""
-        }
-        // register user with passport js
-        const user = new User(template)
-        User.register(user, req.body.password, function (err, user) {
-            if (err) {
-                console.log(err);
-                return res.send({ 'err': 'The username is already registered' })
-            } else {
-                passport.authenticate("local")(req, res, function () {
-                    console.log("Following User has been registerd");
-                    console.log(user)
-                })
-            }
-        })
-        return res.send({ user })
-        // login user then redirect to previous page or home
-        //res.redirect(app.locals.returnUrl || '/')
+    // const checkIfUserExists = async (email) => {
+    //     let user = await User.findOne({ email: email })
+    //     return user
+    // }
+
+    // if (checkIfUserExists(req.body.email)) {
+
+    // }
+    const template =
+    {
+        email: req.body.email,
+        username: req.body.email,
+        password: req.body.password,
+        first: req.body.firstName,
+        last: req.body.lastName,
+        courses: [],
+        friends: [],
+        university: "utsg",
+        events: [],
+        profileImg: ""
     }
+    // register user with passport js
+    const user = new User(template)
+    console.log(user)
+    User.register(user, req.body.password, function (err, user) {
+        if (err) {
+            console.log(err);
+            return res.send({ 'err': 'The username is already registered' })
+        } else {
+            passport.authenticate("local")(req, res, function () {
+                console.log("Following User has been registered");
+                console.log(user)
+            })
+        }
+    })
+    //return res.send({ user })
+    // login user then redirect to previous page or home
+    //res.redirect(app.locals.returnUrl || '/')
 }
 
 module.exports.getLoggedIn = async (req, res, next) => {
