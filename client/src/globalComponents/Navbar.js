@@ -12,20 +12,30 @@ import Profile from './Profile'
 import NavbarButton from './NavbarButton'
 import useAuth from '../context/Auth'
 import FriendProfile from './FriendProfile'
+import AddFriend from './AddFriend'
 import OverflowIcon from './OverflowIcon'
 import { StyledMenuItem, NavbarMenu } from './NavbarMenu'
 import { Typography } from '@mui/material'
+import Snackbar from '@mui/material/Snackbar'
+import Alert from '@mui/material/Alert';
+
 
 export default function Navbar() {
   const { user, logout } = useAuth()
   const [userFriend, setUserFriend] = useState([])
   const [anchorElNav, setAnchorElNav] = useState(null)
   const matchMd = useMediaQuery((theme) => theme.breakpoints.up('md'))
+  const [isChangingFriend, setIsChangingFriend] = useState(false)
+  const [err, setErr] = useState()
+  const [success, setSuccess] = useState()
+  const openSuccess = Boolean(success)
+  const openWarning = Boolean(err)
   // fake friend data
   // if logged in, request for friend info
   const navigate = useNavigate()
 
   useEffect(() => {
+    console.log('fetching')
     fetch('users/friends')
       .then(res => res.json())
       .then(data => {
@@ -33,7 +43,34 @@ export default function Navbar() {
           setUserFriend(data)
         }
       })
-  }, [user])
+  }, [user, isChangingFriend])
+
+  const handleAddFriend = (email) => {
+    setIsChangingFriend(true)
+    fetch('users/friends/new', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        friendEmail: email
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.err) {
+          setErr(data.err)
+          setIsChangingFriend(false)
+          console.log(data.err)
+        } else {
+          setSuccess(data.success)
+          setIsChangingFriend(false)
+        }
+      })
+      .catch(err => {
+        console.error(err)
+      })
+  }
 
   const handleClick = (e) => {
     // redirect to some page
@@ -41,6 +78,7 @@ export default function Navbar() {
   }
 
   const handleLogout = () => {
+    setUserFriend([])
     logout()
     console.log('Handle Logout')
   }
@@ -54,6 +92,13 @@ export default function Navbar() {
     setAnchorElNav(null)
   }
 
+  const handleWarningClose = (e, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setErr(null)
+  }
+
   const NavProfiles = () => {
     if (matchMd) {
       if (user) {
@@ -63,6 +108,13 @@ export default function Navbar() {
             flexDirection: 'row',
             ml: 'auto'
           }}>
+            <AddFriend sx={{ p: 1 }}
+              handleAddFriend={(val) => handleAddFriend(val)}
+            />
+            <Divider
+              style={{ backgroundColor: 'white' }}
+              sx={{ m: 1 }}
+              orientation='vertical' flexItem />
             {
               userFriend.slice(0, 3).map((v, i) => (
                 <FriendProfile key={v._id}
@@ -77,10 +129,13 @@ export default function Navbar() {
                 remainFriends={userFriend.slice(3)}
                 sx={{ p: 1 }} />
             }
-            <Divider
-              style={{ backgroundColor: 'white' }}
-              sx={{ m: 1 }}
-              orientation='vertical' flexItem />
+            {
+              userFriend.length !== 0 &&
+              <Divider
+                style={{ backgroundColor: 'white' }}
+                sx={{ m: 1 }}
+                orientation='vertical' flexItem />
+            }
             <Profile
               userInfo={user}
               sx={{ p: 1, ml: userFriend ? 0 : 'auto' }}
@@ -90,11 +145,6 @@ export default function Navbar() {
       } else {
         return (
           <>
-            <NavbarButton onClick={() => navigate('/about')} sx={{ mr: 2 }}>
-              <Typography>
-                About us
-              </Typography>
-            </NavbarButton>
             <NavbarButton onClick={() => navigate('/login')} sx={{ mr: 2 }}>
               <Typography>
                 Login
@@ -136,6 +186,11 @@ export default function Navbar() {
           onClick={() => handleMenuClick('calendar')}>
           Go to Calendar
         </StyledMenuItem>,
+        <StyledMenuItem
+          key='about'
+          onClick={() => handleMenuClick('about')}>
+          About us
+        </StyledMenuItem>,
         <StyledMenuItem key='logout'
           onClick={handleLogout}>
           Logout
@@ -146,7 +201,7 @@ export default function Navbar() {
         <StyledMenuItem
           key='about'
           onClick={() => handleMenuClick('about')}>
-          About
+          About us
         </StyledMenuItem>,
         <StyledMenuItem
           key='login'
@@ -183,10 +238,16 @@ export default function Navbar() {
                   sx={{ mx: 2 }}>
                   MyCalendar
                 </Link>
-                <NavbarButton onClick={() => navigate('/calendar')}
-                sx={{ mr: 2 }}>
+                <NavbarButton onClick={() => navigate('/calendar')}>
                   <Typography>
                     Calendar
+                  </Typography>
+                </NavbarButton>
+                <NavbarButton
+                  key='about'
+                  onClick={() => handleMenuClick('about')}>
+                  <Typography>
+                    About Us
                   </Typography>
                 </NavbarButton>
                 <NavProfiles />
@@ -214,6 +275,22 @@ export default function Navbar() {
           }
         </Toolbar>
       </AppBar>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={openWarning}
+        onClose={handleWarningClose}
+        autoHideDuration={5000}
+      >
+        <Alert severity='error' sx={{ width: '100%' }}>{err}</Alert>
+      </Snackbar>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={openSuccess}
+        onClose={handleWarningClose}
+        autoHideDuration={5000}
+      >
+        <Alert severity='success' sx={{ width: '100%' }}>{success}</Alert>
+      </Snackbar>
     </Box>
   )
 }
