@@ -1,24 +1,12 @@
 import React, { useState } from 'react'
-import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { Typography } from '@mui/material';
-import Input from '@mui/material/Input';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormControl from '@mui/material/FormControl';
-import TextField from '@mui/material/TextField';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import useAuth from '../../context/Auth';
 import InfoBox from './InfoBox/InfoBox'
-import Profile from './Profile/Profile';
 import Button from '@mui/material/Button';
-import FormHelperText from '@mui/material/FormHelperText';
-
-import OutlinedInput from '@mui/material/OutlinedInput';
 
 const AccountInfo = () => {
     const { user } = useAuth();
-    const [open, setOpen] = useState(false);
     const [first, setFirst] = useState(user.first);
     const [last, setLast] = useState(user.last);
     const [email, setEmail] = useState(user.email);
@@ -27,7 +15,6 @@ const AccountInfo = () => {
 
     const handleChange = () => {
         setIsEditing(!isEditing);
-
     }
 
     return (
@@ -50,19 +37,37 @@ const AccountInfo = () => {
                     spacing={1}
                 >
                     <Grid item display='inline' id='first' md={6} xs={12}>
-                        <InfoBox isEditing={isEditing} property='First name' value={first}></InfoBox>
+                        <InfoBox
+                            isEditing={isEditing}
+                            property='First name'
+                            value={first}
+                            onChange={(e) => setFirst(e.target.value)}
+                        ></InfoBox>
                     </Grid>
                     <Grid item display='inline' id='last' md={6} xs={12}>
-                        <InfoBox property='Last name' value={last}></InfoBox>
+                        <InfoBox isEditing={isEditing} property='Last name' value={last}
+                            onChange={(e) => setLast(e.target.value)}
+                        ></InfoBox>
 
                     </Grid>
                     <Grid item display='inline' id='email' xs={12}>
-                        <InfoBox property='Email' value={email}></InfoBox>
+                        <InfoBox isEditing={isEditing} property='Email' value={email} onChange={(e) => setEmail(e.target.value)}></InfoBox>
                     </Grid>
                     <Grid item display='inline' id='university' xs={12}>
-                        <InfoBox property='Institution' value={university}></InfoBox>
+                        <InfoBox isEditing={isEditing} property='Institution' value={university} onChange={(e) => setUniversity(e.target.value)}></InfoBox>
                     </Grid>
-                    <Button variant="outlined">Done Editing</Button>
+                    {
+                        isEditing ?
+                            <Button
+                                type='submit'
+                                variant="outlined"
+                                onClick={handleChange}
+                                sx={{ color: '#0583D2', justifyContent: "flex-end" }}
+                            >
+                                Done
+                            </Button>
+                            : null
+                    }
 
                 </Grid>
 

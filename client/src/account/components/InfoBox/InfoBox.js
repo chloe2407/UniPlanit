@@ -8,20 +8,20 @@ import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 
 
-const InfoBox = ({ isEditing, property, value }) => {
+const InfoBox = ({ isEditing, property, value, onChange }) => {
 
     return (
         <div>
 
             <FormControl fullWidth variant="outlined">
                 <OutlinedInput
-                    disabled={isEditing}
+                    disabled={!isEditing}
                     id="outlined-adornment-weight"
                     value={value}
-                    // onChange={handleChange('weight')}
-                    InputProps={{
-                        readOnly: isEditing
-                    }}
+                    onChange={onChange}
+                // InputProps={{
+                //     readOnly: isEditing
+                // }}
                 />
                 <FormHelperText id="outlined-weight-helper-text">{property}</FormHelperText>
             </FormControl>
