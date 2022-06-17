@@ -4,8 +4,11 @@ import { StyledMenuItem, NavbarMenu } from './NavbarMenu'
 import Avatar from '@mui/material/Avatar'
 import initialToColor from './InitialToColor';
 import Typography from '@mui/material/Typography';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import ChatIcon from '@mui/icons-material/Chat';
 
-export default function OverflowIcon({ sx, remainCount, remainFriends }) {
+export default function OverflowIcon({ sx, remainCount, remainFriends, handleSuccessMsg, handleErrorMsg }) {
     const [anchorEl, setAnchorEl] = useState(null)
     // using md as breakpoints for mobile version
     const handleMenuClose = () => {
@@ -56,6 +59,9 @@ export default function OverflowIcon({ sx, remainCount, remainFriends }) {
                             <Typography>
                                 {`${v.first} ${v.last}`}
                             </Typography>
+                            <ChatIcon />
+                            <CalendarMonthIcon />
+                            <PersonRemoveIcon />
                         </StyledMenuItem>
                     ))
                 }

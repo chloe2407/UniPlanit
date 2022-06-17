@@ -18,6 +18,7 @@ import { StyledMenuItem, NavbarMenu } from './NavbarMenu'
 import { Typography } from '@mui/material'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert';
+import CloseIcon from '@mui/icons-material/Close'
 
 
 export default function Navbar() {
@@ -25,11 +26,11 @@ export default function Navbar() {
   const [userFriend, setUserFriend] = useState([])
   const [anchorElNav, setAnchorElNav] = useState(null)
   const matchMd = useMediaQuery((theme) => theme.breakpoints.up('md'))
-  const [isChangingFriend, setIsChangingFriend] = useState(false)
-  const [err, setErr] = useState()
+  const [changeFriendCount, setChangeFriendCount] = useState(0)
+  const [error, setError] = useState()
   const [success, setSuccess] = useState()
   const openSuccess = Boolean(success)
-  const openWarning = Boolean(err)
+  const openWarning = Boolean(error)
   // fake friend data
   // if logged in, request for friend info
   const navigate = useNavigate()
@@ -43,33 +44,10 @@ export default function Navbar() {
           setUserFriend(data)
         }
       })
-  }, [isChangingFriend])
+  }, [user ? null : user, changeFriendCount])
 
-  const handleAddFriend = (email) => {
-    setIsChangingFriend(true)
-    fetch('users/friends/new', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        friendEmail: email
-      })
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.err) {
-          setErr(data.err)
-          setIsChangingFriend(false)
-          console.log(data.err)
-        } else {
-          setSuccess(data.success)
-          setIsChangingFriend(false)
-        }
-      })
-      .catch(err => {
-        console.error(err)
-      })
+  const handleFriendChange = () => {
+    setChangeFriendCount(changeFriendCount + 1)
   }
 
   const handleClick = (e) => {
@@ -91,12 +69,30 @@ export default function Navbar() {
     setAnchorElNav(null)
   }
 
-  const handleWarningClose = (e, reason) => {
+  const handleSnackbarClose = (e, reason) => {
     if (reason === 'clickaway') {
       return
     }
-    setErr(null)
+    setError(null)
+    setSuccess(null)
   }
+
+  const handleSuccessMsg = (msg) => {
+    setSuccess(msg)
+  }
+  
+  const handleErrorMsg = (msg) => {
+    setError(msg)
+  }
+
+  const closeButton =
+    <IconButton
+      size='small'
+      color='inherit'
+      onClick={handleSnackbarClose}>
+      <CloseIcon fontSize='small' />
+    </IconButton>
+
 
   const NavProfiles = () => {
     if (matchMd) {
@@ -108,7 +104,9 @@ export default function Navbar() {
             ml: 'auto'
           }}>
             <AddFriend sx={{ p: 1 }}
-              handleAddFriend={(val) => handleAddFriend(val)}
+              handleFriendChange={val => handleFriendChange(val)}
+              handleSuccessMsg={msg => handleSuccessMsg(msg)}
+              handleErrorMsg={msg => handleErrorMsg(msg)}
             />
             <Divider
               style={{ backgroundColor: 'white' }}
@@ -118,6 +116,9 @@ export default function Navbar() {
               userFriend.slice(0, 3).map((v, i) => (
                 <FriendProfile key={v._id}
                   friendInfo={v}
+                  handleFriendChange={(val) => handleFriendChange(val)}
+                  handleSuccessMsg={msg => handleSuccessMsg(msg)}
+                  handleErrorMsg={msg => handleErrorMsg(msg)}
                   sx={{ p: 1 }}
                 />
               ))
@@ -126,6 +127,8 @@ export default function Navbar() {
               userFriend.length - 3 > 0 &&
               <OverflowIcon remainCount={userFriend.length - 3}
                 remainFriends={userFriend.slice(3)}
+                handleSuccess={handleSuccessMsg}
+                handleErrorMsg={handleErrorMsg}
                 sx={{ p: 1 }} />
             }
             {
@@ -275,20 +278,41 @@ export default function Navbar() {
         </Toolbar>
       </AppBar>
       <Snackbar
+        sx={{ height: '15vh' }}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={openWarning}
-        onClose={handleWarningClose}
-        autoHideDuration={5000}
+        onClose={handleSnackbarClose}
+        autoHideDuration={3000}
       >
-        <Alert severity='error' sx={{ width: '100%' }}>{err}</Alert>
+        <Alert action={closeButton}
+          severity='error'
+          sx={{ width: '100%' }}>
+          {error}
+        </Alert>
       </Snackbar>
       <Snackbar
+      sx={{ height: '15vh' }}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={openSuccess}
-        onClose={handleWarningClose}
-        autoHideDuration={5000}
+        onClose={handleSnackbarClose}
+        action={
+          <>
+            <IconButton
+              size='small'
+              color='inherit'
+              onClick={handleSnackbarClose}
+            >
+              <CloseIcon fontSize='small' />
+            </IconButton>
+          </>
+        }
+        autoHideDuration={3000}
       >
-        <Alert severity='success' sx={{ width: '100%' }}>{success}</Alert>
+        <Alert action={closeButton}
+          severity='success'
+          sx={{ width: '100%' }}>
+          {success}
+        </Alert>
       </Snackbar>
     </Box>
   )

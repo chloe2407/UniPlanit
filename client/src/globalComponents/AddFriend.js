@@ -2,14 +2,15 @@ import { useState } from 'react'
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar'
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import Tooltip from '@mui/material/Tooltip'
 import { StyledPopover } from './NavbarMenu'
 import Button from '@mui/material/Button'
 import Input from '@mui/material/Input'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import Typography from '@mui/material/Typography';
-export default function AddFriend({ sx, handleAddFriend }) {
+import NavbarTooltip from './NavbarTooltip';
+
+export default function AddFriend({ sx, handleFriendChange, handleSuccessMsg, handleErrorMsg }) {
     const [anchorEl, setAnchorEl] = useState(null)
     // using md as breakpoints for mobile version
     const open = Boolean(anchorEl)
@@ -20,9 +21,35 @@ export default function AddFriend({ sx, handleAddFriend }) {
         email: yup.string().email().required()
     })
 
+    const handleAddFriend = (email) => {
+        fetch('users/friends/new', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                friendEmail: email
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.err) {
+                    handleErrorMsg(data.err)
+                } else {
+                    handleSuccessMsg(data.success)
+                    handleFriendChange()
+                }
+            })
+            .catch(err => {
+                console.error(err)
+            })
+    }
+
     return (
         <>
-            <Tooltip title='Add Friend'>
+            <NavbarTooltip title={
+                <Typography> Add Friend </Typography>
+            }>
                 <IconButton size='large'
                     aria-controls='friend-menu'
                     aria-haspopup='true'
@@ -38,7 +65,7 @@ export default function AddFriend({ sx, handleAddFriend }) {
                         <PersonAddIcon />
                     </Avatar>
                 </IconButton>
-            </Tooltip>
+            </NavbarTooltip>
             <StyledPopover
                 open={open}
                 onClose={handleMenuClose}
@@ -58,8 +85,7 @@ export default function AddFriend({ sx, handleAddFriend }) {
                     onSubmit={values => handleAddFriend(values.email)}
                 >
                     {
-                        ({ values, errors, touched, onBlur, handleChange,
-                            handleSubmit }) => (
+                        ({ values, onBlur, handleChange, handleSubmit }) => (
                             <form onSubmit={handleSubmit}>
                                 <Input
                                     placeholder='friend@email.com'
