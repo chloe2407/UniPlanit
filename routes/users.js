@@ -6,13 +6,15 @@ const { register, login, logout, createNewUserEvent,
     patchUserEventById, deleteUserEventById, getUserEventById,
     getUserEventsByDate, createNewUserCourse, deleteUserCourseByCode,
     saveCourseHolder, lockCourse, saveTimeTable, newTimetable,
-    getUserCourse, getLoggedIn, uploadImage, deleteImage
+    getUserCourse, getLoggedIn, uploadImage, deleteImage, addNewFriend,
+    getUserFriend, getUser, lockSection, deleteSection, deleteFriend
 } = require('../controllers/users')
+const { isLoggedIn } = require('../controllers/middleware')
 const passport = require('passport')
 
-
-
 router.use(cors())
+
+router.get('/', catchAsync(getUser))
 
 /**
  * @swagger
@@ -65,7 +67,7 @@ router.post('/getLoggedIn', catchAsync(getLoggedIn))
  *          200:
  *              description: user has successfully logged out
  */
-router.post('/logout', catchAsync(logout))
+router.post('/logout', isLoggedIn, catchAsync(logout))
 
 /**
  * @swagger
@@ -81,7 +83,7 @@ router.post('/logout', catchAsync(logout))
  *          200:
  *              description: A list of events
  */
-router.get('/events', catchAsync(getUserEventsByDate))
+router.get('/events', isLoggedIn, catchAsync(getUserEventsByDate))
 
 /**
  * @swagger
@@ -96,7 +98,7 @@ router.get('/events', catchAsync(getUserEventsByDate))
  */
 
 
-router.post('/events/new', catchAsync(createNewUserEvent))
+router.post('/events/new', isLoggedIn, catchAsync(createNewUserEvent))
 
 /**
  * @swagger
@@ -115,38 +117,48 @@ router.post('/events/new', catchAsync(createNewUserEvent))
  */
 
 router.route('/events/:eventId')
-    .get(catchAsync(getUserEventById))
-    .patch(catchAsync(patchUserEventById))
-    .delete(catchAsync(deleteUserEventById))
+    .get(isLoggedIn, catchAsync(getUserEventById))
+    .patch(isLoggedIn, catchAsync(patchUserEventById))
+    .delete(isLoggedIn, catchAsync(deleteUserEventById))
+
+router.post('/uploadImage', isLoggedIn, catchAsync(uploadImage))    
+
+router.post('/deleteImage', isLoggedIn, catchAsync(deleteImage))
 
 // create a new course for user
-router.post('/courses/new', catchAsync(createNewUserCourse))
-
-router.post('/uploadImage', catchAsync(uploadImage))
-
-router.post('/deleteImage', catchAsync(deleteImage))
-
+router.post('/courses/new', isLoggedIn, catchAsync(createNewUserCourse))
+    
 // when a use selects a course but does not manually choose a time or 
 // wants to use the generator, save the course code as a placeholder first
 // These courses will be replaced with meeting times when the timetable is generated
 
-router.post('/courses/saveCourseHolder', catchAsync(saveCourseHolder))
+router.post('/courses/saveCourseHolder', isLoggedIn, catchAsync(saveCourseHolder))
 
 // generate new timetables
-router.post('/courses/timetable/new', catchAsync(newTimetable))
+router.post('/courses/timetable/new', isLoggedIn, catchAsync(newTimetable))
 
 // save timetable
-router.post('/courses/timetable/save', catchAsync(saveTimeTable))
+router.post('/courses/timetable/save', isLoggedIn, catchAsync(saveTimeTable))
 
 // locking a course. Need to manually choose a time first
-router.post('/courses/lockCourse', catchAsync(lockCourse))
+router.post('/courses/lock', isLoggedIn, catchAsync(lockCourse))
 
-router.delete('/courses/delete', catchAsync(deleteUserCourseByCode))
+router.delete('/courses/delete', isLoggedIn, catchAsync(deleteUserCourseByCode))
+
+router.post('/courses/lockSection', isLoggedIn, catchAsync(lockSection))
+
+router.post('/courses/deleteSection', isLoggedIn, catchAsync(deleteSection))
+
 
 // get users courses
-router.get('/courses', catchAsync(getUserCourse))
+router.get('/courses', isLoggedIn, catchAsync(getUserCourse))
 
 // friends
-router.post('/friends/new')
+
+router.get('/friends', isLoggedIn, catchAsync(getUserFriend))
+
+router.post('/friends/new', isLoggedIn, catchAsync(addNewFriend))
+
+router.post('/friends/delete', isLoggedIn, catchAsync(deleteFriend))
 
 module.exports = router;

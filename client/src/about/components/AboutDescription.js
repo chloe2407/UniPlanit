@@ -31,7 +31,7 @@ const AboutDescription = () => {
                                 paddingX: '30px'
                             }}
                         >
-                            University students face the difficulty of Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+                            Each year, university students go through the trouble of producing a schedule that avoids conflicting lectures, tutorials, and labs, that also conveniently satisfies their desired break times between classes. MyCalendar's intelligent algorithm generates your best potential schedules given your requirements: <br></br><br></br>No classes before 9AM? Want a lunch break at 12PM? <br></br>We've got it for you, one click away.
                         </Typography>
                     </Grid>
                     <Grid item xs={6}>
@@ -40,7 +40,7 @@ const AboutDescription = () => {
                                 paddingX: '30px'
                             }}
                         >
-                            Created in 2022 summer, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+                            A group of Computer Science students at the University of Toronto saw the high demand for this product, as well as what lacked in similar applications: personalization.
                         </Typography>
                     </Grid>
                 </Grid>

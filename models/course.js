@@ -102,65 +102,98 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
         default: false,
     },
     section: {
-        sectionCode: {
-            type: String,
-            required: true
-        },
-        term: {
-            type: String,
-            uppercase: true,
-            enum: ['F', 'S', 'Y'],
-            required: true
-        },
-        instructors: [],
-        meetingTime: [{
-            day: {
-                type: String,
-                enum: ['Monday', 'Tuesday', 'Wednesday',
-                    'Thursday', 'Friday', 'Saturday',
-                    'Sunday', 'error']
+        type:
+        {
+            isLocked: {
+                type: Boolean,
+                default: undefined
             },
-            startTime: {
+            sectionCode: {
                 type: String,
                 required: true
             },
-            endTime: {
+            term: {
                 type: String,
+                uppercase: true,
+                enum: ['F', 'S', 'Y'],
                 required: true
             },
-            assignedRoom1: String
-        }]
+            instructors: {
+                type: [String],
+                default: undefined
+            },
+            meetingTime: {
+                type: [
+                    {
+                        day: {
+                            type: String,
+                            enum: ['Monday', 'Tuesday', 'Wednesday',
+                                'Thursday', 'Friday', 'Saturday',
+                                'Sunday', 'error']
+                        },
+                        startTime: {
+                            type: String,
+                            required: true
+                        },
+                        endTime: {
+                            type: String,
+                            required: true
+                        },
+                        assignedRoom1: String
+                    }
+                ],
+                default: undefined
+            }
+        },
+        default: undefined
     },
-    tutorial: [{
-        tutorialCode: {
-            type: String,
-            required: true
-        },
-        term: {
-            type: String,
-            uppercase: true,
-            enum: ['F', 'S', 'Y'],
-            required: true
-        },
-        instructors: [],
-        meetingTime: {
-            day: {
-                type: String,
-                enum: ['Monday', 'Tuesday', 'Wednesday',
-                    'Thursday', 'Friday', 'Saturday',
-                    'Sunday', 'error']
+    tutorial: {
+        type:
+        {
+            isLocked: {
+                type: Boolean,
+                default: undefined,
+                required: true
             },
-            startTime: {
+            tutorialCode: {
                 type: String,
                 required: true
             },
-            endTime: {
+            term: {
                 type: String,
+                uppercase: true,
+                enum: ['F', 'S', 'Y'],
                 required: true
             },
-            assignedRoom1: String
-        }
-    }]
+            instructors: {
+                type: [String],
+                default: undefined
+            },
+            meetingTime: {
+                type: [
+                    {
+                        day: {
+                            type: String,
+                            enum: ['Monday', 'Tuesday', 'Wednesday',
+                                'Thursday', 'Friday', 'Saturday',
+                                'Sunday', 'error']
+                        },
+                        startTime: {
+                            type: String,
+                            required: true
+                        },
+                        endTime: {
+                            type: String,
+                            required: true
+                        },
+                        assignedRoom1: String
+                    }
+                ],
+                default: undefined
+            }
+        },
+        default: undefined
+    }
 })
 
 module.exports.Course = mongoose.model('Course', courseSchema)

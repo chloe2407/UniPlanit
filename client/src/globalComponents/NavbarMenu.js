@@ -12,18 +12,18 @@ const StyledMenu = styled(Menu)(({ theme }) => ({
     // background: theme.palette.primary.main,
     '& .MuiList-root': {
         backgroundColor: theme.palette.primary.main
-    }
+    },
 }))
 
 const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
-    color: theme.palette.secondary.contrastText ,
+    color: theme.palette.secondary.contrastText,
     border: `solid ${theme.palette.primary.main}`,
-    transition: theme.transitions.create(['backgroundColor', 'transform'], {
+    transition: theme.transitions.create(['transform'], {
         duration: 300,
         easing: theme.transitions.easing.easeInOut
     }),
     ":hover": {
-        transform: 'scale(1.1)',
+        transform: 'scale(1.05)',
     }
 }))
 

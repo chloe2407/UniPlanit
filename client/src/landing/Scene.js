@@ -51,7 +51,7 @@ export default function Scene({ width, height }) {
             return Bodies.rectangle(x, y, width, height, {
                 isStatic: true,
                 render: {
-                    lineWidth: 1
+                    lineWidth: 1,
                 },
                 render: {
                     fillStyle: theme.palette.primary.main
@@ -84,6 +84,9 @@ export default function Scene({ width, height }) {
                     // xScale: 0.3,
                     // yScale: 0.3
                 }
+            },
+            collisionFilter: {
+                group: -1
             }
         }))
 
@@ -128,7 +131,7 @@ export default function Scene({ width, height }) {
 
         Composite.add(world,
             Composites.stack(150, 100, 4, 2, 5, 5, (x, y, column, row) => {
-                return Bodies.circle(x, y, Math.floor(getRandNum(150, 100)), {
+                return Bodies.circle(x, y, Math.floor(getRandNum(150, 75)), {
                     density: 0.0015,
                     frictionAir: 0,
                     force: getRandForce(0.02, 0.03),
@@ -179,6 +182,7 @@ export default function Scene({ width, height }) {
             min: { x: 0, y: 0 },
             max: { x: width, y: height }
         })
+        // eslint-disable-next-line
     }, [])
     return <div style={{ backgroundColor: 'black', height: '100vh' }} ref={canvaRef} />
 }

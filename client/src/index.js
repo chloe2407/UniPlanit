@@ -13,12 +13,10 @@ import Landing from './landing/Landing';
 import Calendar from './calendar/Calendar';
 import ForgotPassword from './home/ForgotPassword';
 import About from './about/About';
-import { AuthProvider } from './context/Auth'
-import RequireAuth from './globalComponents/RequireAuth'
-import LoginWrap from './globalComponents/LoginWrap'
-const Account = () => {
-  return (<h1>Account Information</h1>)
-}
+import { AuthProvider } from './context/Auth';
+import RequireAuth from './globalComponents/RequireAuth';
+import LoginWrap from './globalComponents/LoginWrap';
+import Account from './account/Account';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

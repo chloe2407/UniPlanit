@@ -1,9 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
-import Button from '@mui/material/Button'
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton'
@@ -12,41 +11,49 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import Profile from './Profile'
 import NavbarButton from './NavbarButton'
 import useAuth from '../context/Auth'
+import FriendProfile from './FriendProfile'
+import AddFriend from './AddFriend'
+import OverflowIcon from './OverflowIcon'
 import { StyledMenuItem, NavbarMenu } from './NavbarMenu'
+import { Typography } from '@mui/material'
+import Snackbar from '@mui/material/Snackbar'
+import Alert from '@mui/material/Alert';
+import CloseIcon from '@mui/icons-material/Close'
+
 
 export default function Navbar() {
-  const { user, logout } = useAuth() 
-  const [friends, setFriends] = useState(false)
+  const { user, logout } = useAuth()
+  const [userFriend, setUserFriend] = useState([])
   const [anchorElNav, setAnchorElNav] = useState(null)
   const matchMd = useMediaQuery((theme) => theme.breakpoints.up('md'))
+  const [changeFriendCount, setChangeFriendCount] = useState(0)
+  const [error, setError] = useState()
+  const [success, setSuccess] = useState()
+  const openSuccess = Boolean(success)
+  const openWarning = Boolean(error)
   // fake friend data
-  const [friendData, _] = useState([...Array(3).keys()])
   // if logged in, request for friend info
   const navigate = useNavigate()
+
+  useEffect(() => {
+    console.log('fetching')
+    fetch('users/friends')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.err) {
+          setUserFriend(data)
+        }
+      })
+  }, [user ? null : user, changeFriendCount])
+
+  const handleFriendChange = () => {
+    setChangeFriendCount(changeFriendCount + 1)
+  }
 
   const handleClick = (e) => {
     // redirect to some page
     console.log(e)
   }
-
-  // toolbar - will be removed 
-  // const handleFriends = () => {
-  //   if (friends) {
-  //     setFriends(false)
-  //   } else {
-  //     setFriends(true)
-  //     setAuth(true)
-  //   }
-  // }
-
-  // const handleLogin = () => {
-  //   if (auth) {
-  //     setAuth(false)
-  //     setFriends(false)
-  //   } else {
-  //     setAuth(true)
-  //   }
-  // }
 
   const handleLogout = () => {
     logout()
@@ -62,49 +69,108 @@ export default function Navbar() {
     setAnchorElNav(null)
   }
 
-  const Profiles = () => {
-    if (user && friends) {
-      // if user is authenticated and has friends 
-      const friendProfiles = friendData.map((v, i) => (
-        i === 0 ? <Profile key={i} sx={{ m: 1, ml: 'auto' }} handleClick={handleClick} />
-          : <Profile key={i} sx={{ m: 1 }} profileInfo handleClick={handleClick} />
-
-      ))
-      // if size is larger than medium, show friends
-      return (
-        <>
-          {matchMd && friendProfiles}
-          {matchMd &&
-            <Divider sx={{ m: 1, display: { xs: 'none', md: 'flex' } }}
-              orientation='vertical' flexItem />}
-          <Profile isUser sx={{ ml: matchMd ? 0 : 'auto' }} profileInfo handleClick={handleClick} />
-        </>
-      )
+  const handleSnackbarClose = (e, reason) => {
+    if (reason === 'clickaway') {
+      return
     }
-    else if (user) {
-      // if user is authenticated
-      return (
-        <Profile isUser sx={{ ml: 'auto' }} handleClick={handleClick} />
-      )
-    } else {
-      // if user is not authenticated and screen size is larger than medium
-      if (matchMd) {
+    setError(null)
+    setSuccess(null)
+  }
+
+  const handleSuccessMsg = (msg) => {
+    setSuccess(msg)
+  }
+  
+  const handleErrorMsg = (msg) => {
+    setError(msg)
+  }
+
+  const closeButton =
+    <IconButton
+      size='small'
+      color='inherit'
+      onClick={handleSnackbarClose}>
+      <CloseIcon fontSize='small' />
+    </IconButton>
+
+
+  const NavProfiles = () => {
+    if (matchMd) {
+      if (user) {
         return (
-          <Box sx={{ ml: 'auto' }}>
-            <NavbarButton size='small' href='about' variant='outlined' color='inherit' sx={{ mr: 2 }}>
-              About us
-            </NavbarButton>
-            <NavbarButton size='small' href='login' variant='outlined' color='inherit' sx={{ mr: 2 }}>
-              Login
-            </NavbarButton>
-            <NavbarButton size='small' href='signup' variant='outlined' color='inherit' sx={{ mr: 1 }}>
-              Sign Up
-            </NavbarButton>
+          <Box sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            ml: 'auto'
+          }}>
+            <AddFriend sx={{ p: 1 }}
+              handleFriendChange={val => handleFriendChange(val)}
+              handleSuccessMsg={msg => handleSuccessMsg(msg)}
+              handleErrorMsg={msg => handleErrorMsg(msg)}
+            />
+            <Divider
+              style={{ backgroundColor: 'white' }}
+              sx={{ m: 1 }}
+              orientation='vertical' flexItem />
+            {
+              userFriend.slice(0, 3).map((v, i) => (
+                <FriendProfile key={v._id}
+                  friendInfo={v}
+                  handleFriendChange={(val) => handleFriendChange(val)}
+                  handleSuccessMsg={msg => handleSuccessMsg(msg)}
+                  handleErrorMsg={msg => handleErrorMsg(msg)}
+                  sx={{ p: 1 }}
+                />
+              ))
+            }
+            {
+              userFriend.length - 3 > 0 &&
+              <OverflowIcon remainCount={userFriend.length - 3}
+                remainFriends={userFriend.slice(3)}
+                handleSuccess={handleSuccessMsg}
+                handleErrorMsg={handleErrorMsg}
+                sx={{ p: 1 }} />
+            }
+            {
+              userFriend.length !== 0 &&
+              <Divider
+                style={{ backgroundColor: 'white' }}
+                sx={{ m: 1 }}
+                orientation='vertical' flexItem />
+            }
+            <Profile
+              userInfo={user}
+              sx={{ p: 1, ml: userFriend ? 0 : 'auto' }}
+              handleClick={handleClick} />
           </Box>
         )
       } else {
-        // placeholder
-        return <Box sx={{ ml: 'auto', mr: 6 }} />
+        return (
+          <>
+            <NavbarButton onClick={() => navigate('/login')}>
+              <Typography>
+                Login
+              </Typography>
+            </NavbarButton>
+            <NavbarButton onClick={() => navigate('/signup')}>
+              <Typography>
+                Sign Up
+              </Typography>
+            </NavbarButton>
+          </>
+        )
+      }
+    } else {
+      if (user) {
+        return (
+          <>
+            <Profile
+              userInfo={user}
+              sx={{ ml: 'auto' }}
+              handleClick={handleClick} />
+
+          </>
+        )
       }
     }
   }
@@ -112,20 +178,47 @@ export default function Navbar() {
   const NavMenu = () => {
     // NavMenu changes based on auth
 
-    const NavItems = user ? 
+    const NavItems = user ?
       [
-        <StyledMenuItem key='home' onClick={() => handleMenuClick('/')}>Home</StyledMenuItem>,
-        <StyledMenuItem key='calendar' onClick={() => handleMenuClick('calendar')}>Go to My Calendar</StyledMenuItem>,
-        <StyledMenuItem key='logout' onClick={handleLogout}>Logout</StyledMenuItem>
+        <StyledMenuItem key='home'
+          onClick={() => handleMenuClick('/')}>
+          Home
+        </StyledMenuItem>,
+        <StyledMenuItem key='calendar'
+          onClick={() => handleMenuClick('calendar')}>
+          Go to Calendar
+        </StyledMenuItem>,
+        <StyledMenuItem
+          key='about'
+          onClick={() => handleMenuClick('about')}>
+          About us
+        </StyledMenuItem>,
+        <StyledMenuItem key='logout'
+          onClick={handleLogout}>
+          Logout
+        </StyledMenuItem>
       ]
-      : 
+      :
       [
-        <StyledMenuItem key='about' onClick={() => handleMenuClick('about')}>About</StyledMenuItem>,
-        <StyledMenuItem key='login' onClick={() => handleMenuClick('login')}>Login </StyledMenuItem>,
-        <StyledMenuItem key='signup' onClick={() => handleMenuClick('signup')}>Sign Up </StyledMenuItem>
+        <StyledMenuItem
+          key='about'
+          onClick={() => handleMenuClick('about')}>
+          About us
+        </StyledMenuItem>,
+        <StyledMenuItem
+          key='login'
+          onClick={() => handleMenuClick('login')}>
+          Login </StyledMenuItem>,
+        <StyledMenuItem
+          key='signup'
+          onClick={() => handleMenuClick('signup')}>
+          Sign Up
+        </StyledMenuItem>
       ]
     return (
-      <NavbarMenu id='menu-appbar' anchorElNav={anchorElNav} handleMenuClose={handleMenuClose}>
+      <NavbarMenu id='menu-appbar'
+        anchorElNav={anchorElNav}
+        handleMenuClose={handleMenuClose}>
         {NavItems}
       </NavbarMenu>
     )
@@ -133,45 +226,94 @@ export default function Navbar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      {/* <Typography>
-        Tool Bar
-        <Switch checked={auth} onChange={handleLogin} aria-label='login switch' />
-        {auth ? 'Logout' : 'Login'}
-        <Switch checked={friends} onChange={handleFriends} aria-label='friends switch' />
-        {friends ? 'Hide friends' : 'Show friends'}
-      </Typography> */}
       <AppBar position='static'>
         <Toolbar>
           {
             // change order of items in appbar based on screen size
-            matchMd ?
+            matchMd
+              ?
               <>
-                <Link href='/' variant='h5' color='inherit' underline='none' sx={{ mx: 2 }}>
+                <Link href='/'
+                  variant='h5'
+                  color='inherit'
+                  underline='none'
+                  sx={{ mx: 2 }}>
                   MyCalendar
                 </Link>
-                <Button variant='text' color='inherit' disableRipple
-                  sx={{ fontSize: 16, position: 'absolute', left: '50vh', right: '50vh' }}
-                  onClick={() => navigate('/calendar')}
-                  >
-                  Calendar!
-                </Button>
-                <Profiles />
-              </> :
+                <NavbarButton onClick={() => navigate('/calendar')}>
+                  <Typography>
+                    Calendar
+                  </Typography>
+                </NavbarButton>
+                <NavbarButton
+                  key='about'
+                  onClick={() => handleMenuClick('about')}>
+                  <Typography>
+                    About Us
+                  </Typography>
+                </NavbarButton>
+                <NavProfiles />
+              </>
+              :
               <>
-                <IconButton size='large' aria-label='nav-menu' aria-controls='menu-appbar' aria-haspopup='true'
-                  onClick={e => setAnchorElNav(e.currentTarget)} color='inherit'>
+                <IconButton size='large'
+                  aria-label='nav-menu'
+                  aria-controls='menu-appbar'
+                  aria-haspopup='true'
+                  onClick={e => setAnchorElNav(e.currentTarget)}
+                  color='inherit'>
                   <MenuIcon />
                 </IconButton>
                 <NavMenu />
-                <Link onClick={() => navigate('/')} variant='h5' color='inherit'
-                  underline='none' sx={{ ml: 'auto' }}>
+                <Link href='/'
+                  variant='h5'
+                  color='inherit'
+                  underline='none'
+                  sx={{ ml: 'auto' }}>
                   MyCalendar
                 </Link>
-                <Profiles />
+                <NavProfiles />
               </>
           }
         </Toolbar>
       </AppBar>
+      <Snackbar
+        sx={{ height: '15vh' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={openWarning}
+        onClose={handleSnackbarClose}
+        autoHideDuration={3000}
+      >
+        <Alert action={closeButton}
+          severity='error'
+          sx={{ width: '100%' }}>
+          {error}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+      sx={{ height: '15vh' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={openSuccess}
+        onClose={handleSnackbarClose}
+        action={
+          <>
+            <IconButton
+              size='small'
+              color='inherit'
+              onClick={handleSnackbarClose}
+            >
+              <CloseIcon fontSize='small' />
+            </IconButton>
+          </>
+        }
+        autoHideDuration={3000}
+      >
+        <Alert action={closeButton}
+          severity='success'
+          sx={{ width: '100%' }}>
+          {success}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

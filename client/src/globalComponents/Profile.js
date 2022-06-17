@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import IconButton from '@mui/material/IconButton';
-import AccountCircle from '@mui/icons-material/AccountCircle'
-import { StyledMenuItem, NavbarMenu, StyledPopover } from './NavbarMenu'
+import { StyledMenuItem, NavbarMenu } from './NavbarMenu'
+import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography';
-import useAuth from '../context/Auth'
 import { useNavigate } from 'react-router-dom'
+import useAuth from '../context/Auth'
+import initialToColor from './InitialToColor';
+import Divider from '@mui/material/Divider'
 
-export default function Profile({ sx, profileInfo, isUser, handleClick }) {
+export default function Profile({ sx, userInfo }) {
     const [anchorEl, setAnchorEl] = useState(null)
-    const open = Boolean(anchorEl)
     const navigate = useNavigate()
     const { logout } = useAuth()
     // using md as breakpoints for mobile version
@@ -17,41 +18,43 @@ export default function Profile({ sx, profileInfo, isUser, handleClick }) {
     }
     return (
         <>
-            {
-                isUser ?
-                    <>
-                        <IconButton size='large' aria-controls='menu-account' aria-haspopup='true'
-                            onClick={e => setAnchorEl(e.currentTarget)} color='inherit'
-                            sx={sx}>
-                            <AccountCircle />
-                        </IconButton>
-                        <NavbarMenu id='menu-account' anchorElNav={anchorEl}
-                            handleMenuClose={handleMenuClose}>
-                            <StyledMenuItem onClick={() => navigate('/account')}>My Account</StyledMenuItem>
-                            <StyledMenuItem onClick={logout}>Logout</StyledMenuItem>
-                        </NavbarMenu>
-                    </>
-                    :
-                    <>
-                        {/*Friend Icon. Show on screen larger than small*/}
-                        <AccountCircle
-                            aria-controls={'mouse-over-popover'}
-                            aria-haspopup='true'
-                            onMouseEnter={e => setAnchorEl(e.currentTarget)}
-                            onMouseLeave={() => setAnchorEl(null)}
-                            color='inherit'
-                            sx={sx} />
-                        <StyledPopover id='mouse-over-popover' sx={{ pointerEvents: 'none' }}
-                            open={open} anchorEl={anchorEl}
-                            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-                            onClose={() => setAnchorEl(null)}
-                            disableRestoreFocus
-                        >
-                            <Typography p={1} > friend </Typography>
-                        </StyledPopover>
-                    </>
-            }
+            <IconButton size='large'
+                aria-controls='menu-account'
+                aria-haspopup='true'
+                onClick={e => setAnchorEl(e.currentTarget)}
+                color='inherit'
+                sx={sx}>
+                <Avatar sx={{
+                    width: 30,
+                    height: 30,
+                    backgroundColor: initialToColor(`${userInfo.first[0]}${userInfo.last[0]}`)
+                }}
+                    src={userInfo.profileImg}>
+                    <Typography>
+                        {`${userInfo.first[0]}${userInfo.last[0]}`}
+                    </Typography>
+                </Avatar>
+            </IconButton>
+            <NavbarMenu id='menu-account'
+                anchorElNav={anchorEl}
+                handleMenuClose={handleMenuClose}>
+                <StyledMenuItem disabled
+                    style={{ opacity: 1, paddingBottom: 5 }}>
+                    {`${userInfo.first} ${userInfo.last}`}
+                </StyledMenuItem>
+                <Divider flexItem sx={{ mx: 2 }} 
+                         style={{ marginTop: 0, backgroundColor: 'white' }} />
+                <StyledMenuItem style={{ marginBottom: 0}} onClick={() => navigate('/account')}>
+                    My Account
+                </StyledMenuItem>
+                <StyledMenuItem onClick={logout}>
+                    Logout
+                </StyledMenuItem>
+            </NavbarMenu>
+
         </>
     )
 }
+
+
+

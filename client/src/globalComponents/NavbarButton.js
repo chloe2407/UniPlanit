@@ -2,23 +2,29 @@ import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 
 
-const NavbarButton = styled(Button)(({ theme }) => ({
-    color: theme.palette.primary.contrastText,
+const StyledButton = styled(Button)(({ theme }) => ({
+    color: 'rgba(255, 255, 255, 0.8)',
     backgroundColor: theme.palette.primary.main,
-    border: `small solid ${theme.palette.primary.contrastText}`,
-    borderRadius: theme.shape.borderRadius,
-    transition: theme.transitions.create(['transform', 'color', 
-    'backgroundColor'], {
-        duration: 500,
-        easing: theme.transitions.easing.easeInOut
-    }),
+    textTransform: 'capitalize',
+    transition: 'all 0.2s',
     ":hover": {
-        transform: 'scale(1.05)',
-        transform: 'translateY(-5px)',
-        color: theme.palette.primary.main,
-        backgroundColor: theme.palette.secondary.contrastText,
-        "boxShadow": `0 0.25rem 0 0.1rem ${theme.palette.secondary.contrastText}`
+        backgroundColor: theme.palette.primary.main,
+        color: 'rgba(255, 255, 255, 1)',
+        boxShadow: '0 0 25% rgba(255, 255, 255, 1)'
     }
 }))
 
-export default NavbarButton
+export default function NavbarButton({ children, sx, href, onClick }) {
+    return (
+        <StyledButton
+            size='small'
+            variant='contained'
+            sx={{...sx, mt: 0.5}}
+            href={href}
+            color='inherit'
+            onClick={onClick}
+        >
+            {children}
+        </StyledButton>
+    )
+}

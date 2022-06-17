@@ -2,15 +2,11 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-
 const cors = require('cors');
-
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
-
 const swaggerJSDoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
-
 const usersRouter = require('./routes/users');
 const courseRouter = require('./routes/courses')
 const ExpressError = require('./utils/ExpressError')
@@ -21,6 +17,10 @@ const MongoStore = require('connect-mongo');
 const User = require('./models/user');
 const fetch = require('node-fetch');
 const { URLSearchParams } = require('url');
+const dayjs = require('dayjs')
+const { Background } = require('./models/background')
+const duration = require('dayjs/plugin/duration')
+dayjs.extend(duration)
 
 require('dotenv').config()
 
@@ -106,25 +106,63 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/photo', (req, res) => {
-  // fetch a photo from unsplash
-  // fetch('https://api.unsplash.com/photos/random?' + new URLSearchParams({ 
-  //   query: 'landscape'
-  // }),{
-  //   headers: {
-  //     'Accept-Version': 'v1',
-  //     'Authorization': `Client-ID ${process.env.UNSPLASH_ACCESS}`
-  //   }
-  // })
-  // .then(response => response.json())
-  // .then(data => res.json(data.urls.full))
-})
 app.use('/users', usersRouter);
 app.use('/courses', courseRouter)
 
 app.use(cors())
 // app.use(bodyParser.json())
 // app.use(bodyParser.urlencoded({extended : true}));
+
+app.get('/photo', async (req, res, next) => {
+  const now = dayjs().utc()
+  const lastSavedBackground = await Background.findOne()
+  console.log('Time now: ' + now.format())
+  console.log('Last saved Image: ' + lastSavedBackground ?
+    lastSavedBackground.savedTime : 'none')
+  if (!lastSavedBackground) {
+    console.log('Fetching and saving a new image')
+    fetch('https://api.unsplash.com/photos/random?' + new URLSearchParams({
+      query: 'landscape'
+    }), {
+      headers: {
+        'Accept-Version': 'v1',
+        'Authorization': `Client-ID ${process.env.UNSPLASH_ACCESS}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        const newBackground = new Background({
+          imgUrl: data.urls.full,
+          savedTime: new Date(now.startOf('d'))
+        })
+        newBackground.save()
+        res.json(newBackground.imgUrl)
+      })
+      .catch(err => next(new ExpressError(err, 500)))
+  }
+  else if (now.diff(lastSavedBackground.savedTime) > dayjs.duration(1, 'hours').as('ms')) {
+    console.log('Fetching and replacing an image.')
+    fetch('https://api.unsplash.com/photos/random?' + new URLSearchParams({
+      query: 'landscape'
+    }), {
+      headers: {
+        'Accept-Version': 'v1',
+        'Authorization': `Client-ID ${process.env.UNSPLASH_ACCESS}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        lastSavedBackground.imgUrl = data.urls.full
+        lastSavedBackground.savedTime = new Date(now.startOf('h').utc())
+        lastSavedBackground.save()
+        res.json(lastSavedBackground.imgUrl)
+      })
+      .catch(err => next(new ExpressError(err, 500)))
+  } else {
+    console.log('Returning db image')
+    res.json(lastSavedBackground.imgUrl)
+  }
+})
 
 
 // catch 404 and forward to error handler
