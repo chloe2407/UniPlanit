@@ -18,7 +18,7 @@ const StyledMenu = styled(Menu)(({ theme }) => ({
 const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
     color: theme.palette.secondary.contrastText,
     border: `solid ${theme.palette.primary.main}`,
-    transition: theme.transitions.create(['backgroundColor', 'transform'], {
+    transition: theme.transitions.create(['transform'], {
         duration: 300,
         easing: theme.transitions.easing.easeInOut
     }),

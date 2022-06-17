@@ -7,12 +7,10 @@ const { register, login, logout, createNewUserEvent,
     getUserEventsByDate, createNewUserCourse, deleteUserCourseByCode,
     saveCourseHolder, lockCourse, saveTimeTable, newTimetable,
     getUserCourse, getLoggedIn, uploadImage, deleteImage, addNewFriend,
-    getUserFriend, getUser, lockSection, deleteSection
+    getUserFriend, getUser, lockSection, deleteSection, deleteFriend
 } = require('../controllers/users')
 const { isLoggedIn } = require('../controllers/middleware')
 const passport = require('passport')
-
-
 
 router.use(cors())
 
@@ -123,7 +121,6 @@ router.route('/events/:eventId')
     .patch(isLoggedIn, catchAsync(patchUserEventById))
     .delete(isLoggedIn, catchAsync(deleteUserEventById))
 
-    
 router.post('/uploadImage', isLoggedIn, catchAsync(uploadImage))    
 
 router.post('/deleteImage', isLoggedIn, catchAsync(deleteImage))
@@ -158,8 +155,10 @@ router.get('/courses', isLoggedIn, catchAsync(getUserCourse))
 
 // friends
 
+router.get('/friends', isLoggedIn, catchAsync(getUserFriend))
+
 router.post('/friends/new', isLoggedIn, catchAsync(addNewFriend))
 
-router.get('/friends', isLoggedIn, catchAsync(getUserFriend))
+router.post('/friends/delete', isLoggedIn, catchAsync(deleteFriend))
 
 module.exports = router;

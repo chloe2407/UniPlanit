@@ -93,6 +93,17 @@ module.exports.logout = async (req, res, next) => {
     })
 }
 
+module.exports.getUser = async (req, res, next) => {
+    const user = await User.findById(req.user)
+    if (user) {
+        await user.populate('friends')
+        await user.populate('courses')
+        res.json(user)
+    } else {
+        res.send({ err: 'No user found' })
+    }
+}
+
 module.exports.getUserEventsByDate = async (req, res, next) => {
     // req.params accepts begin or end or both
     // get all events that belongs to the current user
@@ -433,15 +444,15 @@ module.exports.getUserFriend = async (req, res, next) => {
     }
 }
 
-module.exports.getUser = async (req, res, next) => {
-    const user = await User.findById(req.user)
-    if (user) {
-        await user.populate('friends')
-        await user.populate('courses')
-        res.json(user)
-    } else {
-        res.send({ err: 'No user found' })
-    }
+module.exports.deleteFriend = async(req, res, next) => {
+    const user = await User.findById(req.user && req.user.id)
+    const { friendId } = req.body
+    const friend = await User.findById(friendId)
+    user.friends = user.friends.filter(f => f._id != friendId)
+    friend.friends = friend.friends.filter(f => f._id != user.id)
+    await friend.save()
+    await user.save()
+    res.json({ success: 'Successfully deleted' })
 }
 
 const createEventByCourseMeetingTime = async (user, course) => {

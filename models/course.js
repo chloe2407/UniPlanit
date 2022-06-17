@@ -110,13 +110,13 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
             },
             sectionCode: {
                 type: String,
-                // required: true
+                required: true
             },
             term: {
                 type: String,
                 uppercase: true,
                 enum: ['F', 'S', 'Y'],
-                // required: true
+                required: true
             },
             instructors: {
                 type: [String],
@@ -133,11 +133,11 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
                         },
                         startTime: {
                             type: String,
-                            // required: true
+                            required: true
                         },
                         endTime: {
                             type: String,
-                            // required: true
+                            required: true
                         },
                         assignedRoom1: String
                     }
@@ -152,17 +152,18 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
         {
             isLocked: {
                 type: Boolean,
-                default: undefined
+                default: undefined,
+                required: true
             },
             tutorialCode: {
                 type: String,
-                // required: true
+                required: true
             },
             term: {
                 type: String,
                 uppercase: true,
                 enum: ['F', 'S', 'Y'],
-                // required: true
+                required: true
             },
             instructors: {
                 type: [String],
@@ -179,11 +180,11 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
                         },
                         startTime: {
                             type: String,
-                            // required: true
+                            required: true
                         },
                         endTime: {
                             type: String,
-                            // required: true
+                            required: true
                         },
                         assignedRoom1: String
                     }
