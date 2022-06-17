@@ -1,8 +1,7 @@
 import React from 'react';
-// import { Grid, makeStyles, Typography} from '@material-ui/core';
 
 import Grid from '@mui/material/Grid';
-import  { makeStyles } from '@mui/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@mui/material/Typography';
 
 import schedule from "./schedule.js";
@@ -25,10 +24,7 @@ const useStyles = makeStyles(theme => ({
         //  [theme.breakpoints.up('sm')]: {
         //     padding: "2vh 0vw",
         //     backgroundColor: "orange"
-        // },
-        
-
-        
+        // },   
     },
     title: {
         backgroundColor: "lightblue",
@@ -50,7 +46,12 @@ const WeekView = ({currentSession}) => {
     const classes = useStyles();
     const times = [7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-    var selectedSchedule = schedule.schedule1[0]
+    
+    var selectedSchedule = schedule.schedule1
+
+    if (!currentSession) {
+        currentSession = "F"
+    }
 
     return (
         <Grid container>
@@ -70,53 +71,65 @@ const WeekView = ({currentSession}) => {
                     <Grid container item>
                         {/* Time */}
                         <Grid item xs={2} lg={1}><Typography className={classes.time}>{time < 10 ? 0 : ''}{time}:00</Typography></Grid>
+                        {/* Day */}
                         {days.map((day) => {
-                            var startTime = Number(selectedSchedule.startTime.slice(0,2))
-                            var endTime = Number(selectedSchedule.endTime.slice(0,2))
-
-                            var filled, startFilled, endFilled
-                            var sameDay = selectedSchedule.daysOfWeek.includes(day)
-                            var sameSession = selectedSchedule.courseSession === currentSession || selectedSchedule.courseSession === "Y"
-                            var afterStartTime = startTime <= time
-                            var beforeEndTime = endTime > time
-
-                            
-                            // time is at an endpoint
-                            if (time === startTime) {
-                                startFilled = selectedSchedule.startTime.slice(3) !== "30"
-                                endFilled = true
-                            } else if (time === endTime) {
-                                startFilled = true
-                                endFilled = selectedSchedule.endTime.slice(3) === "30"
-                            // time is in the middle
-                            } else {
-                                startFilled = true
-                                endFilled = true
-                            }
-                            sameDay && sameSession && afterStartTime && beforeEndTime ? filled = true : filled = false
-
                             return (
-                                    <Grid container item xs className={classes.schedule}>
-                                        {/* :00 -:30 */}
-                                        <Grid item xs className={classes.border} style={{backgroundColor: filled && startFilled ? selectedSchedule.color: 'transparent',
-                                                                                        borderTop: startTime === time && filled && startFilled && sameDay && sameSession? "0.3vh solid black": "0vh solid black",
-                                                                                        borderBottom: endTime === time && filled && !endFilled && sameDay && sameSession? "0.3vh solid black": "0vh solid black"
-                                                                                        }}>
-                                            
-                                            <div style={{display: startTime === time && filled && startFilled && sameDay && sameSession? "flex" : "none"}}><EventCard/></div>
+                                <Grid item xs style={{borderLeft: "0.15vw solid black"}}>
+                                {/* Courses */}
+                                {selectedSchedule.map((selectedCourse) => {
 
+                                    var startTime = Number(selectedCourse.startTime.slice(0,2))
+                                    var endTime = Number(selectedCourse.endTime.slice(0,2))
+
+                                    var filled, startFilled, endFilled
+                                    var sameDay = selectedCourse.daysOfWeek.includes(day)
+                                    var sameSession = selectedCourse.courseSession === currentSession || selectedCourse.courseSession === "Y"
+                                    var afterStartTime = startTime <= time
+                                    var beforeEndTime = endTime > time
+
+                                    // time is at an endpoint
+                                    if (time === startTime) {
+                                        startFilled = selectedCourse.startTime.slice(3) !== "30"
+                                        endFilled = true
+                                    } else if (time === endTime) {
+                                        startFilled = true
+                                        endFilled = selectedCourse.endTime.slice(3) === "30"
+                                    // time is in the middle
+                                    } else {
+                                        startFilled = true
+                                        endFilled = true
+                                    }
+                                    sameDay && sameSession && afterStartTime && beforeEndTime ? filled = true : filled = false
+                                    
+                                    return(
+                                            <Grid container item xs className={classes.schedule}>
+                                            {/* :00 -:30 */}
+                                            <Grid item xs className={classes.border} style={{backgroundColor: filled && startFilled ? selectedCourse.color: 'transparent',
+                                                                                            borderTop: startTime === time && filled && startFilled && sameDay && sameSession? "0.3vh solid black": "0vh solid black",
+                                                                                            borderBottom: endTime === time && filled && !endFilled && sameDay && sameSession? "0.3vh solid black": "0vh solid black"
+                                                                                            }}>
+                                                
+                                                <div style={{display: startTime === time && filled && startFilled && sameDay && sameSession? "flex" : "none"}}><EventCard {...selectedCourse}/></div>
+
+                                            </Grid>
+                                            {/* :30-:59 */}
+                                            <Grid item xs className={classes.border} style={{backgroundColor: filled && endFilled ? selectedCourse.color: 'transparent',
+                                                                                            borderTop: startTime === time && filled && !startFilled && sameDay && sameSession? "0.3vh solid black": "0vh solid black",
+                                                                                            borderBottom: endTime === time && filled && endFilled && sameDay && sameSession? "0.3vh solid black": "0vh solid black"
+                                                                                            }}>
+            
+                                                <div style={{display: startTime === time && filled && !startFilled && sameDay && sameSession? "flex" : "none"}}><EventCard {...selectedCourse}/></div>
+                                            </Grid>
                                         </Grid>
-                                        {/* :30-:59 */}
-                                        <Grid item xs className={classes.border} style={{backgroundColor: filled && endFilled ? selectedSchedule.color: 'transparent',
-                                                                                        borderTop: startTime === time && filled && !startFilled && sameDay && sameSession? "0.3vh solid black": "0vh solid black",
-                                                                                        borderBottom: endTime === time && filled && endFilled && sameDay && sameSession? "0.3vh solid black": "0vh solid black"
-                                                                                        }}>
-        
-                                            <div style={{display: startTime === time && filled && !startFilled && sameDay && sameSession? "flex" : "none"}}><EventCard/></div>
-                                        </Grid>
-                                    </Grid>
+                                    )
+
+                                })
+                                }
+                                </Grid>
                             )
+
                         })}
+                        
                     </Grid>
                     </div>
                 
