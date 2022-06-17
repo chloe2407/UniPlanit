@@ -3,7 +3,8 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@material-ui/core/styles';
+import Stack from '@mui/material/Stack';
 
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -26,24 +27,31 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
+const handleChange = () => {
+    
 
-const EventCard = ()  => {
+}
+
+
+const EventCard = (course)  => {
     const classes = useStyles();
-    var selectedSchedule = schedule.schedule1[0]
+    var selectedSchedule = schedule.schedule1
+    var selectedCourse = course
     return (
         <Box className={classes.container}>
             <div style={{display: "flex", flexDirection: "column", justifyContent: "flexStart"}}>
                     <Typography variant='body'>
-                        {selectedSchedule.courseName} {selectedSchedule.courseSection} {selectedSchedule.courseSession}
+                        {selectedCourse.courseName} {selectedCourse.courseSection} {selectedCourse.courseSession}
                     </Typography>
-                    <Typography variant='body'>{selectedSchedule.startTime}-{selectedSchedule.endTime}</Typography>
-                    <Typography variant='body'>{selectedSchedule.location}</Typography>
+                    <Typography variant='body'>{selectedCourse.startTime}-{selectedCourse.endTime}</Typography>
+                    <Typography variant='body'>{selectedCourse.location}</Typography>
 
                 </div>
-                <div style={{display: "flex", flexDirection: "row", alignSelf: "flexEnd"}}>
-                    <IconButton size="small"><LockIcon fontSize='small'/></IconButton>
-                    <IconButton size="small"><DeleteIcon fontSize='small'/></IconButton>
-                </div>
+                <Stack direction="row" spacing={1}>
+                    <IconButton><LockIcon fontSize='small'/></IconButton>
+                    <IconButton><DeleteIcon fontSize='small'/></IconButton>
+
+                </Stack>
         </Box>
         
     

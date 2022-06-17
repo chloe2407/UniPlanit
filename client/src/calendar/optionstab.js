@@ -11,12 +11,13 @@ import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 
 
 
-const OptionsTab = ({ setCurrentSession, openDrawer }) => {
-    var currentSession = "F"
-    const handleClick = (session) => {
-        currentSession = session
-        setCurrentSession(currentSession)
+const OptionsTab = ({setCurrentSession, openDrawer}) => {
+    const [value, setValue] = React.useState("F")
+    const handleChange = (event) => {
+        setValue(event.target.value)
+        setCurrentSession(event.target.value)
     }
+    // const [schedule, setSchedule] = React.useState()
     return (
         <div style={{ display: "inlinedBlock" }}>
             <Button onClick={openDrawer}>
@@ -26,11 +27,13 @@ const OptionsTab = ({ setCurrentSession, openDrawer }) => {
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
                 name="row-radio-buttons-group"
-                style={{ float: "left" }}
-
+                style={{float: "left"}}
+                value={value}
+                onChange={handleChange}
+                
             >
-                <FormControlLabel value="Fall Session" control={<Radio />} onClick={() => handleClick("F")} label="Fall Session" defaultChecked />
-                <FormControlLabel value="Winter Session" control={<Radio />} onClick={() => handleClick("S")} label="Winter Session" />
+                <FormControlLabel value="F" control={<Radio />} label="Fall Session" defaultChecked={true}/>
+                <FormControlLabel value="S" control={<Radio />} label="Winter Session" />
             </RadioGroup>
             <div style={{ float: "right" }}>
                 <Button><ChevronLeftRoundedIcon /><Typography>Prev</Typography></Button>

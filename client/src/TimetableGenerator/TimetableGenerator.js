@@ -85,7 +85,7 @@ console.log(data['SLA100H1'].sections[0].meetingTimes);
 
 
 /**
- * @name timeConflict
+ * @name timesConflict
  * @description Returns whether the meeting times m1 and m2 conflict.
  * @param {object} m1 
  * @param {object} m2
@@ -114,7 +114,7 @@ function sectionsConflict(s1, s2) {
             timeConflict.push(timesConflict(m1, m2));
         }
     }
-    sameMeeting = timesConflict.some(element => element === true);
+    sameMeeting = timeConflict.some(element => element === true);
 
     return sameSemester && sameMeeting
 }
@@ -140,13 +140,13 @@ function isValid(schedule) {
 
 /**
  * @name isSectionCompatible
- * @description Returns whether the given section is coimpatible with the given schedule.
+ * @description Returns whether the given section is compatible with the given schedule.
  * @param {object} schedule
  * @param {object} section
  * @returns {boolean}
  */
 function isSectionCompatible(schedule, section) {
-    allSections = Object.values(schedule);
+    let allSections = Object.values(schedule);
     let conflicts = [];
     for (let sec in allSections) {
         conflicts.push(!(sectionsConflict(sec, section)));
@@ -163,7 +163,7 @@ function isSectionCompatible(schedule, section) {
  */
 function filterByTerm(course, term) {
     let courseCopy = course;
-    sectionsInTerm = [];
+    let sectionsInTerm = [];
     for (let sec of course.sections) {
         if (sec.term === term || sec.term === 'Y') {
             sectionsInTerm.push(sec);
