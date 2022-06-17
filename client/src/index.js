@@ -18,6 +18,8 @@ import RequireAuth from './globalComponents/RequireAuth';
 import LoginWrap from './globalComponents/LoginWrap';
 import Account from './account/Account';
 
+import { io } from 'socket.io-client'
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ThemeProvider theme={theme}>

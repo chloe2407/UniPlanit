@@ -59,9 +59,6 @@ export default function OverflowIcon({ sx, remainCount, remainFriends, handleSuc
                             <Typography>
                                 {`${v.first} ${v.last}`}
                             </Typography>
-                            <ChatIcon />
-                            <CalendarMonthIcon />
-                            <PersonRemoveIcon />
                         </StyledMenuItem>
                     ))
                 }

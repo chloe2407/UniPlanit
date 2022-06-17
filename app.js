@@ -20,11 +20,16 @@ const { URLSearchParams } = require('url');
 const dayjs = require('dayjs')
 const { Background } = require('./models/background')
 const duration = require('dayjs/plugin/duration')
+// const { createServer } = require('http')
+// const { Server } = require('socket.io')
 dayjs.extend(duration)
+
+const app = express();
+// const httpServer = createServer(app)
+// const io = new Server(httpServer)
 
 require('dotenv').config()
 
-const app = express();
 
 // mongoose
 mongoose.connect(process.env.MONGO_URL)
@@ -110,15 +115,10 @@ app.use('/users', usersRouter);
 app.use('/courses', courseRouter)
 
 app.use(cors())
-// app.use(bodyParser.json())
-// app.use(bodyParser.urlencoded({extended : true}));
 
 app.get('/photo', async (req, res, next) => {
   const now = dayjs().utc()
   const lastSavedBackground = await Background.findOne()
-  console.log('Time now: ' + now.format())
-  console.log('Last saved Image: ' + lastSavedBackground ?
-    lastSavedBackground.savedTime : 'none')
   if (!lastSavedBackground) {
     console.log('Fetching and saving a new image')
     fetch('https://api.unsplash.com/photos/random?' + new URLSearchParams({
@@ -188,5 +188,27 @@ app.use(function (err, req, res, next) {
 // app.listen(port, () => {
 //  console.log(`serving on port ${port}`)
 // })
+
+// socket io for live messaging
+
+// io.on('connection', (socket) => {
+//   console.log('a user connected')
+//   socket.on('chat message', (msg) => {
+//     io.emit('chat message', msg)
+//   })
+// });
+
+// httpServer.listen(port, () => {
+//   console.log('listening on 3000');
+// });
+
+
+// const sendMessage = (message) => {
+//   io.sockets.emit('chat message', message)
+// }
+
+// const getMessage = (message) => {
+  
+// }
 
 module.exports = app;
