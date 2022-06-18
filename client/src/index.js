@@ -17,12 +17,12 @@ import { AuthProvider } from './context/Auth';
 import RequireAuth from './globalComponents/RequireAuth';
 import LoginWrap from './globalComponents/LoginWrap';
 import Account from './account/Account';
-
-import { io } from 'socket.io-client'
+import { SocketContext, socket } from './context/socket'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ThemeProvider theme={theme}>
+    <SocketContext.Provider value={socket}>
     <BrowserRouter>
       <AuthProvider>
         <Routes>
@@ -54,5 +54,6 @@ root.render(
         </Routes>
       </AuthProvider>
     </BrowserRouter >
+    </SocketContext.Provider>
   </ThemeProvider>
 );
