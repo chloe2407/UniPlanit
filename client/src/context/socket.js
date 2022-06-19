@@ -1,51 +1,51 @@
 import { io } from 'socket.io-client'
-import { createContext } from 'react'
-
-export const socket = io()
-export const SocketContext = createContext()
+import { createContext, useContext } from 'react'
+import useAuth from './Auth'
+import { useMemo, useState } from 'react'
 
 // Lifecycle
 // connect to server
 // send handshake packet
 // establish connection ? no/yes 
 // disconnect/connected
+const SocketContext = createContext()
 
-socket.on('connect', () => {
-    console.log(socket.id)
-})
+export function SocketProvider({ children }) {
+    const socket = io()
+    const { user } = useAuth()
 
-socket.on('connection_error', () => {
-    // ... something (send token)
-    socket.connect()
-})
+    if (user) {
+        const userId = user._id
+        socket.auth = {
+            username: user.email,
+            userId: userId
+        }
+        socket.userId = userId
+        socket.emit('user status', 'online')
 
-socket.on('disconnect', (reason) => {
-    console.log(reason)
-    if (reason === 'io server disconnect') {
-        // try reconnect
-        socket.connect()
+        socket.on('connection_error', () => {
+            socket.emit('user status', 'offline')
+            // socket.connect()
+        })
+
+        socket.on('disconnect', (reason) => {
+            socket.emit('user status', 'offline')
+            console.log(reason)
+            if (reason === 'io server disconnect') {
+                // socket.connect()
+            }
+        })
+
     }
-})
 
-// emit - sends something to server
-// on - receive something from server
+    const memo = useMemo(() => ({ socket }), [socket])
 
-socket.on('hello', arg => {
-    console.log(arg)
-})
 
-socket.emit('hello', 'world', 'world2')
+    return <SocketContext.Provider value={memo}>
+        {children}
+    </SocketContext.Provider>
+}
 
-// use req-res api for live updating friends
-// also set time out to an emit
-socket.timeout(5000).emit('UPDATE_FRIEND', 'userId', 'action', (err, response) => {
-    if (err) {
-        console.log(err)
-    } else {
-        console.log(response.status)
-    }
-})
-
-const sendMessage = () => {
-    socket.emit('message')
+export default function useSocket() {
+    return useContext(SocketContext)
 }

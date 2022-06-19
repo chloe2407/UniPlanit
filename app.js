@@ -20,16 +20,21 @@ const { URLSearchParams } = require('url');
 const dayjs = require('dayjs')
 const { Background } = require('./models/background')
 const duration = require('dayjs/plugin/duration')
-// const { createServer } = require('http')
-// const { Server } = require('socket.io')
-dayjs.extend(duration)
+const { createServer } = require('http')
 
 const app = express();
-// const httpServer = createServer(app)
-// const io = new Server(httpServer)
+const httpServer = createServer(app)
 
+const io = require('socket.io')(httpServer, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST']
+  }
+})
+const { updateFriend, sendPrivateMessage, readMessage } = require('./handlers/messageHandler')(io)
+
+dayjs.extend(duration)
 require('dotenv').config()
-
 
 // mongoose
 mongoose.connect(process.env.MONGO_URL)
@@ -184,31 +189,44 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500)
 });
 
-// redundant since bin/www already makes server listen.
-// app.listen(port, () => {
-//  console.log(`serving on port ${port}`)
-// })
-
 // socket io for live messaging
 
-// io.on('connection', (socket) => {
-//   console.log('a user connected')
-//   socket.on('chat message', (msg) => {
-//     io.emit('chat message', msg)
-//   })
-// });
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next)
 
-// httpServer.listen(port, () => {
-//   console.log('listening on 3000');
-// });
+io.use(wrap(session(sessionOptions)))
+io.use(wrap(passport.initialize()))
+io.use(wrap(passport.session()))
 
+io.use((socket, next) => {
+  const session = socket.request.session
+  if (socket.request.user) {
+    session.socketId = socket.id
+    socket.userId = socket.request.user.id
+    socket.join(socket.userId)
+    session.save()
+    next()
+  } else {
+    console.log('Not authorized')
+    next(new ExpressError('Not authorized', 401))
+  }
+})
 
-// const sendMessage = (message) => {
-//   io.sockets.emit('chat message', message)
-// }
+io.on('connection', (socket) => {
+  socket.on('update friend', updateFriend)
+  socket.on('private message', sendPrivateMessage)
+  socket.on('user status', msg => {
+    console.log(msg)
+  })
+});
 
-// const getMessage = (message) => {
-  
-// }
+io.on('disconnect', (socket) => {
+  socket.on('disconnect', (reason) => {
+    console.log(reason)
+  })
+})
+
+httpServer.listen(port, () => {
+  console.log('listening on 3000');
+});
 
 module.exports = app;

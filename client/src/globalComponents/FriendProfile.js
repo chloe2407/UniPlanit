@@ -16,9 +16,8 @@ import Dialog from '@mui/material/Dialog'
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack'
 
-export default function FriendProfile({ sx, friendInfo, handleFriendChange, handleSuccessMsg, handleErrorMsg }) {
+export default function FriendProfile({ sx, friendInfo, handleFriendChange, handleSuccessMsg, handleErrorMsg, handleShowChat }) {
     const [anchorEl, setAnchorEl] = useState(null)
-
     const [deleteFriend] = useDeleteFriend(friendInfo)
     const [showDeletePrompt, setShowDeletePrompt] = useState(false)
 
@@ -65,7 +64,7 @@ export default function FriendProfile({ sx, friendInfo, handleFriendChange, hand
                 </StyledMenuItem>
                 <Divider flexItem sx={{ mx: 2 }}
                     style={{ marginTop: 0, backgroundColor: 'white' }} />
-                <StyledMenuItem>
+                <StyledMenuItem onClick={() => handleShowChat(friendInfo)}>
                     <ChatIcon sx={{ mr: 2 }} />
                     Chat
                 </StyledMenuItem>

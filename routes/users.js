@@ -7,7 +7,8 @@ const { register, login, logout, createNewUserEvent,
     getUserEventsByDate, createNewUserCourse, deleteUserCourseByCode,
     saveCourseHolder, lockCourse, saveTimeTable, newTimetable,
     getUserCourse, getLoggedIn, uploadImage, deleteImage, addNewFriend,
-    getUserFriend, getUser, lockSection, deleteSection, deleteFriend
+    getUserFriend, getUser, lockSection, deleteSection, deleteFriend,
+    readMessages
 } = require('../controllers/users')
 const { isLoggedIn } = require('../controllers/middleware')
 const passport = require('passport')
@@ -160,5 +161,7 @@ router.get('/friends', isLoggedIn, catchAsync(getUserFriend))
 router.post('/friends/new', isLoggedIn, catchAsync(addNewFriend))
 
 router.post('/friends/delete', isLoggedIn, catchAsync(deleteFriend))
+
+router.post('/messages', isLoggedIn, catchAsync(readMessages))
 
 module.exports = router;
