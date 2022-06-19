@@ -8,18 +8,27 @@ import Favorites from './components/Favorites/Favorites'
 import { useImg } from '../hooks/hooks'
 import Loading from '../globalComponents/Loading'
 import Profile from './components/Profile/Profile';
+import { useParams } from 'react-router-dom'
 
 const Account = () => {
 
   const [imgUrl, loadImg] = useImg()
   const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState()
+
+  const params = useParams()
   useEffect(() => {
     loadImg()
       .then(() => {
         setIsLoading(false)
       })
-  }, []
-  )
+  }, [])
+
+  useEffect(() => {
+    fetch(`../users/${params.id}`)
+      .then(res => res.json())
+      .then(data => setUser(data))
+  }, [])
 
   return (
     <>
@@ -41,15 +50,14 @@ const Account = () => {
           paddingTop='70px'
         >
           <Grid item xs={12} md={4} xl={5}>
-            <ProfileImage />
-
+            { user && <ProfileImage user={user} /> }
           </Grid>
           <Grid item paddingLeft='40px'
             paddingRight='40px' xs={12} md={7} xl={6}>
-            <AccountInfo />
+            { user && <AccountInfo user={user} /> }
           </Grid>
         </Grid>
-        <Favorites />
+        { user && <Favorites user={user} /> }
         {/* <Profile /> */}
       </div >
     </>

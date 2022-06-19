@@ -10,8 +10,7 @@ import { AdvancedImage } from '@cloudinary/react'
 import { Cloudinary } from '@cloudinary/url-gen';
 import FileUpload from './FileUpload'
 
-const ProfileImage = () => {
-    const { user } = useAuth();
+const ProfileImage = ({ user }) => {
     const [updateImage, setUpdateImage] = useState(false)
     const [isUpdating, setIsUpdating] = useState(false)
     const handleFileUpload = (img) => {

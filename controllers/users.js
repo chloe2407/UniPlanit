@@ -95,7 +95,7 @@ module.exports.logout = async (req, res, next) => {
 }
 
 module.exports.getUser = async (req, res, next) => {
-    const user = await User.findById(req.user)
+    const user = await User.findById(req.params.id)
     if (user) {
         await user.populate('friends')
         await user.populate('courses')

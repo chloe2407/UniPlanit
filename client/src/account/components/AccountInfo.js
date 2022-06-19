@@ -5,8 +5,7 @@ import useAuth from '../../context/Auth';
 import InfoBox from './InfoBox/InfoBox'
 import Button from '@mui/material/Button';
 
-const AccountInfo = () => {
-    const { user } = useAuth();
+const AccountInfo = ({ user }) => {
     const [first, setFirst] = useState(user.first);
     const [last, setLast] = useState(user.last);
     const [email, setEmail] = useState(user.email);

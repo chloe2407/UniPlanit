@@ -22,7 +22,7 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
     const endRef = useRef()
 
     useEffect(() => {
-        fetch('users/messages', {
+        fetch('../users/messages', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -164,4 +164,6 @@ router.post('/friends/delete', isLoggedIn, catchAsync(deleteFriend))
 
 router.post('/messages', isLoggedIn, catchAsync(readMessages))
 
+router.get('/:id', catchAsync(getUser))
+
 module.exports = router;

@@ -13,10 +13,10 @@ import Landing from './landing/Landing';
 import Calendar from './calendar/Calendar';
 import ForgotPassword from './home/ForgotPassword';
 import About from './about/About';
-import { AuthProvider } from './context/Auth';
 import RequireAuth from './globalComponents/RequireAuth';
 import LoginWrap from './globalComponents/LoginWrap';
 import Account from './account/Account';
+import { AuthProvider } from './context/Auth';
 import { SocketProvider } from './context/socket'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -43,12 +43,12 @@ root.render(
                   <RequireAuth>
                     <Calendar />
                   </RequireAuth>} />
-                <Route path='account' element={
+                <Route path='account/:id' element={
                   <RequireAuth>
                     <Account />
                   </RequireAuth>
                 } />
-                <Route path="/about" element={<About />} />
+                <Route path="about" element={<About />} />
               </Route>
             </Route>
           </Routes>

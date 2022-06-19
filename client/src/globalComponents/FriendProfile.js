@@ -15,11 +15,13 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog'
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack'
+import { useNavigate } from 'react-router-dom';
 
 export default function FriendProfile({ sx, friendInfo, handleFriendChange, handleSuccessMsg, handleErrorMsg, handleShowChat }) {
     const [anchorEl, setAnchorEl] = useState(null)
     const [deleteFriend] = useDeleteFriend(friendInfo)
     const [showDeletePrompt, setShowDeletePrompt] = useState(false)
+    const navigate = useNavigate()
 
     const handleMenuClose = () => {
         setAnchorEl(null)
@@ -58,7 +60,8 @@ export default function FriendProfile({ sx, friendInfo, handleFriendChange, hand
             <NavbarMenu id='friend-menu'
                 anchorElNav={anchorEl}
                 handleMenuClose={handleMenuClose}>
-                <StyledMenuItem disabled
+                <StyledMenuItem
+                    onClick={() => navigate(`../account/${friendInfo._id}`)}
                     style={{ opacity: 1, paddingBottom: 5 }}>
                     {`${friendInfo.first} ${friendInfo.last}`}
                 </StyledMenuItem>

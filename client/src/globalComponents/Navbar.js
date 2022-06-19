@@ -36,8 +36,7 @@ export default function Navbar({ handleShowChat }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    console.log('fetching')
-    fetch('users/friends')
+    fetch('../users/friends')
       .then(res => res.json())
       .then(data => {
         if (!data.err) {

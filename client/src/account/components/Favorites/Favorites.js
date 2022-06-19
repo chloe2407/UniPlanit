@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import { Typography } from '@mui/material';
 import ScheduleCard from './ScheduleCard';
 
-const Favorites = () => {
+const Favorites = ({ user }) => {
     // const favSchedules = user.favorites;
     const favSchedules = [
         {
