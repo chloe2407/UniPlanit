@@ -44,7 +44,7 @@ export default function Profile({ sx, userInfo }) {
                 </StyledMenuItem>
                 <Divider flexItem sx={{ mx: 2 }} 
                          style={{ marginTop: 0, backgroundColor: 'white' }} />
-                <StyledMenuItem style={{ marginBottom: 0}} onClick={() => navigate('/account')}>
+                <StyledMenuItem style={{ marginBottom: 0}} onClick={() => navigate(`../account/${userInfo._id}`)}>
                     My Account
                 </StyledMenuItem>
                 <StyledMenuItem onClick={logout}>

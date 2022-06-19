@@ -15,29 +15,39 @@ const Account = () => {
   const [imgUrl, loadImg] = useImg()
   const [isLoading, setIsLoading] = useState(true)
   const [user, setUser] = useState()
-
+  
   const params = useParams()
   useEffect(() => {
     loadImg()
-      .then(() => {
-        setIsLoading(false)
-      })
+    .then(() => {
+      setIsLoading(false)
+    })
   }, [])
 
   useEffect(() => {
+    if (params.id) setUser(undefined)
+  }, [params.id])
+  
+  useEffect(() => {
     fetch(`../users/${params.id}`)
-      .then(res => res.json())
-      .then(data => setUser(data))
-  }, [])
+    .then(res => res.json())
+    .then(data => {
+      setUser(data)
+    })
+  }, [params.id])
+  
+  // useEffect(() => {
+  //   window.location.reload()
+  // }, [params.id])
 
   return (
-    <>
+    <div key={params.id}>
       <div style={{
         backgroundImage: imgUrl && `url(${imgUrl})`, display: 'flex', height: '17rem',
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
       }}>
         <Typography variant='h3'>Account Information</Typography>
       </div>
@@ -60,7 +70,7 @@ const Account = () => {
         { user && <Favorites user={user} /> }
         {/* <Profile /> */}
       </div >
-    </>
+    </div>
   )
 }
 

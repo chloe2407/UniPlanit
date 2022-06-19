@@ -22,7 +22,7 @@ export default function AddFriend({ sx, handleFriendChange, handleSuccessMsg, ha
     })
 
     const handleAddFriend = (email) => {
-        fetch('users/friends/new', {
+        fetch('../users/friends/new', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
