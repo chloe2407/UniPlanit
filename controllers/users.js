@@ -6,6 +6,7 @@ const duration = require('dayjs/plugin/duration')
 const utc = require('dayjs/plugin/utc')
 const timezone = require('dayjs/plugin/timezone')
 const ExpressError = require('../utils/ExpressError')
+const Message = require('../models/message')
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.extend(duration)
@@ -288,7 +289,7 @@ module.exports.saveCourseHolder = async (req, res, next) => {
     res.sendStatus(200)
 }
 
-module.exports.lockSection = async(req, res, next) => {
+module.exports.lockSection = async (req, res, next) => {
     const { type, courseCode } = req.body
     const user = await User.findById(req.user.id)
     await user.populate('courses')
@@ -305,7 +306,7 @@ module.exports.lockSection = async(req, res, next) => {
     return res.status(200).send({ success: 'Successfully lock/unlocked section/tutorial' })
 }
 
-module.exports.deleteSection = async(req, res, next) => {
+module.exports.deleteSection = async (req, res, next) => {
     const { type, courseCode } = req.body
     const user = await User.findById(req.user.id)
     await user.populate('courses')
@@ -326,8 +327,8 @@ module.exports.lockCourse = async (req, res, next) => {
     user.courses.forEach(c => {
         if (c.courseCode === courseCode) {
             c.isLocked = !c.isLocked
-            if(c.tutorial) c.tutorial.isLocked = true
-            if(c.section) c.section.isLocked = true
+            if (c.tutorial) c.tutorial.isLocked = true
+            if (c.section) c.section.isLocked = true
         }
     })
     await user.save()
@@ -444,7 +445,7 @@ module.exports.getUserFriend = async (req, res, next) => {
     }
 }
 
-module.exports.deleteFriend = async(req, res, next) => {
+module.exports.deleteFriend = async (req, res, next) => {
     const user = await User.findById(req.user && req.user.id)
     const { friendId } = req.body
     const friend = await User.findById(friendId)
@@ -453,6 +454,37 @@ module.exports.deleteFriend = async(req, res, next) => {
     await friend.save()
     await user.save()
     res.json({ success: 'Successfully deleted' })
+}
+
+module.exports.readMessages = async (req, res, next) => {
+    const { friendId } = req.body
+    const messages = await Message.find(
+        {
+            $or: [
+                {
+                    $and: [
+                        {
+                            from: req.user.id
+                        },
+                        {
+                            to: friendId
+                        }
+                    ]
+                },
+                {
+                    $and: [
+                        {
+                            from: friendId
+                        },
+                        {
+                            to: req.user.id
+                        }
+                    ]
+                }
+            ]
+        }
+    )
+    res.json(messages)
 }
 
 const createEventByCourseMeetingTime = async (user, course) => {
