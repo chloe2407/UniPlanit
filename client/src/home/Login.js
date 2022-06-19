@@ -25,7 +25,6 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
     loadImg()
       .then(() => {
         setIsLoading(false)

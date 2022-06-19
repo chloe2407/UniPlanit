@@ -33,7 +33,6 @@ const SignUp = () => {
   // .then(res => setImgUrl(res))
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
     loadImg()
       .then(() => {
         setIsLoading(false)
