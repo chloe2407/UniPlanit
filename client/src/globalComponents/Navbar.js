@@ -21,7 +21,7 @@ import Alert from '@mui/material/Alert';
 import CloseIcon from '@mui/icons-material/Close'
 
 
-export default function Navbar() {
+export default function Navbar({ handleShowChat }) {
   const { user, logout } = useAuth()
   const [userFriend, setUserFriend] = useState([])
   const [anchorElNav, setAnchorElNav] = useState(null)
@@ -119,6 +119,7 @@ export default function Navbar() {
                   handleFriendChange={(val) => handleFriendChange(val)}
                   handleSuccessMsg={msg => handleSuccessMsg(msg)}
                   handleErrorMsg={msg => handleErrorMsg(msg)}
+                  handleShowChat={handleShowChat}
                   sx={{ p: 1 }}
                 />
               ))
@@ -278,7 +279,6 @@ export default function Navbar() {
         </Toolbar>
       </AppBar>
       <Snackbar
-        sx={{ height: '15vh' }}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={openWarning}
         onClose={handleSnackbarClose}
