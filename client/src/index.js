@@ -17,43 +17,43 @@ import { AuthProvider } from './context/Auth';
 import RequireAuth from './globalComponents/RequireAuth';
 import LoginWrap from './globalComponents/LoginWrap';
 import Account from './account/Account';
-import { SocketContext, socket } from './context/socket'
+import { SocketProvider } from './context/socket'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ThemeProvider theme={theme}>
-    <SocketContext.Provider value={socket}>
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route path='/' element={<App />}>
-            <Route element={<PageLayout />}>
-              <Route index element={<Landing />} />
-              <Route path="login" element={
-                <LoginWrap>
-                  <Login />
-                </LoginWrap>
-              } />
-              <Route path="signup" element={
-                <LoginWrap>
-                  <SignUp />
-                </LoginWrap>} />
-              <Route path="forgotpassword" element={<ForgotPassword />} />
-              <Route path="calendar" element={
-                <RequireAuth>
-                  <Calendar />
-                </RequireAuth>} />
-              <Route path='account' element={
-                <RequireAuth>
-                  <Account />
-                </RequireAuth>
-              } />
-              <Route path="/about" element={<About />} />
+        <SocketProvider>
+          <Routes>
+            <Route path='/' element={<App />}>
+              <Route element={<PageLayout />}>
+                <Route index element={<Landing />} />
+                <Route path="login" element={
+                  <LoginWrap>
+                    <Login />
+                  </LoginWrap>
+                } />
+                <Route path="signup" element={
+                  <LoginWrap>
+                    <SignUp />
+                  </LoginWrap>} />
+                <Route path="forgotpassword" element={<ForgotPassword />} />
+                <Route path="calendar" element={
+                  <RequireAuth>
+                    <Calendar />
+                  </RequireAuth>} />
+                <Route path='account' element={
+                  <RequireAuth>
+                    <Account />
+                  </RequireAuth>
+                } />
+                <Route path="/about" element={<About />} />
+              </Route>
             </Route>
-          </Route>
-        </Routes>
+          </Routes>
+        </SocketProvider>
       </AuthProvider>
     </BrowserRouter >
-    </SocketContext.Provider>
   </ThemeProvider>
 );
