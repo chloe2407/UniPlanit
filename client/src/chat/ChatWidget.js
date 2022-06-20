@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { Draggable } from 'drag-react'
+import Draggable from 'react-draggable'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -63,18 +63,23 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
     }
 
     const scrollToBottom = () => {
-        endRef.current.scrollIntoView({ behavior: 'smooth' })
+        endRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
     return (
-        <Draggable style={{ position: 'absolute', left: '50vh', top: '50vh' }}>
-            <Box sx={{
-                color: 'white',
-                backgroundColor: 'black',
-                padding: 2,
-                borderRadius: 3,
-            }}>
-                <Stack divider={<Divider flexItem />}>
-                    <Stack direction='row' spacing={2} sx={{ alignItems: 'center' }}>
+        <Draggable bounds="body" handle='#handle'>
+            <Box
+                sx={{
+                    zIndex: 9999,
+                    position: 'absolute',
+                    cursor: 'auto',
+                    userSelect: 'text',
+                    color: 'white',
+                    backgroundColor: 'black',
+                    padding: 2,
+                    borderRadius: 3,
+                }}>
+                <Stack spacing={1} divider={<Divider flexItem />}>
+                    <Stack direction='row' spacing={2} sx={{ alignItems: 'center', cursor: 'move' }} id="handle">
                         <Avatar
                             sx={{
                                 width: 30,
@@ -90,27 +95,45 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
                             {`${friendInfo.first} ${friendInfo.last}`}
                         </Typography>
                         <IconButton
-                            sx={{ color: 'inherit' }}
+                            sx={{ color: 'inherit'}}
                             onClick={() => handleCloseChat(friendInfo)}
                         >
                             <MinimizeIcon style={{ transform: 'rotate(0.5turn)' }} />
                         </IconButton>
                     </Stack>
 
-                    <Box style={{ maxHeight: 400, overflow: 'auto' }} sx={{ height: '30vh', width: '20vh', p: 1, textAlign: 'start' }}>
+                    <Box 
+                    style={{
+                        maxHeight: 500, 
+                        overflow: 'auto' }} 
+                    sx={{ 
+                        height: '35vh', 
+                        width: '25vh',
+                         p: 1,
+                          textAlign: 'start' 
+                          }}>
                         {
                             conversation && conversation.map(m => (
                                 <Box key={m._id}>
-                                    <Typography>
-                                        {m.from === friendInfo._id ?
-                                            `${friendInfo.first} ${friendInfo.last}`
-                                            :
-                                            `${user.first} ${user.last}`
-                                        }:
-                                    </Typography>
-                                    <Typography>
-                                        {m.message}
-                                    </Typography>
+                                    {m.from === friendInfo._id ?
+                                        <>
+                                            <Typography>
+                                                <strong>{`${friendInfo.first} ${friendInfo.last}`}</strong>
+                                            </Typography>
+                                            <Typography sx={{ mb: 1 }}>
+                                                {m.message}
+                                            </Typography>
+                                        </>
+                                        :
+                                        <>
+                                            <Typography sx={{ textAlign: 'end' }}>
+                                                <strong>{`${user.first} ${user.last}`}</strong>
+                                            </Typography>
+                                            <Typography sx={{ textAlign: 'end', mb: 1 }}>
+                                                {m.message}
+                                            </Typography>
+                                        </>
+                                    }
                                 </Box>
                             ))
                         }
@@ -127,6 +150,7 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
                                 }
                             }}
                             label={null}
+                            fullWidth
                             variant='outlined'
                             value={msg}
                             onChange={handleMessage} />
