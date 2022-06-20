@@ -51,10 +51,10 @@ import useAuth from '../context/Auth';
 
 //
 
-const SideMenu = ({ handleCloseDrawer, openEdit, setOpenEdit}) => {
-    const { user, setUser } = useAuth()
-    // const [userData, setUserData] = useState(demo) // whole thing is demo
-    const [isChangingCourse, setIsChangingCourse] = useState(false)
+const SideMenu = ({ handleCloseDrawer, openEdit, setOpenEdit }) => {
+  const { user, setUser } = useAuth();
+  // const [userData, setUserData] = useState(demo) // whole thing is demo
+  const [courseChangeCount, setCourseChangeCount] = useState(0);
 
   useEffect(() => {
     console.log('fetching');
@@ -81,33 +81,26 @@ const SideMenu = ({ handleCloseDrawer, openEdit, setOpenEdit}) => {
       </>
     );
   }
-    return(
-        <Box mt={2} sx={{ overflow: 'auto' }}>
-            {openEdit
-                ? <Editing />
-                :
-                <>
-                    <Button onClick={handleCloseDrawer}>
-                        click to go back
-                    </Button>
-                    <Typography
-                        variant='h5'
-                        sx={{ display: 'flex', justifyContent: 'start', marginLeft: 3 }}>
-                        Your Courses
-                    </Typography>
-                    {
-                        user && <UserCourses user={user}
-                            handleChangingCourse={handleChangingCourse} />
-                    }
-                    <SearchBar handleChangingCourse={handleChangingCourse} />
-                </>
-            }
-            <button onClick={() => setOpenEdit(!openEdit)}>
-            <Typography>{openEdit ? <>click to close edit</> : <>click to edit</>}</Typography>
-            </button>
-        </Box>
-    )
-}
+  return (
+    <Box mt={2} sx={{ overflow: 'auto' }}>
+      {openEdit ? (
+        <Editing />
+      ) : (
+        <>
+          <Button onClick={handleCloseDrawer}>click to go back</Button>
+          <Typography variant="h5" sx={{ display: 'flex', justifyContent: 'start', marginLeft: 3 }}>
+            Your Courses
+          </Typography>
+          {user && <UserCourses user={user} handleChangingCourse={handleChangingCourse} />}
+          <SearchBar handleChangingCourse={handleChangingCourse} />
+        </>
+      )}
+      <button onClick={() => setOpenEdit(!openEdit)}>
+        <Typography>{openEdit ? <>click to close edit</> : <>click to edit</>}</Typography>
+      </button>
+    </Box>
+  );
+};
 
 function UserCourses({ user, handleChangingCourse }) {
   const endRef = useRef();
