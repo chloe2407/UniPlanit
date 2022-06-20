@@ -237,17 +237,16 @@ module.exports.createNewUserCourse = async (req, res, next) => {
     let isInUserCourses
     user.courses.map(c => {
         if (c.courseCode === course.courseCode) {
+            c = course
             isInUserCourses = true
         }
     })
-    if (isInUserCourses) {
-        return res.send({ err: 'User already has course!' })
-    } else {
-        await createEventByCourseMeetingTime(user, course, user.id)
+    // await createEventByCourseMeetingTime(user, course, user.id)
+    if (!isInUserCourses){
         user.courses.push(course)
-        await user.save()
-        res.status(200).send({ message: 'Successfully added a new course for user' })
     }
+    await user.save()
+    res.status(200).send({ success: 'Successfully added a new course for user' })
 }
 
 module.exports.deleteUserCourseByCode = async (req, res, next) => {

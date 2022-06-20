@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import courseData from './data/course_and_title.json'
 import Button from '@mui/material/Button'
 import Autocomplete from '@mui/material/Autocomplete'
@@ -55,25 +55,25 @@ const SideMenu = ({ open, setOpenEdit }) => {
     const { user, setUser } = useAuth()
     // const [userData, setUserData] = useState(demo) // whole thing is demo
     const [edit, setEdit] = useState(false)
-    const [isChangingCourse, setIsChangingCourse] = useState(false)
-
-    const handleChangingCourse = () => {
-        setIsChangingCourse(true)
-    }
+    const [courseChangeCount, setCourseChangeCount] = useState(0)
 
     useEffect(() => {
+        console.log('fetching')
         if (user) {
-            fetch('users', { method: 'GET' })
+            fetch(`../users/${user._id}`, { method: 'GET' })
                 .then(res => res.json())
                 .then(user => {
+                    console.log(user)
                     if (!user.err) {
                         setUser(user)
-                        setIsChangingCourse(false)
-                        console.log(user)
                     }
                 })
         }
-    }, [isChangingCourse])
+    }, [courseChangeCount])
+
+    const handleChangingCourse = () => {
+        setCourseChangeCount(courseChangeCount + 1)
+    }
 
     function Editing() {
         return (
@@ -86,7 +86,7 @@ const SideMenu = ({ open, setOpenEdit }) => {
 
     return (
 
-        <Box mt={2} sx={{ overflow: 'auto' }}>
+        <Box mt={2} sx={{ width: '40vh', overflow: 'auto' }}>
             {edit
                 ? <Editing />
                 :
@@ -100,7 +100,7 @@ const SideMenu = ({ open, setOpenEdit }) => {
                         user && <UserCourses user={user}
                             handleChangingCourse={handleChangingCourse} />
                     }
-                    <SearchBar handleChangingCourse={handleChangingCourse} />
+                    <SearchBar userCourses={user.courses} handleChangingCourse={handleChangingCourse} />
                 </>
             }
             <button onClick={() => setOpenEdit(!open)}>
@@ -111,7 +111,16 @@ const SideMenu = ({ open, setOpenEdit }) => {
 }
 
 function UserCourses({ user, handleChangingCourse }) {
+    const endRef = useRef()
     const [courseCodeShow, setCourseCodeShow] = useState([])
+
+    const scrollToBottom = () => {
+        endRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+
+    useEffect(() => {
+        scrollToBottom()
+    },[user])
 
     const handleCourseOperations = (option, courseCode, type) => {
         fetch(`users/courses/${option}`, {
@@ -124,7 +133,8 @@ function UserCourses({ user, handleChangingCourse }) {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    handleChangingCourse(true)
+                    handleChangingCourse()
+                    scrollToBottom()
                 }
             })
     }
@@ -136,7 +146,7 @@ function UserCourses({ user, handleChangingCourse }) {
     }
 
     return (
-        <List sx={{ maxHeight: 300, overflow: 'auto' }}>
+        <List sx={{ maxHeight: 500, overflow: 'auto' }}>
             {user.courses.map((course, i) =>
                 <Box key={course.courseCode}>
                     <ListItem key={course.courseCode} sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}
@@ -205,13 +215,16 @@ function UserCourses({ user, handleChangingCourse }) {
                 </Box>
             )
             }
+            <div ref={endRef}/>
         </List>
     )
 }
 
-function SearchBar({ handleChangingCourse }) {
+function SearchBar({ userCourses, handleChangingCourse }) {
     const [input, setInput] = useState({ courseCode: "", university: "uoft", term: "F" });
     const [searchData, setSearchData] = useState(undefined)
+    const [isLoading, setIsLoading] = useState(false)
+
     const filterOptions = createFilterOptions({
         limit: 10,
         ignoreCase: true
@@ -227,6 +240,8 @@ function SearchBar({ handleChangingCourse }) {
         console.log(input.courseCode.slice(0, 8))
         console.log(input.university.slice(0, 8))
         console.log(input.term.slice(0, 8))
+        setIsLoading(true)
+        setSearchData(undefined)
         fetch("/courses", {
             method: 'POST',
             headers: {
@@ -240,8 +255,8 @@ function SearchBar({ handleChangingCourse }) {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data)
                 setSearchData(data)
+                setIsLoading(false)
             })
             .catch(err => console.error(err))
     }
@@ -265,21 +280,40 @@ function SearchBar({ handleChangingCourse }) {
         }
     }
 
-    const handleAddCourseWithSection = (course) => {
+    const handleAddCourseWithSection = (type, section) => {
         // call server make change
         // update current state for new user courses
         // handleAdding
+        let course
+        userCourses.map(c => {
+            if (c.courseCode === searchData[0].courseCode) course = c
+        })
+        if (!course){
+            course = {...searchData[0]}
+            delete course.tutorials
+            delete course.sections
+        }
+        if (type === 'lec'){
+            course.section = section
+        } else {
+            course.tutorial = section
+        }
+        console.log(course)
         fetch('/users/courses/new', {
             method: 'POST',
-            'Content-Type': 'application/json',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 course: course
             })
         })
             .then(res => res.json())
             .then(data => {
+                console.log(data)
                 if (data.success) {
-                    handleChangingCourse(true)
+                    handleChangingCourse()
+                    console.log('changing course')
                 }
             })
     }
@@ -315,19 +349,27 @@ function SearchBar({ handleChangingCourse }) {
                         }
                     </RadioGroup>
                 </FormGroup>
-            </Container>
-            {(searchData === undefined) ?
-                <></>
-                :
-                <List sx={{ maxHeight: 300, overflow: 'auto' }}>
-                    <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
-                    {(searchData.length === 0) ?
-                        <Typography align='center'>No Course With Matching Name And Term</Typography>
-                        :
+
+                {(searchData === undefined) ?
+                    isLoading ?
                         <>
-                            <ListItem sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}>
-                                <Typography>
-                                    List of Lectures
+                            <Container sx={{ m: 7, transform: 'scale(0.6)' }}>
+                                <img className='ld ld-bounce'
+                                    style={{ animationDuration: '1s' }}
+                                    src='./calendar-loader.png' />
+                            </Container>
+                        </> : null
+                    :
+                    <List sx={{ maxHeight: 300, overflow: 'auto' }}>
+                        <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
+                        {(searchData.length === 0) ?
+                            <Typography align='center'>No Course With Matching Name And Term</Typography>
+                            :
+                            <>
+                                <ListItem sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}>
+                                    <Typography>
+                                        List of Lectures
+                                    </Typography>
                                     <List>
                                         {searchData[0].sections.map((lecture) =>
                                             <>
@@ -337,20 +379,22 @@ function SearchBar({ handleChangingCourse }) {
                                                 >
                                                     <Typography>
                                                         [{lecture.sectionCode}]
-                                                        <Button sx={{ border: 1, borderRadius: 2 }}>
-                                                            Add/Change
-                                                        </Button>
                                                     </Typography>
+                                                    <Button sx={{ border: 1, borderRadius: 2 }}>
+                                                        <Typography>
+                                                            Add/Change
+                                                        </Typography>
+                                                    </Button>
                                                 </ListItem>
                                             </>
                                         )}
                                     </List>
-                                </Typography>
-                            </ListItem>
-                            <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
-                            <ListItem sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}>
-                                <Typography>
-                                    List of Tutorials
+                                </ListItem>
+                                <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
+                                <ListItem sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}>
+                                    <Typography>
+                                        List of Tutorials
+                                    </Typography>
                                     <List>
                                         {searchData[0].tutorials.map((tutorial) =>
                                             <>
@@ -360,21 +404,28 @@ function SearchBar({ handleChangingCourse }) {
                                                 >
                                                     <Typography>
                                                         [{tutorial.tutorialCode}]
-                                                        <Button sx={{ border: 1, borderRadius: 2 }}>
-                                                            Add/Change
-                                                        </Button>
                                                     </Typography>
+                                                    <Button tutorial={tutorial} sx={{ border: 1, borderRadius: 2 }}
+                                                        onClick={() => handleAddCourseWithSection('tut', tutorial)}>
+                                                        <Typography>
+                                                            Add/Change
+                                                        </Typography>
+                                                    </Button>
                                                 </ListItem>
                                             </>
                                         )}
                                     </List>
-                                </Typography>
-                            </ListItem>
-                        </>
-                    }
-                    <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
-                </List>
-            }
+
+                                </ListItem>
+                            </>
+                        }
+                        <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
+                    </List>
+                }
+                <Button variant={'contained'}>
+                    Generate Courses
+                </Button>
+            </Container>
         </Box>
 
     )

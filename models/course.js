@@ -106,7 +106,8 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
         {
             isLocked: {
                 type: Boolean,
-                default: undefined
+                default: false,
+                required: true
             },
             sectionCode: {
                 type: String,
@@ -152,7 +153,7 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
         {
             isLocked: {
                 type: Boolean,
-                default: undefined,
+                default: false,
                 required: true
             },
             tutorialCode: {
