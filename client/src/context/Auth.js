@@ -11,7 +11,7 @@ export function AuthProvider({ children }) {
 
   const authenticate = (type, values) => {
     axios
-      .post(`/users/${type}`, values)
+      .post(`users/${type}`, values)
       .then((data) => {
         setUser(data);
         navigate((location.state && location.state.from.pathname) || '../calendar');
@@ -22,7 +22,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    axios.post('/users/logout').then(() => {
+    axios.post('users/logout').then(() => {
       setUser(null);
       navigate('/');
       window.location.reload();
@@ -32,7 +32,11 @@ export function AuthProvider({ children }) {
   const checkLoggedIn = () => {
     axios
       .post('users/getLoggedIn')
-      .then((data) => setUser(data))
+      .then((data) => {
+        if (!data.message) {
+          setUser(data);
+        }
+      })
       .catch((err) => console.log(err));
   };
 

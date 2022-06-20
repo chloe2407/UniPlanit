@@ -3,9 +3,9 @@ import { useState } from 'react';
 
 import WeekView from './weekview.js';
 import OptionsTab from './optionstab.js';
-import SideMenu from './sidemenu';
 import Collapse from '@mui/material/Collapse';
 import Drawer from '@mui/material/Drawer';
+import SideMenu from 'calendar/sideMenu/SideMenu';
 
 const Calendar = () => {
   const [currentSession, setCurrentSession] = useState(0);

@@ -2,24 +2,19 @@ import React, { useEffect, useState } from 'react';
 import ProfileImage from './components/ProfileImage/ProfileImage';
 import AccountInfo from './components/AccountInfo';
 import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 import Favorites from './components/Favorites/Favorites';
-import { useImg } from '../hooks/hooks';
-import Loading from '../globalComponents/Loading';
-import Profile from './components/Profile/Profile';
+import { useImg } from 'hooks/api/hooks';
 import { useParams } from 'react-router-dom';
+import { getParamUserData } from './api/getParamUserData';
 
 const Account = () => {
   const [imgUrl, loadImg] = useImg();
-  const [isLoading, setIsLoading] = useState(true);
   const [paramUser, setParamUser] = useState();
-
   const params = useParams();
+
   useEffect(() => {
-    loadImg().then(() => {
-      setIsLoading(false);
-    });
+    loadImg();
   }, []);
 
   useEffect(() => {
@@ -27,16 +22,11 @@ const Account = () => {
   }, [params.id]);
 
   useEffect(() => {
-    fetch(`../users/${params.id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setParamUser(data);
-      });
+    getParamUserData(params.id).then((data) => {
+      console.log(data);
+      setParamUser(data);
+    });
   }, [params.id]);
-
-  // useEffect(() => {
-  //   window.location.reload()
-  // }, [params.id])
 
   return (
     <>

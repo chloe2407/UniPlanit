@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Autocomplete from '@mui/material/Autocomplete';
 import useAuth from '../context/Auth';
-import { useImg } from '../hooks/hooks';
+import { useImg } from '../hooks/api/hooks';
 import Loading from '../globalComponents/Loading';
 
 const signupSchema = yup.object().shape({

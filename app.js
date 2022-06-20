@@ -121,10 +121,10 @@ app.use('/courses', courseRouter);
 app.use(cors());
 
 app.get('/photo', async (req, res, next) => {
+  // Return a background picture for login and sign up
   const now = dayjs().utc();
   const lastSavedBackground = await Background.findOne();
   if (!lastSavedBackground) {
-    console.log('Fetching and saving a new image');
     fetch(
       'https://api.unsplash.com/photos/random?' +
         new URLSearchParams({
@@ -148,7 +148,6 @@ app.get('/photo', async (req, res, next) => {
       })
       .catch((err) => next(new ExpressError(err, 500)));
   } else if (now.diff(lastSavedBackground.savedTime) > dayjs.duration(1, 'hours').as('ms')) {
-    console.log('Fetching and replacing an image.');
     fetch(
       'https://api.unsplash.com/photos/random?' +
         new URLSearchParams({
@@ -170,7 +169,6 @@ app.get('/photo', async (req, res, next) => {
       })
       .catch((err) => next(new ExpressError(err, 500)));
   } else {
-    console.log('Returning db image');
     res.json(lastSavedBackground.imgUrl);
   }
 });

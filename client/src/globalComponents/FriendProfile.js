@@ -10,7 +10,7 @@ import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ChatIcon from '@mui/icons-material/Chat';
 import Box from '@mui/material/Box';
-import { useDeleteFriend } from './hooks';
+import { useDeleteFriend } from 'hooks/api/hooks';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Container from '@mui/material/Container';
