@@ -233,18 +233,25 @@ module.exports.createNewUserCourse = async (req, res, next) => {
     // course is a courseOneSectionSchema
     const { course } = req.body
     const user = await User.findById(req.user.id)
+    console.log(course)
     // need an event for each meeting time for lecture and tutorial
-    let isInUserCourses
-    user.courses.map(c => {
-        if (c.courseCode === course.courseCode) {
-            c = course
-            isInUserCourses = true
-        }
-    })
+    // let isInUserCourses
+    user.courses = user.courses.filter(c =>    
+        c.courseCode !== course.courseCode
+    )
+    user.courses.push(course)
+    // user.courses.forEach((c, i) => {
+    //     if (c.courseCode === course.courseCode) {
+    //         user.courses[i] = course
+    //         console.log(user.courses[i])
+    //         isInUserCourses = true
+    //     }
+    // })
+    console.log(user.courses)
     // await createEventByCourseMeetingTime(user, course, user.id)
-    if (!isInUserCourses){
-        user.courses.push(course)
-    }
+    // if (!isInUserCourses){
+    //     user.courses.push(course)
+    // }
     await user.save()
     res.status(200).send({ success: 'Successfully added a new course for user' })
 }
@@ -257,23 +264,23 @@ module.exports.deleteUserCourseByCode = async (req, res, next) => {
     // filter out all the courses from user
     user.courses = user.courses.filter(course => course.courseCode !== courseCode)
     // remove associated events from user events and events
-    await user.populate('events')
-    user.events = user.events.filter(event => {
-        if (event.course) {
-            event.course.courseCode !== courseCode
-        }
-    })
+    // await user.populate('events')
+    // user.events = user.events.filter(event => {
+    //     if (event.course) {
+    //         event.course.courseCode !== courseCode
+    //     }
+    // })
     await user.save()
-    await Event.deleteMany({
-        $and: [
-            {
-                owner: { $eq: user.id },
-            }, {
-                courseCode: { $eq: courseCode }
-            }
-        ]
-    })
-    res.json(user.courses)
+    // await Event.deleteMany({
+    //     $and: [
+    //         {
+    //             owner: { $eq: user.id },
+    //         }, {
+    //             courseCode: { $eq: courseCode }
+    //         }
+    //     ]
+    // })
+    res.status(200).send({ success: 'Successfully added a new course for user' })
 }
 
 module.exports.saveCourseHolder = async (req, res, next) => {

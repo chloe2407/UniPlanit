@@ -124,7 +124,7 @@ router.route('/events/:eventId')
 
 router.post('/uploadImage', isLoggedIn, catchAsync(uploadImage))    
 
-router.post('/deleteImage', isLoggedIn, catchAsync(deleteImage))
+router.delete('/deleteImage', isLoggedIn, catchAsync(deleteImage))
 
 // create a new course for user
 router.post('/courses/new', isLoggedIn, catchAsync(createNewUserCourse))
@@ -148,7 +148,7 @@ router.delete('/courses/delete', isLoggedIn, catchAsync(deleteUserCourseByCode))
 
 router.post('/courses/lockSection', isLoggedIn, catchAsync(lockSection))
 
-router.post('/courses/deleteSection', isLoggedIn, catchAsync(deleteSection))
+router.delete('/courses/deleteSection', isLoggedIn, catchAsync(deleteSection))
 
 
 // get users courses
@@ -160,7 +160,7 @@ router.get('/friends', isLoggedIn, catchAsync(getUserFriend))
 
 router.post('/friends/new', isLoggedIn, catchAsync(addNewFriend))
 
-router.post('/friends/delete', isLoggedIn, catchAsync(deleteFriend))
+router.delete('/friends/delete', isLoggedIn, catchAsync(deleteFriend))
 
 router.post('/messages', isLoggedIn, catchAsync(readMessages))
 

@@ -63,7 +63,6 @@ const SideMenu = ({ open, setOpenEdit }) => {
             fetch(`../users/${user._id}`, { method: 'GET' })
                 .then(res => res.json())
                 .then(user => {
-                    console.log(user)
                     if (!user.err) {
                         setUser(user)
                     }
@@ -122,9 +121,9 @@ function UserCourses({ user, handleChangingCourse }) {
         scrollToBottom()
     },[user])
 
-    const handleCourseOperations = (option, courseCode, type) => {
-        fetch(`users/courses/${option}`, {
-            method: 'POST',
+    const handleCourseOperations = (option, courseCode, type, method='POST') => {
+        fetch(`../users/courses/${option}`, {
+            method: `${method}`,
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -155,7 +154,7 @@ function UserCourses({ user, handleChangingCourse }) {
                             <IconButton onClick={() => handleCourseOperations('lock', course.courseCode)}>
                                 {(course.isLocked) ? <LockIcon /> : <LockOpenIcon />}
                             </IconButton>
-                            <IconButton onClick={() => handleCourseOperations('delete', course.courseCode)}>
+                            <IconButton onClick={() => handleCourseOperations('delete', course.courseCode, null, 'DELETE')}>
                                 <DeleteOutlineIcon />
                             </IconButton>
                             [{course.courseCode}] {course.courseTitle}
@@ -176,7 +175,7 @@ function UserCourses({ user, handleChangingCourse }) {
                                                 {course.section.isLocked ? <LockIcon /> : <LockOpenIcon />}
                                             </IconButton>
                                             <IconButton
-                                                onClick={() => handleCourseOperations('deleteSection', course.courseCode, 'section')}
+                                                onClick={() => handleCourseOperations('deleteSection', course.courseCode, 'section', null, 'DELETE')}
                                             >
                                                 <DeleteOutlineIcon />
                                             </IconButton>
@@ -200,7 +199,7 @@ function UserCourses({ user, handleChangingCourse }) {
                                                 {course.tutorial.isLocked ? <LockIcon /> : <LockOpenIcon />}
                                             </IconButton>
                                             <IconButton
-                                                onClick={() => handleCourseOperations('deleteSection', course.courseCode, 'tutorial')}
+                                                onClick={() => handleCourseOperations('deleteSection', course.courseCode, 'tutorial', null, 'DELETE')}
                                             >
                                                 <DeleteOutlineIcon />
                                             </IconButton>
@@ -237,9 +236,9 @@ function SearchBar({ userCourses, handleChangingCourse }) {
     }, [input])
 
     const fetchCourse = () => {
-        console.log(input.courseCode.slice(0, 8))
-        console.log(input.university.slice(0, 8))
-        console.log(input.term.slice(0, 8))
+        // console.log(input.courseCode.slice(0, 8))
+        // console.log(input.university.slice(0, 8))
+        // console.log(input.term.slice(0, 8))
         setIsLoading(true)
         setSearchData(undefined)
         fetch("/courses", {
@@ -372,7 +371,7 @@ function SearchBar({ userCourses, handleChangingCourse }) {
                                     </Typography>
                                     <List>
                                         {searchData[0].sections.map((lecture) =>
-                                            <>
+                                            
                                                 <ListItem
                                                     key={lecture._id}
                                                     sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}
@@ -380,13 +379,14 @@ function SearchBar({ userCourses, handleChangingCourse }) {
                                                     <Typography>
                                                         [{lecture.sectionCode}]
                                                     </Typography>
-                                                    <Button sx={{ border: 1, borderRadius: 2 }}>
+                                                    <Button lecture={lecture} sx={{ border: 1, borderRadius: 2 }}
+                                                        onClick={() => handleAddCourseWithSection('lec', lecture)}>
                                                         <Typography>
                                                             Add/Change
                                                         </Typography>
                                                     </Button>
                                                 </ListItem>
-                                            </>
+                                            
                                         )}
                                     </List>
                                 </ListItem>
@@ -397,7 +397,6 @@ function SearchBar({ userCourses, handleChangingCourse }) {
                                     </Typography>
                                     <List>
                                         {searchData[0].tutorials.map((tutorial) =>
-                                            <>
                                                 <ListItem
                                                     key={tutorial._id}
                                                     sx={{ flexDirection: 'column', alignItems: 'baseline', pt: 0, pb: 0 }}
@@ -412,7 +411,6 @@ function SearchBar({ userCourses, handleChangingCourse }) {
                                                         </Typography>
                                                     </Button>
                                                 </ListItem>
-                                            </>
                                         )}
                                     </List>
 
@@ -423,7 +421,7 @@ function SearchBar({ userCourses, handleChangingCourse }) {
                     </List>
                 }
                 <Button variant={'contained'}>
-                    Generate Courses
+                    Generate Timetable
                 </Button>
             </Container>
         </Box>

@@ -123,7 +123,7 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
                 type: [String],
                 default: undefined
             },
-            meetingTime: {
+            meetingTimes: {
                 type: [
                     {
                         day: {
@@ -170,7 +170,7 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
                 type: [String],
                 default: undefined
             },
-            meetingTime: {
+            meetingTimes: {
                 type: [
                     {
                         day: {
