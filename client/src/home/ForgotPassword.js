@@ -1,16 +1,22 @@
 import React from 'react';
 import { makeStyles, createTheme, ThemeProvider } from '@material-ui/core';
 import {
-  Typography, Box, TextField, FormControlLabel,
-  Checkbox, Button, Grid, Container, CssBaseline, Avatar
+  Typography,
+  Box,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Button,
+  Grid,
+  Container,
+  CssBaseline,
+  Avatar,
 } from '@material-ui/core';
 import { Link, useNavigate } from 'react-router-dom';
 import GoogleSignIn from './GoogleButton';
 // import LockOutlinedIcon from '@mui/icons-material';
 
-const useStyles = makeStyles(theme => ({
-
-}))
+const useStyles = makeStyles((theme) => ({}));
 
 const theme = createTheme();
 
@@ -73,19 +79,15 @@ const ForgotPassword = () => {
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link to="/login">
-                    Don't have an account? Sign Up
-                  </Link>
+                  <Link to="/login">Don't have an account? Sign Up</Link>
                 </Grid>
               </Grid>
             </Box>
           </Box>
         </Container>
       </ThemeProvider>
-
     </div>
-
   );
-}
+};
 
 export default ForgotPassword;
