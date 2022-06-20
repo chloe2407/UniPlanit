@@ -1,29 +1,27 @@
 #headshot {
-    width: 250px;
-
+  width: 250px;
 }
 
 @media only screen and (max-width: 900px) {
-    .teamMembers {
-        justify-content: center;
-        align-items: center;
-        padding: 0 70px;
-    }
+  .teamMembers {
+    justify-content: center;
+    align-items: center;
+    padding: 0 70px;
+  }
 }
 
 @media only screen and (max-width: 800px) {
-    .teamMembers {
-        padding: 0px;
-    }
+  .teamMembers {
+    padding: 0px;
+  }
 
-    .md-lg {
-        display: none;
-    }
-
+  .md-lg {
+    display: none;
+  }
 }
 
 @media only screen and (min-width: 800px) {
-    .xs-sm {
-        display: none;
-    }
+  .xs-sm {
+    display: none;
+  }
 }

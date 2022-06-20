@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react'
-import useAuth from './context/Auth'
-import { Outlet } from "react-router-dom";
-import './App.css'
+import React, { useEffect } from 'react';
+import useAuth from './context/Auth';
+import { Outlet } from 'react-router-dom';
+import './App.css';
 
 function App() {
-  const { checkLoggedIn } = useAuth()
+  const { checkLoggedIn } = useAuth();
   useEffect(() => {
-    checkLoggedIn()
-  }, [])
+    checkLoggedIn();
+  }, []);
   return (
-    <div className='App'>
+    <div className="App">
       <Outlet />
     </div>
   );

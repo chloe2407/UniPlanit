@@ -1,10 +1,10 @@
-.cursor{
-    z-index: 999 !important;
-    position: fixed;
-    background: rgba(234, 224, 213, 0.5);
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    pointer-events: none;
-    display: none;
+.cursor {
+  z-index: 999 !important;
+  position: fixed;
+  background: rgba(234, 224, 213, 0.5);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  pointer-events: none;
+  display: none;
 }
