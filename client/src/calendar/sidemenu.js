@@ -51,10 +51,9 @@ import useAuth from '../context/Auth'
 
 // 
 
-const SideMenu = ({ open, setOpenEdit }) => {
+const SideMenu = ({ handleCloseDrawer, openEdit, setOpenEdit}) => {
     const { user, setUser } = useAuth()
     // const [userData, setUserData] = useState(demo) // whole thing is demo
-    const [edit, setEdit] = useState(false)
     const [isChangingCourse, setIsChangingCourse] = useState(false)
 
     const handleChangingCourse = () => {
@@ -87,10 +86,13 @@ const SideMenu = ({ open, setOpenEdit }) => {
     return (
 
         <Box mt={2} sx={{ overflow: 'auto' }}>
-            {edit
+            {openEdit
                 ? <Editing />
                 :
                 <>
+                    <Button onClick={handleCloseDrawer}>
+                        click to go back
+                    </Button>
                     <Typography
                         variant='h5'
                         sx={{ display: 'flex', justifyContent: 'start', marginLeft: 3 }}>
@@ -103,8 +105,8 @@ const SideMenu = ({ open, setOpenEdit }) => {
                     <SearchBar handleChangingCourse={handleChangingCourse} />
                 </>
             }
-            <button onClick={() => setOpenEdit(!open)}>
-                click to edit or end edit
+            <button onClick={() => setOpenEdit(!openEdit)}>
+            <Typography>{openEdit ? <>click to close edit</> : <>click to edit</>}</Typography>
             </button>
         </Box>
     )
@@ -283,7 +285,7 @@ function SearchBar({ handleChangingCourse }) {
                 }
             })
     }
-
+    
     return (
         <Box mb={2}>
             <Container>
@@ -337,7 +339,10 @@ function SearchBar({ handleChangingCourse }) {
                                                 >
                                                     <Typography>
                                                         [{lecture.sectionCode}]
-                                                        <Button sx={{ border: 1, borderRadius: 2 }}>
+                                                        {/* <Button sx={{ border: 1, borderRadius: 2 }} onClick={handleAddCourseWithSection(searchData.map())}> */}
+                                                        <Button sx={{ border: 1, borderRadius: 2 }} onClick={()=>{handleAddCourseWithSection('lec', {...searchData[0], sections:[lecture], tutorials:[]})}}>
+                                                        {/* onClick={setSearchData({...searchData, section: [lecture]})} */}
+                                                            {/* {(searchData[0].id in user.courses) ? <>add</>: <>change</>} */}
                                                             Add/Change
                                                         </Button>
                                                     </Typography>
@@ -360,7 +365,7 @@ function SearchBar({ handleChangingCourse }) {
                                                 >
                                                     <Typography>
                                                         [{tutorial.tutorialCode}]
-                                                        <Button sx={{ border: 1, borderRadius: 2 }}>
+                                                        <Button sx={{ border: 1, borderRadius: 2 }} onClick={()=>{handleAddCourseWithSection('tut', {...searchData[0], sections:[], tutorials:[tutorial]})}}>
                                                             Add/Change
                                                         </Button>
                                                     </Typography>
