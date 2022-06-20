@@ -25,25 +25,34 @@ const ScheduleCard = ({ name, filters, snapshot }) => {
                         <Typography gutterBottom variant="h6" component="div">
                             {name}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            <Stack direction="row" spacing={1}>
-                                {
-                                    filters.length < 3
-                                        ?
-                                        filters.map((filter) => (
-                                            <Chip label={filter} />
-                                        ))
-                                        :
-                                        <>
-                                            <Chip label={filters[0]} />
-                                            <Chip label={filters[1]} />
-                                            <Chip label={'+' + (filters.length - 2)} />
-                                        </>
+                        <Stack direction="row" spacing={1}>
+                            {
+                                filters.length < 3
+                                    ? filters.map((filter) => (
 
-                                }
-                            </Stack>
-
-                        </Typography>
+                                        <Chip key={filter} label={
+                                            <Typography variant="body2" color="text.secondary">
+                                                {filter}
+                                            </Typography>
+                                        } />
+                                    ))
+                                    : <>
+                                        <Chip label={
+                                            <Typography variant="body2" color="text.secondary">
+                                                {filters[0]}
+                                            </Typography>} />
+                                        <Chip label={
+                                            <Typography variant="body2" color="text.secondary">
+                                                {filters[1]}
+                                            </Typography>} />
+                                        <Chip label={
+                                            <Typography variant="body2" color="text.secondary">
+                                                {'+' + (filters.length - 2)}
+                                            </Typography>}
+                                        />
+                                    </>
+                            }
+                        </Stack>
                     </CardContent>
                 </CardActionArea>
             </Card >

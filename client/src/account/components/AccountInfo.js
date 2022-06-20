@@ -5,12 +5,14 @@ import useAuth from '../../context/Auth';
 import InfoBox from './InfoBox/InfoBox'
 import Button from '@mui/material/Button';
 
-const AccountInfo = ({ user }) => {
-    const [first, setFirst] = useState(user.first);
-    const [last, setLast] = useState(user.last);
-    const [email, setEmail] = useState(user.email);
+const AccountInfo = ({ paramUser }) => {
+    const [first, setFirst] = useState(paramUser.first);
+    const [last, setLast] = useState(paramUser.last);
+    const [email, setEmail] = useState(paramUser.email);
     const [isEditing, setIsEditing] = useState(false);
-    const [university, setUniversity] = useState(user.university);
+    const [university, setUniversity] = useState(paramUser.university);
+
+    const { user } = useAuth()
 
     const handleChange = () => {
         setIsEditing(!isEditing);
@@ -24,9 +26,13 @@ const AccountInfo = ({ user }) => {
                 textAlign='left'
             >
                 <Typography variant='h4'>{`${first} ${last}`}</Typography>
-                <Button sx={{ color: "#0583D2", fontWeight: "bold" }} onClick={handleChange} >
-                    Edit Profile
-                </Button>
+                {
+                    user._id === paramUser._id
+                        ? <Button sx={{ color: "#0583D2", fontWeight: "bold" }} onClick={handleChange} >
+                            Edit Profile
+                        </Button>
+                        : null
+                }
 
                 <hr></hr>
                 <Grid

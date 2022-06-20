@@ -14,7 +14,7 @@ const Account = () => {
 
   const [imgUrl, loadImg] = useImg()
   const [isLoading, setIsLoading] = useState(true)
-  const [user, setUser] = useState()
+  const [paramUser, setParamUser] = useState()
   
   const params = useParams()
   useEffect(() => {
@@ -25,14 +25,14 @@ const Account = () => {
   }, [])
 
   useEffect(() => {
-    if (params.id) setUser(undefined)
+    if (params.id) setParamUser(undefined)
   }, [params.id])
   
   useEffect(() => {
     fetch(`../users/${params.id}`)
     .then(res => res.json())
     .then(data => {
-      setUser(data)
+      setParamUser(data)
     })
   }, [params.id])
   
@@ -41,7 +41,7 @@ const Account = () => {
   // }, [params.id])
 
   return (
-    <div key={params.id}>
+    <>
       <div style={{
         backgroundImage: imgUrl && `url(${imgUrl})`, display: 'flex', height: '17rem',
         backgroundPosition: 'center',
@@ -60,17 +60,17 @@ const Account = () => {
           paddingTop='70px'
         >
           <Grid item xs={12} md={4} xl={5}>
-            { user && <ProfileImage user={user} /> }
+            { paramUser && <ProfileImage paramUser={paramUser} /> }
           </Grid>
           <Grid item paddingLeft='40px'
             paddingRight='40px' xs={12} md={7} xl={6}>
-            { user && <AccountInfo user={user} /> }
+            { paramUser && <AccountInfo paramUser={paramUser} /> }
           </Grid>
         </Grid>
-        { user && <Favorites user={user} /> }
+        { paramUser && <Favorites paramUser={paramUser} /> }
         {/* <Profile /> */}
       </div >
-    </div>
+      </>
   )
 }
 

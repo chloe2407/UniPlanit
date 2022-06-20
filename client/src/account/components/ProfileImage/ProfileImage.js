@@ -8,11 +8,15 @@ import { Box } from '@mui/system';
 import { Grid } from '@mui/material';
 import { AdvancedImage } from '@cloudinary/react'
 import { Cloudinary } from '@cloudinary/url-gen';
+import initialToColor from '../../../globalComponents/InitialToColor';
 import FileUpload from './FileUpload'
 
-const ProfileImage = ({ user }) => {
+const ProfileImage = ({ paramUser }) => {
     const [updateImage, setUpdateImage] = useState(false)
     const [isUpdating, setIsUpdating] = useState(false)
+
+    const { user } = useAuth()
+
     const handleFileUpload = (img) => {
         console.log(img)
         // fetch('/users/uploadImage', {
@@ -36,15 +40,22 @@ const ProfileImage = ({ user }) => {
                 alignItems='center'
                 textAlign='center'>
                 <Avatar
-                    src={user.profileImg}
+                    src={paramUser.profileImg}
                     sx={{
-                        bgcolor: orange[500],
+                        bgcolor: initialToColor(`${paramUser.first[0]}${paramUser.last[0]}`),
                         height: '10rem',
                         width: '10rem',
                         fontSize: '2rem'
                     }}>
+                    <Typography variant='h3'>
+                        {`${paramUser.first[0]}${paramUser.last[0]}`}
+                    </Typography>
                 </Avatar>
-                <FileUpload handleFileUpload={handleFileUpload} />
+                {
+                    user._id === paramUser._id
+                        ? <FileUpload handleFileUpload={handleFileUpload} />
+                        : null
+                }
             </Grid>
         </div >
     )
