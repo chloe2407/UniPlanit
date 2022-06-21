@@ -31,7 +31,7 @@ const io = require('socket.io')(httpServer, {
     methods: ['GET', 'POST'],
   },
 });
-const { updateFriend, sendPrivateMessage, readMessage } = require('./handlers/messageHandler')(io);
+const { updateFriend, sendPrivateMessage } = require('./handlers/messageHandler')(io);
 
 dayjs.extend(duration);
 require('dotenv').config();
@@ -215,6 +215,7 @@ io.use((socket, next) => {
 });
 
 io.on('connection', (socket) => {
+  console.log('Someone connected');
   socket.on('update friend', updateFriend);
   socket.on('private message', sendPrivateMessage);
   socket.on('user status', (msg) => {

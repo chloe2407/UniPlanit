@@ -18,19 +18,10 @@ export function useImg() {
 
 export function useDeleteFriend() {
   const deleteFriend = (friendInfo, handleFriendChange, handleSuccessMsg, handleErrorMsg) => {
-    fetch('/users/friends/delete', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ friendId: friendInfo._id }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        handleSuccessMsg(`Successfully deleted ${friendInfo.first} ${friendInfo.last}`);
-        handleFriendChange();
-        return data;
-      });
+    return axios.post('/users/friends/delete', { friendId: friendInfo._id }).then((data) => {
+      handleSuccessMsg(`Successfully deleted ${friendInfo.first} ${friendInfo.last}`);
+      handleFriendChange();
+    });
   };
   return [deleteFriend];
 }

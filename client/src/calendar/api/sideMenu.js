@@ -27,7 +27,7 @@ export const lockUserCourse = (courseCode) => {
 };
 
 export const deleteUserCourse = (courseCode) => {
-  return courseAxios.delete('users/courses/delete', { courseCode });
+  return courseAxios.post('users/courses/delete', { courseCode });
 };
 
 export const lockCourseSection = (courseCode, type) => {

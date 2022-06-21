@@ -23,8 +23,8 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ThemeProvider theme={theme}>
     <BrowserRouter>
-      <AuthProvider>
-        <SocketProvider>
+      <SocketProvider>
+        <AuthProvider>
           <Routes>
             <Route path="/" element={<App />}>
               <Route element={<PageLayout />}>
@@ -66,8 +66,8 @@ root.render(
               </Route>
             </Route>
           </Routes>
-        </SocketProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </SocketProvider>
     </BrowserRouter>
   </ThemeProvider>
 );
