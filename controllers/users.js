@@ -11,7 +11,6 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(duration);
 
-const passport = require('passport');
 const cloudinary = require('cloudinary').v2;
 
 // cloudinary
@@ -255,7 +254,9 @@ module.exports.deleteUserCourseByCode = async (req, res, next) => {
   const user = await User.findById(req.user.id);
   const { courseCode } = req.body;
   // filter out all the courses from user
-  user.courses = user.courses.filter((course) => course.courseCode !== courseCode);
+  user.courses = user.courses.filter(
+    (course) => course.courseCode !== courseCode
+  );
   // remove associated events from user events and events
   // await user.populate('events')
   // user.events = user.events.filter(event => {
@@ -303,7 +304,9 @@ module.exports.lockSection = async (req, res, next) => {
     course.tutorial.isLocked = !course.tutorial.isLocked;
   }
   await user.save();
-  return res.status(200).send({ success: 'Successfully lock/unlocked section/tutorial' });
+  return res
+    .status(200)
+    .send({ success: 'Successfully lock/unlocked section/tutorial' });
 };
 
 module.exports.deleteSection = async (req, res, next) => {
@@ -317,7 +320,9 @@ module.exports.deleteSection = async (req, res, next) => {
     course.tutorial = undefined;
   }
   await user.save();
-  return res.status(200).send({ success: 'Successfully deleted section/tutorial' });
+  return res
+    .status(200)
+    .send({ success: 'Successfully deleted section/tutorial' });
 };
 
 module.exports.lockCourse = async (req, res, next) => {
@@ -413,49 +418,6 @@ module.exports.deleteImage = async (req, res, next) => {
     });
 };
 
-module.exports.addNewFriend = async (req, res, next) => {
-  const user = await User.findById(req.user && req.user.id);
-  const { friendEmail } = req.body;
-  if (friendEmail === user.email) return res.status(200).send({ err: 'Cannot add yourself' });
-  else {
-    User.findOne({ email: friendEmail }, (err, friend) => {
-      // mutually add friend
-      if (!friend) res.status(200).send({ err: 'Could not find user' });
-      // need to check if they are already friends
-      else if (!user.friends.includes(friend.id)) {
-        user.friends.push(friend.id);
-        friend.friends.push(user.id);
-        user.save();
-        friend.save();
-        res.status(200).send({ success: `Added ${friend.first} ${friend.last}` });
-      } else {
-        res.status(200).send({ err: 'Already Friends!' });
-      }
-    });
-  }
-};
-
-module.exports.getUserFriend = async (req, res, next) => {
-  const user = await User.findById(req.user && req.user.id);
-  if (user) {
-    await user.populate('friends');
-    res.json(user.friends);
-  } else {
-    res.send({ err: 'No user found' });
-  }
-};
-
-module.exports.deleteFriend = async (req, res, next) => {
-  const user = await User.findById(req.user && req.user.id);
-  const { friendId } = req.body;
-  const friend = await User.findById(friendId);
-  user.friends = user.friends.filter((f) => f._id != friendId);
-  friend.friends = friend.friends.filter((f) => f._id != user.id);
-  await friend.save();
-  await user.save();
-  res.json({ success: 'Successfully deleted' });
-};
-
 module.exports.readMessages = async (req, res, next) => {
   const { id } = req.params;
   const messages = await Message.find({
@@ -505,8 +467,12 @@ const createEventByCourseMeetingTime = async (user, course) => {
         location: m.assignedRoom1,
         type: 'lecture',
         course: course,
-        start: new Date(toUTC(getEventDateTime(adjustedNowTime, m.day, m.startTime))),
-        end: new Date(toUTC(getEventDateTime(adjustedNowTime, m.day, m.endTime))),
+        start: new Date(
+          toUTC(getEventDateTime(adjustedNowTime, m.day, m.startTime))
+        ),
+        end: new Date(
+          toUTC(getEventDateTime(adjustedNowTime, m.day, m.endTime))
+        ),
         repeat: {
           repeatInterval: msInWeek,
           start: new Date(toUTC(now)),

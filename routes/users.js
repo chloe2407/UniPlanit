@@ -21,12 +21,9 @@ const {
   getLoggedIn,
   uploadImage,
   deleteImage,
-  addNewFriend,
-  getUserFriend,
   getUser,
   lockSection,
   deleteSection,
-  deleteFriend,
   readMessages,
 } = require('../controllers/users');
 const { isLoggedIn } = require('../controllers/middleware');
@@ -154,7 +151,11 @@ router.post('/courses/new', isLoggedIn, catchAsync(createNewUserCourse));
 // wants to use the generator, save the course code as a placeholder first
 // These courses will be replaced with meeting times when the timetable is generated
 
-router.post('/courses/saveCourseHolder', isLoggedIn, catchAsync(saveCourseHolder));
+router.post(
+  '/courses/saveCourseHolder',
+  isLoggedIn,
+  catchAsync(saveCourseHolder)
+);
 
 // generate new timetables
 router.post('/courses/timetable/new', isLoggedIn, catchAsync(newTimetable));
@@ -172,14 +173,6 @@ router.post('/courses/sections/delete', isLoggedIn, catchAsync(deleteSection));
 
 // get users courses
 router.get('/courses', isLoggedIn, catchAsync(getUserCourse));
-
-// friends
-
-router.get('/friends', isLoggedIn, catchAsync(getUserFriend));
-
-router.post('/friends/new', isLoggedIn, catchAsync(addNewFriend));
-
-router.post('/friends/delete', isLoggedIn, catchAsync(deleteFriend));
 
 router.get('/messages/:id', isLoggedIn, catchAsync(readMessages));
 
