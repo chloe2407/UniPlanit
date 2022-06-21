@@ -457,7 +457,7 @@ module.exports.deleteFriend = async (req, res, next) => {
 };
 
 module.exports.readMessages = async (req, res, next) => {
-  const { friendId } = req.body;
+  const { id } = req.params;
   const messages = await Message.find({
     $or: [
       {
@@ -466,14 +466,14 @@ module.exports.readMessages = async (req, res, next) => {
             from: req.user.id,
           },
           {
-            to: friendId,
+            to: id,
           },
         ],
       },
       {
         $and: [
           {
-            from: friendId,
+            from: id,
           },
           {
             to: req.user.id,

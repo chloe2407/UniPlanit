@@ -30,35 +30,8 @@ export default function UserCourses({ user, handleChangingCourse }) {
     scrollToBottom();
   }, [user]);
 
-  const lockCourse = (courseCode) => {
-    lockUserCourse(courseCode)
-      .then(() => {
-        handleChangingCourse();
-        scrollToBottom();
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const deleteCourse = (courseCode) => {
-    deleteUserCourse(courseCode)
-      .then(() => {
-        handleChangingCourse();
-        scrollToBottom();
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const lockSection = (type, courseCode) => {
-    lockCourseSection(type, courseCode)
-      .then(() => {
-        handleChangingCourse();
-        scrollToBottom();
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const deleteSection = (type, courseCode) => {
-    deleteCourseSection(type, courseCode)
+  const handleApiCall = (cb, courseCode, type) => {
+    cb(courseCode, type)
       .then(() => {
         handleChangingCourse();
         scrollToBottom();
@@ -86,10 +59,10 @@ export default function UserCourses({ user, handleChangingCourse }) {
             }}
           >
             <Typography>
-              <IconButton onClick={() => lockCourse(course.courseCode)}>
+              <IconButton onClick={() => handleApiCall(lockUserCourse, course.courseCode)}>
                 {course.isLocked ? <LockIcon /> : <LockOpenIcon />}
               </IconButton>
-              <IconButton onClick={() => deleteCourse(course.courseCode)}>
+              <IconButton onClick={() => handleApiCall(deleteUserCourse, course.courseCode)}>
                 <DeleteOutlineIcon />
               </IconButton>
               [{course.courseCode}] {course.courseTitle}
@@ -103,12 +76,18 @@ export default function UserCourses({ user, handleChangingCourse }) {
                   <ListItem sx={{ pb: 0, pt: 0 }}>
                     <Typography>
                       <IconButton
-                        onClick={() => lockSection('section', course.courseCode)}
+                        onClick={() =>
+                          handleApiCall(lockCourseSection, course.courseCode, 'section')
+                        }
                         disabled={course.isLocked}
                       >
                         {course.section.isLocked ? <LockIcon /> : <LockOpenIcon />}
                       </IconButton>
-                      <IconButton onClick={() => deleteSection('section', course.courseCode)}>
+                      <IconButton
+                        onClick={() =>
+                          handleApiCall(deleteCourseSection, course.courseCode, 'section')
+                        }
+                      >
                         <DeleteOutlineIcon />
                       </IconButton>
                       {course.section.sectionCode}
@@ -124,12 +103,18 @@ export default function UserCourses({ user, handleChangingCourse }) {
                     <Typography>
                       <IconButton
                         // need fix
-                        onClick={() => lockSection('tutorial', course.courseCode)}
+                        onClick={() =>
+                          handleApiCall(lockCourseSection, course.courseCode, 'tutorial')
+                        }
                         disabled={course.isLocked}
                       >
                         {course.tutorial.isLocked ? <LockIcon /> : <LockOpenIcon />}
                       </IconButton>
-                      <IconButton onClick={() => lockSection('tutorial', course.courseCode)}>
+                      <IconButton
+                        onClick={() =>
+                          handleApiCall(deleteCourseSection, course.courseCode, 'tutorial')
+                        }
+                      >
                         <DeleteOutlineIcon />
                       </IconButton>
                       {course.tutorial.tutorialCode}

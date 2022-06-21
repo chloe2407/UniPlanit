@@ -162,14 +162,13 @@ router.post('/courses/timetable/new', isLoggedIn, catchAsync(newTimetable));
 // save timetable
 router.post('/courses/timetable/save', isLoggedIn, catchAsync(saveTimeTable));
 
-// locking a course. Need to manually choose a time first
 router.post('/courses/lock', isLoggedIn, catchAsync(lockCourse));
 
-router.delete('/courses/delete', isLoggedIn, catchAsync(deleteUserCourseByCode));
+router.post('/courses/delete', isLoggedIn, catchAsync(deleteUserCourseByCode));
 
-router.patch('/courses/sections/lock', isLoggedIn, catchAsync(lockSection));
+router.post('/courses/sections/lock', isLoggedIn, catchAsync(lockSection));
 
-router.delete('/courses/sections/delete', isLoggedIn, catchAsync(deleteSection));
+router.post('/courses/sections/delete', isLoggedIn, catchAsync(deleteSection));
 
 // get users courses
 router.get('/courses', isLoggedIn, catchAsync(getUserCourse));
@@ -180,9 +179,9 @@ router.get('/friends', isLoggedIn, catchAsync(getUserFriend));
 
 router.post('/friends/new', isLoggedIn, catchAsync(addNewFriend));
 
-router.delete('/friends/delete', isLoggedIn, catchAsync(deleteFriend));
+router.post('/friends/delete', isLoggedIn, catchAsync(deleteFriend));
 
-router.post('/messages', isLoggedIn, catchAsync(readMessages));
+router.get('/messages/:id', isLoggedIn, catchAsync(readMessages));
 
 router.get('/:id', catchAsync(getUser));
 

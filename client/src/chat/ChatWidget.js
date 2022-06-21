@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import useSocket from '../context/socket';
 import useAuth from '../context/Auth';
 import initialToColor from '../globalComponents/InitialToColor';
+import { getConversation } from 'chat/api/chat';
 
 export default function ChatWidget({ friendInfo, handleCloseChat }) {
   const { socket } = useSocket();
@@ -21,17 +22,7 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
   const endRef = useRef();
 
   useEffect(() => {
-    fetch('../users/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ friendId: friendInfo._id }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setConversation(data);
-      });
+    getConversation(friendInfo._id).then((data) => setConversation(data));
   }, [socket]);
 
   useEffect(() => {
@@ -105,8 +96,8 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
               overflow: 'auto',
             }}
             sx={{
-              height: '35vh',
-              width: '25vh',
+              height: '300px',
+              width: '250px',
               p: 1,
               textAlign: 'start',
             }}
@@ -118,6 +109,18 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
                     <>
                       <Typography>
                         <strong>{`${friendInfo.first} ${friendInfo.last}`}</strong>
+                        <Avatar
+                          sx={{
+                            width: 30,
+                            height: 30,
+                            backgroundColor: initialToColor(
+                              `${friendInfo.first[0]}${friendInfo.last[0]}`
+                            ),
+                          }}
+                          src={friendInfo.profileImg}
+                        >
+                          <Typography>{`${friendInfo.first[0]}${friendInfo.last[0]}`}</Typography>
+                        </Avatar>
                       </Typography>
                       <Typography sx={{ mb: 1 }}>{m.message}</Typography>
                     </>
