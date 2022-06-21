@@ -51,10 +51,9 @@ import useAuth from '../context/Auth';
 
 //
 
-const SideMenu = ({ open, setOpenEdit }) => {
+const SideMenu = ({ handleCloseDrawer, openEdit, setOpenEdit }) => {
   const { user, setUser } = useAuth();
   // const [userData, setUserData] = useState(demo) // whole thing is demo
-  const [edit, setEdit] = useState(false);
   const [courseChangeCount, setCourseChangeCount] = useState(0);
 
   useEffect(() => {
@@ -82,21 +81,23 @@ const SideMenu = ({ open, setOpenEdit }) => {
       </>
     );
   }
-
   return (
-    <Box mt={2} sx={{ width: '40vh', overflow: 'auto' }}>
-      {edit ? (
+    <Box mt={2} sx={{ overflow: 'auto' }}>
+      {openEdit ? (
         <Editing />
       ) : (
         <>
+          <Button onClick={handleCloseDrawer}>click to go back</Button>
           <Typography variant="h5" sx={{ display: 'flex', justifyContent: 'start', marginLeft: 3 }}>
             Your Courses
           </Typography>
           {user && <UserCourses user={user} handleChangingCourse={handleChangingCourse} />}
-          <SearchBar userCourses={user.courses} handleChangingCourse={handleChangingCourse} />
+          <SearchBar handleChangingCourse={handleChangingCourse} />
         </>
       )}
-      <button onClick={() => setOpenEdit(!open)}>click to edit or end edit</button>
+      <button onClick={() => setOpenEdit(!openEdit)}>
+        <Typography>{openEdit ? <>click to close edit</> : <>click to edit</>}</Typography>
+      </button>
     </Box>
   );
 };
