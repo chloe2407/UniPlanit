@@ -16,7 +16,7 @@ import {
   deleteUserCourse,
   lockCourseSection,
   deleteCourseSection,
-} from 'calendar/api/sideMenu';
+} from 'calendar/api/sideMenuApi';
 
 export default function UserCourses({ user, handleChangingCourse }) {
   const endRef = useRef();
@@ -59,33 +59,60 @@ export default function UserCourses({ user, handleChangingCourse }) {
             }}
           >
             <Typography>
-              <IconButton onClick={() => handleApiCall(lockUserCourse, course.courseCode)}>
+              <IconButton
+                onClick={() => handleApiCall(lockUserCourse, course.courseCode)}
+              >
                 {course.isLocked ? <LockIcon /> : <LockOpenIcon />}
               </IconButton>
-              <IconButton onClick={() => handleApiCall(deleteUserCourse, course.courseCode)}>
+              <IconButton
+                onClick={() =>
+                  handleApiCall(deleteUserCourse, course.courseCode)
+                }
+              >
                 <DeleteOutlineIcon />
               </IconButton>
               [{course.courseCode}] {course.courseTitle}
-              <IconButton onClick={() => handleCourseCollapse(course.courseCode)}>
-                {courseCodeShow.includes(course.courseCode) ? <ExpandLess /> : <ExpandMore />}
+              <IconButton
+                onClick={() => handleCourseCollapse(course.courseCode)}
+              >
+                {courseCodeShow.includes(course.courseCode) ? (
+                  <ExpandLess />
+                ) : (
+                  <ExpandMore />
+                )}
               </IconButton>
             </Typography>
             {course.section && (
-              <Collapse in={courseCodeShow.includes(course.courseCode)} timeout="auto">
+              <Collapse
+                in={courseCodeShow.includes(course.courseCode)}
+                timeout="auto"
+              >
                 <List sx={{ p: 0 }}>
                   <ListItem sx={{ pb: 0, pt: 0 }}>
                     <Typography>
                       <IconButton
                         onClick={() =>
-                          handleApiCall(lockCourseSection, course.courseCode, 'section')
+                          handleApiCall(
+                            lockCourseSection,
+                            course.courseCode,
+                            'section'
+                          )
                         }
                         disabled={course.isLocked}
                       >
-                        {course.section.isLocked ? <LockIcon /> : <LockOpenIcon />}
+                        {course.section.isLocked ? (
+                          <LockIcon />
+                        ) : (
+                          <LockOpenIcon />
+                        )}
                       </IconButton>
                       <IconButton
                         onClick={() =>
-                          handleApiCall(deleteCourseSection, course.courseCode, 'section')
+                          handleApiCall(
+                            deleteCourseSection,
+                            course.courseCode,
+                            'section'
+                          )
                         }
                       >
                         <DeleteOutlineIcon />
@@ -97,22 +124,37 @@ export default function UserCourses({ user, handleChangingCourse }) {
               </Collapse>
             )}
             {course.tutorial && (
-              <Collapse in={courseCodeShow.includes(course.courseCode)} timeout="auto">
+              <Collapse
+                in={courseCodeShow.includes(course.courseCode)}
+                timeout="auto"
+              >
                 <List sx={{ p: 0 }}>
                   <ListItem sx={{ pb: 0, pt: 0 }}>
                     <Typography>
                       <IconButton
                         // need fix
                         onClick={() =>
-                          handleApiCall(lockCourseSection, course.courseCode, 'tutorial')
+                          handleApiCall(
+                            lockCourseSection,
+                            course.courseCode,
+                            'tutorial'
+                          )
                         }
                         disabled={course.isLocked}
                       >
-                        {course.tutorial.isLocked ? <LockIcon /> : <LockOpenIcon />}
+                        {course.tutorial.isLocked ? (
+                          <LockIcon />
+                        ) : (
+                          <LockOpenIcon />
+                        )}
                       </IconButton>
                       <IconButton
                         onClick={() =>
-                          handleApiCall(deleteCourseSection, course.courseCode, 'tutorial')
+                          handleApiCall(
+                            deleteCourseSection,
+                            course.courseCode,
+                            'tutorial'
+                          )
                         }
                       >
                         <DeleteOutlineIcon />

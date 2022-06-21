@@ -35,5 +35,8 @@ export const lockCourseSection = (courseCode, type) => {
 };
 
 export const deleteCourseSection = (courseCode, type) => {
-  return courseAxios.post('users/courses/sections/delete', { courseCode, type });
+  return courseAxios.post('users/courses/sections/delete', {
+    courseCode,
+    type,
+  });
 };

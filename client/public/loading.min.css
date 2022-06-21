@@ -81,7 +81,8 @@
   background: 0;
   box-shadow: 0 1em 0 currentColor, 0 -1em 0 currentColor, 1em 0 0 currentColor,
     -1em 0 0 currentColor, 0.70710678em 0.70710678em 0 currentColor,
-    -0.70710678em 0.70710678em 0 currentColor, 0.70710678em -0.70710678em 0 currentColor,
+    -0.70710678em 0.70710678em 0 currentColor,
+    0.70710678em -0.70710678em 0 currentColor,
     -0.70710678em -0.70710678em 0 currentColor;
 }
 .ld-loader {

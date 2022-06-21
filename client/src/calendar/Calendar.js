@@ -60,7 +60,10 @@ const Calendar = () => {
         )}
       </Drawer>
       <div sx={{ zIndex: 1 }}>
-        <OptionsTab openDrawer={handleOpenDrawer} setCurrentSession={setCurrentSession} />
+        <OptionsTab
+          openDrawer={handleOpenDrawer}
+          setCurrentSession={setCurrentSession}
+        />
         <WeekView currentSession={currentSession} />
       </div>
     </>

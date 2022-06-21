@@ -77,10 +77,17 @@ const WeekView = ({ currentSession }) => {
               {/* Day */}
               {days.map((day) => {
                 return (
-                  <Grid key={day} item xs style={{ borderLeft: '0.15vw solid black' }}>
+                  <Grid
+                    key={day}
+                    item
+                    xs
+                    style={{ borderLeft: '0.15vw solid black' }}
+                  >
                     {/* Courses */}
                     {selectedSchedule.map((selectedCourse) => {
-                      var startTime = Number(selectedCourse.startTime.slice(0, 2));
+                      var startTime = Number(
+                        selectedCourse.startTime.slice(0, 2)
+                      );
                       var endTime = Number(selectedCourse.endTime.slice(0, 2));
 
                       var filled, startFilled, endFilled;
@@ -93,7 +100,8 @@ const WeekView = ({ currentSession }) => {
 
                       // time is at an endpoint
                       if (time === startTime) {
-                        startFilled = selectedCourse.startTime.slice(3) !== '30';
+                        startFilled =
+                          selectedCourse.startTime.slice(3) !== '30';
                         endFilled = true;
                       } else if (time === endTime) {
                         startFilled = true;
@@ -116,7 +124,9 @@ const WeekView = ({ currentSession }) => {
                             className={classes.border}
                             style={{
                               backgroundColor:
-                                filled && startFilled ? selectedCourse.color : 'transparent',
+                                filled && startFilled
+                                  ? selectedCourse.color
+                                  : 'transparent',
                               borderTop:
                                 startTime === time &&
                                 filled &&
@@ -126,7 +136,11 @@ const WeekView = ({ currentSession }) => {
                                   ? '0.3vh solid black'
                                   : '0vh solid black',
                               borderBottom:
-                                endTime === time && filled && !endFilled && sameDay && sameSession
+                                endTime === time &&
+                                filled &&
+                                !endFilled &&
+                                sameDay &&
+                                sameSession
                                   ? '0.3vh solid black'
                                   : '0vh solid black',
                             }}
@@ -153,7 +167,9 @@ const WeekView = ({ currentSession }) => {
                             className={classes.border}
                             style={{
                               backgroundColor:
-                                filled && endFilled ? selectedCourse.color : 'transparent',
+                                filled && endFilled
+                                  ? selectedCourse.color
+                                  : 'transparent',
                               borderTop:
                                 startTime === time &&
                                 filled &&
@@ -163,7 +179,11 @@ const WeekView = ({ currentSession }) => {
                                   ? '0.3vh solid black'
                                   : '0vh solid black',
                               borderBottom:
-                                endTime === time && filled && endFilled && sameDay && sameSession
+                                endTime === time &&
+                                filled &&
+                                endFilled &&
+                                sameDay &&
+                                sameSession
                                   ? '0.3vh solid black'
                                   : '0vh solid black',
                             }}

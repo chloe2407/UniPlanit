@@ -132,7 +132,9 @@ export default function SearchBar({ userCourses, handleChangingCourse }) {
             options={courseData}
             filterOptions={filterOptions}
             onChange={(e, v) => handleInputChange('code', v)}
-            renderInput={(params) => <TextField {...params} label="Search Course" />}
+            renderInput={(params) => (
+              <TextField {...params} label="Search Course" />
+            )}
           />
           <FormLabel id="term-label" sx={{ textAlign: 'left' }}>
             Term
@@ -144,7 +146,12 @@ export default function SearchBar({ userCourses, handleChangingCourse }) {
             onChange={(e) => handleInputChange('term', e.target.value)}
           >
             {terms.map((t) => (
-              <FormControlLabel key={t} value={t} control={<Radio size="small" />} label={t} />
+              <FormControlLabel
+                key={t}
+                value={t}
+                control={<Radio size="small" />}
+                label={t}
+              />
             ))}
           </RadioGroup>
         </FormGroup>
@@ -165,7 +172,9 @@ export default function SearchBar({ userCourses, handleChangingCourse }) {
           <List sx={{ maxHeight: 300, overflow: 'auto' }}>
             <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
             {searchData.length === 0 ? (
-              <Typography align="center">No Course With Matching Name And Term</Typography>
+              <Typography align="center">
+                No Course With Matching Name And Term
+              </Typography>
             ) : (
               <>
                 <ListItem
@@ -192,7 +201,9 @@ export default function SearchBar({ userCourses, handleChangingCourse }) {
                         <Button
                           lecture={lecture}
                           sx={{ border: 1, borderRadius: 2 }}
-                          onClick={() => handleAddCourseWithSection('lec', lecture)}
+                          onClick={() =>
+                            handleAddCourseWithSection('lec', lecture)
+                          }
                         >
                           <Typography>Add/Change</Typography>
                         </Button>
@@ -225,7 +236,9 @@ export default function SearchBar({ userCourses, handleChangingCourse }) {
                         <Button
                           tutorial={tutorial}
                           sx={{ border: 1, borderRadius: 2 }}
-                          onClick={() => handleAddCourseWithSection('tut', tutorial)}
+                          onClick={() =>
+                            handleAddCourseWithSection('tut', tutorial)
+                          }
                         >
                           <Typography>Add/Change</Typography>
                         </Button>

@@ -13,6 +13,8 @@ export default function LoginWrap({ children }) {
       console.log('Redirected from: ' + location.state.from.pathname);
     }
   });
-  const toLocation = location.state ? location.state.from.pathname : '../calendar';
+  const toLocation = location.state
+    ? location.state.from.pathname
+    : '../calendar';
   return <>{checked && user ? <Navigate to={toLocation} /> : children}</>;
 }

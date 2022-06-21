@@ -61,7 +61,12 @@ const TeamMember = () => {
             {member.headshot}
           </Grid>
           <Grid item md={6}>
-            <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start">
+            <Grid
+              container
+              direction="column"
+              justifyContent="flex-start"
+              alignItems="flex-start"
+            >
               <Grid item xs={12}>
                 <Typography variant="h6">{member.name}</Typography>
               </Grid>

@@ -33,7 +33,11 @@ const OptionsTab = ({ setCurrentSession, openDrawer }) => {
           label="Fall Session"
           defaultChecked={true}
         />
-        <FormControlLabel value="S" control={<Radio />} label="Winter Session" />
+        <FormControlLabel
+          value="S"
+          control={<Radio />}
+          label="Winter Session"
+        />
       </RadioGroup>
       <div style={{ float: 'right' }}>
         <Button>

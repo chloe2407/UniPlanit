@@ -10,7 +10,9 @@ const MyTextInput = ({ label, ...props }) => {
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
       <input className="text-input" {...field} {...props} />
-      {meta.touched && meta.error ? <div className="error">{meta.error}</div> : null}
+      {meta.touched && meta.error ? (
+        <div className="error">{meta.error}</div>
+      ) : null}
     </>
   );
 };
@@ -21,7 +23,9 @@ const MyTextArea = ({ label, ...props }) => {
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
       <textarea className="text-area" {...field} {...props} />
-      {meta.touched && meta.error ? <div className="error">{meta.error}</div> : null}
+      {meta.touched && meta.error ? (
+        <div className="error">{meta.error}</div>
+      ) : null}
     </>
   );
 };
@@ -34,7 +38,9 @@ const MyCheckbox = ({ children, ...props }) => {
         <input {...field} {...props} type="checkbox" />
         {children}
       </label>
-      {meta.touched && meta.error ? <div className="error">{meta.error}</div> : null}
+      {meta.touched && meta.error ? (
+        <div className="error">{meta.error}</div>
+      ) : null}
     </>
   );
 };
@@ -68,7 +74,9 @@ const MySelect = ({ label, ...props }) => {
     <>
       <StyledLabel htmlFor={props.id || props.name}>{label}</StyledLabel>
       <StyledSelect {...field} {...props} />
-      {meta.touched && meta.error ? <StyledErrorMessage>{meta.error}</StyledErrorMessage> : null}
+      {meta.touched && meta.error ? (
+        <StyledErrorMessage>{meta.error}</StyledErrorMessage>
+      ) : null}
     </>
   );
 };
@@ -85,17 +93,26 @@ const FeedbackForm = () => {
           jobType: '',
         }}
         validationSchema={Yup.object({
-          firstName: Yup.string().max(25, 'Must be 25 characters or less').required('Required'),
-          email: Yup.string().email('Invalid email addresss`').required('Required'),
+          firstName: Yup.string()
+            .max(25, 'Must be 25 characters or less')
+            .required('Required'),
+          email: Yup.string()
+            .email('Invalid email addresss`')
+            .required('Required'),
           // acceptedTerms: Yup.boolean()
           //     .required("Required")
           //     .oneOf([true], "You must accept the terms and conditions."),
           messageType: Yup.string()
             // specify the set of valid values for job type
             // @see http://bit.ly/yup-mixed-oneOf
-            .oneOf(['designer', 'development', 'product', 'other'], 'Invalid Job Type')
+            .oneOf(
+              ['designer', 'development', 'product', 'other'],
+              'Invalid Job Type'
+            )
             .required('Required'),
-          name: Yup.string().min(1, 'Please send us a message!').required('Required'),
+          name: Yup.string()
+            .min(1, 'Please send us a message!')
+            .required('Required'),
         })}
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
@@ -104,10 +121,20 @@ const FeedbackForm = () => {
           }, 400);
         }}
       >
-        <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid
+          container
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+        >
           <Form>
             <Grid item xs={12}>
-              <MyTextInput label="Name" name="firstName" type="text" placeholder="Jane Doe" />
+              <MyTextInput
+                label="Name"
+                name="firstName"
+                type="text"
+                placeholder="Jane Doe"
+              />
             </Grid>
             <Grid item xs={12}>
               <MyTextInput

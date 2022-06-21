@@ -29,7 +29,12 @@ const Favorites = ({ paramUser }) => {
     {
       id: 3,
       name: 'Schedule -4z',
-      filters: ['Before 3PM', 'Less Walking', 'Morning classes', '12-4PM Break'],
+      filters: [
+        'Before 3PM',
+        'Less Walking',
+        'Morning classes',
+        '12-4PM Break',
+      ],
       snapshot: '',
     },
     {
@@ -56,7 +61,13 @@ const Favorites = ({ paramUser }) => {
     <div style={{ padding: '4rem' }}>
       {/* <FavoriteIcon sx={{ paddingRight: "5px", paddingTop: '2px', height: '18px' }} /> */}
       <Typography variant="h4">My favorite schedules</Typography>
-      <Grid container display="flex" spacing={1} justifyContent="flex-start" padding="3em">
+      <Grid
+        container
+        display="flex"
+        spacing={1}
+        justifyContent="flex-start"
+        padding="3em"
+      >
         {favSchedules.map((schedule) => (
           <ScheduleCard
             key={schedule.id}

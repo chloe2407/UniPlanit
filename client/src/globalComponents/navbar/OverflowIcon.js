@@ -2,18 +2,18 @@ import { useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import { StyledMenuItem, NavbarMenu } from './NavbarMenu';
 import Avatar from '@mui/material/Avatar';
-import initialToColor from './InitialToColor';
+import initialToColor from 'globalComponents/InitialToColor';
 import Typography from '@mui/material/Typography';
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import ChatIcon from '@mui/icons-material/Chat';
+// import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+// import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+// import ChatIcon from '@mui/icons-material/Chat';
 
 export default function OverflowIcon({
   sx,
   remainCount,
   remainFriends,
-  handleSuccessMsg,
-  handleErrorMsg,
+  // handleSuccessMsg,
+  // handleErrorMsg,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
   // using md as breakpoints for mobile version
@@ -42,7 +42,11 @@ export default function OverflowIcon({
           <Typography>{`+${remainCount}`}</Typography>
         </Avatar>
       </IconButton>
-      <NavbarMenu id="friend-menu" anchorElNav={anchorEl} handleMenuClose={handleMenuClose}>
+      <NavbarMenu
+        id="friend-menu"
+        anchorElNav={anchorEl}
+        handleMenuClose={handleMenuClose}
+      >
         {remainFriends.map((v, i) => (
           <StyledMenuItem key={v._id}>
             <Avatar

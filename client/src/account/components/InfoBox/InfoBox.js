@@ -20,7 +20,9 @@ const InfoBox = ({ isEditing, property, value, onChange }) => {
           //     readOnly: isEditing
           // }}
         />
-        <FormHelperText id="outlined-weight-helper-text">{property}</FormHelperText>
+        <FormHelperText id="outlined-weight-helper-text">
+          {property}
+        </FormHelperText>
       </FormControl>
     </div>
   );

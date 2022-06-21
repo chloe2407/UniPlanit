@@ -17,9 +17,11 @@ const signupSchema = yup.object().shape({
   firstName: yup.string().required(),
   lastName: yup.string().required(),
   password: yup.string().required(),
-  confirmPassword: yup.string().test('passwords-match', 'Passwords must match', function (value) {
-    return this.parent.password === value;
-  }),
+  confirmPassword: yup
+    .string()
+    .test('passwords-match', 'Passwords must match', function (value) {
+      return this.parent.password === value;
+    }),
   university: yup.string().required(),
 });
 
@@ -125,7 +127,9 @@ const SignUp = () => {
                       name="email"
                       autoComplete="email"
                       error={errors.email ? true : false}
-                      helperText={errors.email && touched.email && 'Email is required'}
+                      helperText={
+                        errors.email && touched.email && 'Email is required'
+                      }
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -136,11 +140,18 @@ const SignUp = () => {
                       id="university"
                       label="University"
                       onChange={(e, value) =>
-                        setFieldValue('univeristy', value !== null ? value : values.university)
+                        setFieldValue(
+                          'univeristy',
+                          value !== null ? value : values.university
+                        )
                       }
                       value={values.university}
                       renderInput={(params) => (
-                        <TextField name="univeristy" {...params} label="University" />
+                        <TextField
+                          name="univeristy"
+                          {...params}
+                          label="University"
+                        />
                       )}
                     />
                   </Grid>
@@ -168,7 +179,9 @@ const SignUp = () => {
                       autoComplete="new-password"
                       onChange={handleChange}
                       error={errors.confirmPassword ? true : false}
-                      helperText={errors.confirmPassword && 'Password must match'}
+                      helperText={
+                        errors.confirmPassword && 'Password must match'
+                      }
                     />
                   </Grid>
                   <Grid item xs={12}>

@@ -40,7 +40,8 @@ const EventCard = (course) => {
         }}
       >
         <Typography variant="body">
-          {selectedCourse.courseName} {selectedCourse.courseSection} {selectedCourse.courseSession}
+          {selectedCourse.courseName} {selectedCourse.courseSection}{' '}
+          {selectedCourse.courseSession}
         </Typography>
         <Typography variant="body">
           {selectedCourse.startTime}-{selectedCourse.endTime}
