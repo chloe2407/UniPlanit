@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 const SocketContext = createContext();
 
@@ -10,21 +10,26 @@ export function SocketProvider({ children }) {
   socket.emit('user status', 'online');
 
   socket.on('connection_error', () => {
-    socket.emit('user status', 'offline');
+    // socket.emit('user status', 'offline');
     // socket.connect()
+    console.log('disconnecting');
+    socket.disconnect();
   });
 
   socket.on('disconnect', (reason) => {
-    socket.emit('user status', 'offline');
+    // socket.emit('user status', 'offline');
     console.log(reason);
+    console.log('disconnecting');
+    socket.disconnect();
     if (reason === 'io server disconnect') {
-      // socket.connect()
     }
   });
 
   const memo = useMemo(() => ({ socket }), []);
 
-  return <SocketContext.Provider value={memo}>{children}</SocketContext.Provider>;
+  return (
+    <SocketContext.Provider value={memo}>{children}</SocketContext.Provider>
+  );
 }
 
 export default function useSocket() {
