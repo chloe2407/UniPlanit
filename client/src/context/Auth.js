@@ -1,6 +1,6 @@
 import React, { createContext, useMemo, useState, useContext } from 'react';
-import { useLocation, useNavigate, Navigate } from 'react-router-dom';
-
+import { useLocation, useNavigate } from 'react-router-dom';
+import { axios } from '../lib/axios';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
@@ -9,19 +9,11 @@ export function AuthProvider({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const login = (values) => {
-    fetch('/users/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(values),
-    })
-      .then((res) => res.json())
+  const authenticate = (type, values) => {
+    axios
+      .post(`users/${type}`, values)
       .then((data) => {
         setUser(data);
-        // not sure why this is broken, hard coded for now
-        // navigate(location.state.from || '/')
         navigate((location.state && location.state.from.pathname) || '../calendar');
       })
       .catch((err) => {
@@ -29,32 +21,8 @@ export function AuthProvider({ children }) {
       });
   };
 
-  const signup = (values) => {
-    fetch('/users/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(values),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.err) {
-          setUser(data);
-          navigate((location.state && location.state.from.pathname) || '../calendar');
-        } else {
-          setErr(data.err);
-        }
-      })
-      .catch((err) => {
-        setErr(err.message);
-      });
-  };
-
   const logout = () => {
-    fetch('/users/logout', {
-      method: 'POST',
-    }).then(() => {
+    axios.post('users/logout').then(() => {
       setUser(null);
       navigate('/');
       window.location.reload();
@@ -62,26 +30,21 @@ export function AuthProvider({ children }) {
   };
 
   const checkLoggedIn = () => {
-    fetch('users/getLoggedIn', {
-      method: 'POST',
-    })
-      .then((res) => res.json())
+    axios
+      .post('users/getLoggedIn')
       .then((data) => {
         if (!data.message) {
           setUser(data);
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => console.log(err));
   };
 
   const memo = useMemo(
     () => ({
       user,
       err,
-      login,
-      signup,
+      authenticate,
       logout,
       checkLoggedIn,
       setUser,

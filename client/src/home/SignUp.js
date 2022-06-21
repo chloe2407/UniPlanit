@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Autocomplete from '@mui/material/Autocomplete';
 import useAuth from '../context/Auth';
-import { useImg } from '../hooks/hooks';
+import { useImg } from '../hooks/api/hooks';
 import Loading from '../globalComponents/Loading';
 
 const signupSchema = yup.object().shape({
@@ -24,7 +24,7 @@ const signupSchema = yup.object().shape({
 });
 
 const SignUp = () => {
-  const { signup, err } = useAuth();
+  const { authenticate, err } = useAuth();
   const [imgUrl, loadImg] = useImg();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -70,7 +70,7 @@ const SignUp = () => {
             validationSchema={signupSchema}
             onSubmit={(values, { setSubmitting }) => {
               setSubmitting(true);
-              signup(values);
+              authenticate(values);
               setTimeout(() => {
                 setSubmitting(false);
               }, 1000);

@@ -167,9 +167,9 @@ router.post('/courses/lock', isLoggedIn, catchAsync(lockCourse));
 
 router.delete('/courses/delete', isLoggedIn, catchAsync(deleteUserCourseByCode));
 
-router.post('/courses/lockSection', isLoggedIn, catchAsync(lockSection));
+router.patch('/courses/sections/lock', isLoggedIn, catchAsync(lockSection));
 
-router.delete('/courses/deleteSection', isLoggedIn, catchAsync(deleteSection));
+router.delete('/courses/sections/delete', isLoggedIn, catchAsync(deleteSection));
 
 // get users courses
 router.get('/courses', isLoggedIn, catchAsync(getUserCourse));

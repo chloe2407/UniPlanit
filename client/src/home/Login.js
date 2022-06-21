@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import useAuth from '../context/Auth';
-import { useImg } from '../hooks/hooks';
+import { useImg } from '../hooks/api/hooks';
 import Loading from '../globalComponents/Loading';
 
 const loginSchema = yup.object().shape({
@@ -19,7 +19,7 @@ const loginSchema = yup.object().shape({
 
 const Login = () => {
   // const [error, setError] = useState(false)
-  const { login, err } = useAuth();
+  const { authenticate, err } = useAuth();
   // const [imgUrl, setImgUrl] = useState()
   const [imgUrl, loadImg] = useImg();
   const [isLoading, setIsLoading] = useState(true);
@@ -53,7 +53,7 @@ const Login = () => {
                 validationSchema={loginSchema}
                 onSubmit={(values, { setSubmitting }) => {
                   setSubmitting(true);
-                  login(values);
+                  authenticate('login', values);
                   setTimeout(() => {
                     setSubmitting(false);
                   }, 1000);

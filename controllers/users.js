@@ -44,7 +44,6 @@ module.exports.register = async (req, res, next) => {
   };
   // register user with passport js
   const user = new User(template);
-  console.log(user);
   User.register(user, req.body.password, function (err, user) {
     console.log('registering');
     if (err) {
@@ -78,7 +77,6 @@ module.exports.login = async (req, res, next) => {
   // login code
   const user = await User.findOne({ email: req.body.username });
   await user.populate('friends');
-  console.log(user);
   res.send(user);
 };
 
@@ -232,7 +230,6 @@ module.exports.createNewUserCourse = async (req, res, next) => {
   // course is a courseOneSectionSchema
   const { course } = req.body;
   const user = await User.findById(req.user.id);
-  console.log(course);
   // need an event for each meeting time for lecture and tutorial
   // let isInUserCourses
   user.courses = user.courses.filter((c) => c.courseCode !== course.courseCode);
@@ -244,7 +241,6 @@ module.exports.createNewUserCourse = async (req, res, next) => {
   //         isInUserCourses = true
   //     }
   // })
-  console.log(user.courses);
   // await createEventByCourseMeetingTime(user, course, user.id)
   // if (!isInUserCourses){
   //     user.courses.push(course)

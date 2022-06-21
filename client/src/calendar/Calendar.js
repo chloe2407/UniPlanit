@@ -3,9 +3,9 @@ import { useState } from 'react';
 
 import WeekView from './weekview.js';
 import OptionsTab from './optionstab.js';
-import SideMenu from './sidemenu';
 import Collapse from '@mui/material/Collapse';
 import Drawer from '@mui/material/Drawer';
+import SideMenu from 'calendar/sideMenu/SideMenu';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
 
@@ -63,25 +63,7 @@ const Calendar = () => {
         <OptionsTab openDrawer={handleOpenDrawer} setCurrentSession={setCurrentSession} />
         <WeekView currentSession={currentSession} />
       </div>
-      {/* <div sx={{zIndex: 2 }}>
-
-            <Grid container sx={{ height: '100vh'}}>
-            <Grid item xs={3} sm={3} sx={{ p: 2 }}>
-                <SideMenu />
-            </Grid>
-            <Grid item xs={9} sm={9}>
-                <OptionsTab setCurrentSession={setCurrentSession} />
-                <WeekView currentSession={currentSession} />
-            </Grid>
-            </Grid>
-            </div> */}
     </>
-    //     </Grid>
-    // </Grid>
-    //     <Collapse in={open} timeout="auto">
-    //             <SideMenu false={openEdit} setOpenEdit={() => setOpenEdit()}/>
-    //     </Collapse>E
-    // </Box>
   );
 };
 

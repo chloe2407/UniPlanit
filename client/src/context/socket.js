@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 import { createContext, useContext } from 'react';
 import useAuth from './Auth';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 // Lifecycle
 // connect to server
