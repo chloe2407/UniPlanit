@@ -48,8 +48,8 @@ const Calendar = () => {
       >
         {/* <SideMenu /> */}
         {openEdit ? (
-          <Grid container sx={{ height: '100vh', width: '100vw' }} columns={10}>
-            <Grid item xs={4} sm={3} sx={{ p: 2, borderRight: 1 }}>
+          <Grid container sx={{ height: '100vh', width: '100vw' }} columns={12}>
+            <Grid item xs={3} sm={3} sx={{ p: 2, borderRight: 1 }}>
               <SideMenu
                 handleCloseDrawer={handleCloseDrawer}
                 openEdit={openEdit}
@@ -57,7 +57,7 @@ const Calendar = () => {
               />
             </Grid>
             {/* <Divider sx={{ mt: 1, mb: 1, mx: 2 }} orientation='vertical'/> */}
-            <Grid item xs={6} sm={9}>
+            <Grid item xs={9} sm={9}>
               <Collapse in={openEdit} unmountOnExit>
                 <OptionsTab
                   handleOpenDrawer={handleOpenDrawer}

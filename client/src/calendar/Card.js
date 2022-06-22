@@ -12,7 +12,7 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
-import schedule from './schedule.js';
+import schedule from './Schedule.js';
 
 const useStyles = makeStyles((theme) => ({
   container: {

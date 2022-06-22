@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@mui/material/Typography';
-import schedule from './schedule.js';
+import schedule from './Schedule.js';
 import EventCard from './Card.js';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
