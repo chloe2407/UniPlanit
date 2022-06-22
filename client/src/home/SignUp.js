@@ -16,7 +16,13 @@ const signupSchema = yup.object().shape({
   email: yup.string().email().required(),
   firstName: yup.string().required(),
   lastName: yup.string().required(),
-  password: yup.string().required(),
+  password: yup
+    .string()
+    .required()
+    .matches(
+      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+      'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character'
+    ),
   confirmPassword: yup
     .string()
     .test('passwords-match', 'Passwords must match', function (value) {
@@ -72,7 +78,7 @@ const SignUp = () => {
             validationSchema={signupSchema}
             onSubmit={(values, { setSubmitting }) => {
               setSubmitting(true);
-              authenticate(values);
+              authenticate('register', values);
               setTimeout(() => {
                 setSubmitting(false);
               }, 1000);
@@ -166,7 +172,7 @@ const SignUp = () => {
                       id="password"
                       autoComplete="new-password"
                       error={errors.password ? true : false}
-                      helperText={errors.password && 'Password is required'}
+                      helperText={errors.password}
                     />
                   </Grid>
                   <Grid item xs={12}>
