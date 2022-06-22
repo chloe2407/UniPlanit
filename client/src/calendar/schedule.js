@@ -7,7 +7,7 @@ const schedule = {
             courseSession: "F",
             daysOfWeek: ["Monday", "Wednesday"],
             startTime: "09:00",
-            endTime: "12:00",
+            endTime: "11:00",
             location: "In Person",
             color: 'green'
         },
@@ -42,7 +42,8 @@ const schedule = {
             daysOfWeek: ["Monday", "Wednesday"],
             startTime: "11:00",
             endTime: "14:00",
-            location: "In Person"
+            location: "In Person",
+            color: "yellow"
         }
     ]
 }

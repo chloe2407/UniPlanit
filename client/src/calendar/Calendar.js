@@ -9,6 +9,7 @@ import Drawer from '@mui/material/Drawer';
 
 const Calendar = () => {
     const [currentSession, setCurrentSession] = useState(0);
+    const [currentSchedule, setCurrentSchedule] = useState();
     const [anchor, setAnchor] = useState()
     const [openEdit, setOpenEdit] = useState(false)
     const open = Boolean(anchor)
@@ -22,6 +23,7 @@ const Calendar = () => {
     const handleOpenEdit = () => {
 
     }
+
     return (
         // <Grid container sx={{ height: '100vh'}}>
         //     <Grid item xs={3} sm={3} sx={{ p: 2 }}>
@@ -29,8 +31,10 @@ const Calendar = () => {
             <Drawer open={open} onClose={closeDrawer}>
                 <SideMenu />
             </Drawer>
-            <OptionsTab openDrawer={openDrawer} setCurrentSession={setCurrentSession} />
-            <WeekView currentSession={currentSession} />
+            <div style={{height: "100vh", overflow: "scroll"}}>
+                <OptionsTab openDrawer={openDrawer} setCurrentSession={setCurrentSession} setCurrentSchedule={setCurrentSchedule}/>
+                <WeekView currentSession={currentSession} currentSchedule={currentSchedule}/>
+            </div>
         </>
         //     </Grid>
         // </Grid>
