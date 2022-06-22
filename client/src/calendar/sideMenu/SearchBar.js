@@ -15,8 +15,10 @@ import FormGroup from '@mui/material/FormGroup';
 import Radio from '@mui/material/Radio';
 import Divider from '@mui/material/Divider';
 import RadioGroup from '@mui/material/RadioGroup';
+import useSocket from 'context/socket';
+import { getCourse, addUserCourse } from 'calendar/api/sideMenuApi';
 
-export default function SearchBar({ userCourses, handleChangingCourse }) {
+export default function SearchBar({ userCourse }) {
   const [input, setInput] = useState({
     courseCode: '',
     university: 'uoft',
@@ -24,42 +26,29 @@ export default function SearchBar({ userCourses, handleChangingCourse }) {
   });
   const [searchData, setSearchData] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
+  const { socket } = useSocket();
 
   const filterOptions = createFilterOptions({
-    limit: 10,
+    limit: 15,
     ignoreCase: true,
   });
 
   const terms = ['F', 'S', 'Y'];
 
   useEffect(() => {
-    if (input.courseCode && input.term && input.university) fetchCourse();
-  }, [input]);
-
-  const fetchCourse = () => {
-    // console.log(input.courseCode.slice(0, 8))
-    // console.log(input.university.slice(0, 8))
-    // console.log(input.term.slice(0, 8))
-    setIsLoading(true);
-    setSearchData(undefined);
-    fetch('/courses', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    if (input.courseCode && input.term && input.university) {
+      setIsLoading(true);
+      setSearchData(undefined);
+      getCourse({
         courseCode: input.courseCode.slice(0, 8),
         university: input.university,
         term: input.term,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
+      }).then((data) => {
         setSearchData(data);
         setIsLoading(false);
-      })
-      .catch((err) => console.error(err));
-  };
+      });
+    }
+  }, [input]);
 
   const handleInputChange = (option, v) => {
     if (option === 'code') {
@@ -85,7 +74,7 @@ export default function SearchBar({ userCourses, handleChangingCourse }) {
     // update current state for new user courses
     // handleAdding
     let course;
-    userCourses.map((c) => {
+    userCourse.map((c) => {
       if (c.courseCode === searchData[0].courseCode) course = c;
     });
     if (!course) {
@@ -98,24 +87,8 @@ export default function SearchBar({ userCourses, handleChangingCourse }) {
     } else {
       course.tutorial = section;
     }
-    console.log(course);
-    fetch('/users/courses/new', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        course: course,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        if (data.success) {
-          handleChangingCourse();
-          console.log('changing course');
-        }
-      });
+
+    addUserCourse(socket, course);
   };
 
   return (
@@ -205,7 +178,7 @@ export default function SearchBar({ userCourses, handleChangingCourse }) {
                             handleAddCourseWithSection('lec', lecture)
                           }
                         >
-                          <Typography>Add/Change</Typography>
+                          <Typography>Add</Typography>
                         </Button>
                       </ListItem>
                     ))}
@@ -240,7 +213,7 @@ export default function SearchBar({ userCourses, handleChangingCourse }) {
                             handleAddCourseWithSection('tut', tutorial)
                           }
                         >
-                          <Typography>Add/Change</Typography>
+                          <Typography>Add</Typography>
                         </Button>
                       </ListItem>
                     ))}

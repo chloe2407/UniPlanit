@@ -1,42 +1,35 @@
 import { axios } from 'lib/axios';
-import Axios from 'axios';
-import { BASE_URL } from 'configure/index';
 
 export const getUser = (userId) => {
   return axios.get(`users/${userId}`).then((data) => Promise.resolve(data));
 };
 
-const courseAxios = Axios.create({
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  baseURL: BASE_URL,
-});
-
-courseAxios.interceptors.response.use(
-  (response) => {
-    return (response.data.success && Promise.resolve()) || Promise.reject();
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-export const lockUserCourse = (courseCode) => {
-  return courseAxios.post('/users/courses/lock', { courseCode });
+export const getCourse = (courseBody) => {
+  return axios
+    .post('courses', courseBody)
+    .then((data) => Promise.resolve(data));
 };
 
-export const deleteUserCourse = (courseCode) => {
-  return courseAxios.post('users/courses/delete', { courseCode });
+export const getUserCourse = (socket) => {
+  socket.emit('get user course');
 };
 
-export const lockCourseSection = (courseCode, type) => {
-  return courseAxios.post('users/courses/sections/lock', { courseCode, type });
+export const lockCourse = (socket, courseCode) => {
+  socket.emit('lock course', courseCode);
 };
 
-export const deleteCourseSection = (courseCode, type) => {
-  return courseAxios.post('users/courses/sections/delete', {
-    courseCode,
-    type,
-  });
+export const deleteCourse = (socket, courseCode) => {
+  socket.emit('delete course', courseCode);
+};
+
+export const lockCourseSection = (socket, courseCode, type) => {
+  socket.emit('lock section', courseCode, type);
+};
+
+export const deleteCourseSection = (socket, courseCode, type) => {
+  socket.emit('delete section', courseCode, type);
+};
+
+export const addUserCourse = (socket, course) => {
+  socket.emit('add user course', course);
 };

@@ -33,13 +33,23 @@ const io = require('socket.io')(httpServer, {
 });
 const {
   addFriend,
-  sendPrivateMessage,
   acceptFriendRequest,
   rejectFriendRequest,
   getFriendRequest,
   removeFriend,
   getFriend,
-} = require('./handlers/messageHandler')(io);
+} = require('./handlers/friendHandler')(io);
+
+const { sendPrivateMessage } = require('./handlers/messageHandler')(io);
+
+const {
+  getUserCourse,
+  addUserCourse,
+  lockUserCourse,
+  deleteUserCourse,
+  lockCourseSection,
+  deleteCourseSection,
+} = require('./handlers/courseHandler')(io);
 
 dayjs.extend(duration);
 require('dotenv').config();
@@ -213,13 +223,13 @@ io.use(wrap(session(sessionOptions)));
 io.use(wrap(passport.initialize()));
 io.use(wrap(passport.session()));
 
-io.use((socket, next) => {
+io.use(async (socket, next) => {
   const session = socket.request.session;
   if (socket.request.user) {
     session.socketId = socket.id;
     socket.userId = socket.request.user.id;
     socket.join(socket.userId);
-    session.save();
+    await session.save();
     next();
   } else {
     console.log('Not authorized');
@@ -236,6 +246,12 @@ io.on('connection', (socket) => {
   socket.on('reject friend request', rejectFriendRequest);
   socket.on('private message', sendPrivateMessage);
   socket.on('get friend request', getFriendRequest);
+  socket.on('get user course', getUserCourse);
+  socket.on('add user course', addUserCourse);
+  socket.on('lock course', lockUserCourse);
+  socket.on('delete course', deleteUserCourse);
+  socket.on('lock section', lockCourseSection);
+  socket.on('delete section', deleteCourseSection);
   socket.on('user status', (msg) => {
     console.log(msg);
   });
