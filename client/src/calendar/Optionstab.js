@@ -9,7 +9,7 @@ import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 // import StarIcon from '@mui/icons-material/Star';
 // import StarBorderIcon from '@mui/icons-material/StarBorder';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
-import schedule from './Schedule';
+import schedule from './schedule';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
