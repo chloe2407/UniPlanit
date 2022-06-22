@@ -110,35 +110,55 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
           >
             {conversation &&
               conversation.map((m) => (
-                <Box key={m._id}>
+                <>
                   {m.from === friendInfo._id ? (
-                    <>
-                      <strong>{`${friendInfo.first} ${friendInfo.last}`}</strong>
-                      <Avatar
-                        sx={{
-                          width: 30,
-                          height: 30,
-                          backgroundColor: initialToColor(
-                            `${friendInfo.first[0]}${friendInfo.last[0]}`
-                          ),
-                        }}
-                        src={friendInfo.profileImg}
-                      >
-                        <Typography>{`${friendInfo.first[0]}${friendInfo.last[0]}`}</Typography>
-                      </Avatar>
-                      <Typography sx={{ mb: 1 }}>{m.message}</Typography>
-                    </>
+                    <Box>
+                      <Stack direction="row" alignItems={'center'}>
+                        <Avatar
+                          sx={{
+                            width: 25,
+                            height: 25,
+                            mr: 1,
+                            backgroundColor: initialToColor(
+                              `${friendInfo.first[0]}${friendInfo.last[0]}`
+                            ),
+                          }}
+                          src={friendInfo.profileImg}
+                        >
+                          <Typography>{`${friendInfo.first[0]}${friendInfo.last[0]}`}</Typography>
+                        </Avatar>
+                        <strong>{`${friendInfo.first} ${friendInfo.last}`}</strong>
+                      </Stack>
+                      <Typography sx={{ mb: 1, ml: 4 }}>{m.message}</Typography>
+                    </Box>
                   ) : (
-                    <>
-                      <Typography sx={{ textAlign: 'end' }}>
-                        <strong>{`${user.first} ${user.last}`}</strong>
-                      </Typography>
-                      <Typography sx={{ textAlign: 'end', mb: 1 }}>
-                        {m.message}
-                      </Typography>
-                    </>
+                    <Box sx={{ textAlign: 'end' }}>
+                      <Stack
+                        direction={'row'}
+                        justifyContent="flex-end"
+                        alignItems={'center'}
+                      >
+                        <Typography>
+                          <strong>{`${user.first} ${user.last}`}</strong>
+                        </Typography>
+                        <Avatar
+                          sx={{
+                            width: 25,
+                            height: 25,
+                            ml: 1,
+                            backgroundColor: initialToColor(
+                              `${user.first[0]}${user.last[0]}`
+                            ),
+                          }}
+                          src={user.profileImg}
+                        >
+                          <Typography>{`${user.first[0]}${user.last[0]}`}</Typography>
+                        </Avatar>
+                      </Stack>
+                      <Typography sx={{ mb: 1, mr: 4 }}>{m.message}</Typography>
+                    </Box>
                   )}
-                </Box>
+                </>
               ))}
             <div ref={endRef} />
           </Box>
@@ -159,7 +179,15 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
               onChange={handleMessage}
             />
             <Button
-              sx={{ color: 'white' }}
+              sx={{
+                color: 'white',
+                p: 0,
+                ml: 1,
+                ':hover': {
+                  backgroundColor: 'white',
+                  color: 'black',
+                },
+              }}
               onClick={() => handleSendMessage(socket, friendInfo._id, msg)}
             >
               Send

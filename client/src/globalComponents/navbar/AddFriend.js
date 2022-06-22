@@ -131,6 +131,14 @@ export default function AddFriend({ sx, handleSuccessMsg, handleErrorMsg }) {
         }}
       > */}
         <Container sx={{ p: 2 }}>
+          <Typography color="white" sx={{ mt: 1 }}>
+            Add a friend
+          </Typography>
+          <Divider
+            orientation="horizontal"
+            flexItem
+            sx={{ backgroundColor: 'white' }}
+          />
           <Formik
             initialValues={{ email: '' }}
             validationSchema={emailSchema}
@@ -169,7 +177,7 @@ export default function AddFriend({ sx, handleSuccessMsg, handleErrorMsg }) {
             flexItem
             sx={{ backgroundColor: 'white' }}
           />
-          {friendRequest &&
+          {friendRequest ? (
             friendRequest.map((friend) => (
               <Box
                 sx={{
@@ -195,7 +203,10 @@ export default function AddFriend({ sx, handleSuccessMsg, handleErrorMsg }) {
                   </Button>
                 </Box>
               </Box>
-            ))}
+            ))
+          ) : (
+            <Typography color="gray">Nothing yet!</Typography>
+          )}
         </Container>
       </NavbarMenu>
     </>
