@@ -14,7 +14,6 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 import schedule from "./schedule.js";
 
-
 const useStyles = makeStyles(theme => ({
     container: {
         display: "flex",

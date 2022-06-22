@@ -4,8 +4,8 @@ import Grid from '@mui/material/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@mui/material/Typography';
 
-import schedule from "./schedule.js";
-import EventCard from "./card.js"
+import schedule from './schedule.js';
+import EventCard from './card.js';
 
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -68,8 +68,23 @@ const WeekView = ({currentSession, currentSchedule}) => {
                             )
                 })}
             </Grid>
-            {/* TIMES */}
-            {times.map((time) => {
+          );
+        })}
+      </Grid>
+      {/* TIMES */}
+      {times.map((time) => {
+        return (
+          <div key={time} style={{ width: '100vw' }}>
+            <Grid container item>
+              {/* Time */}
+              <Grid item xs={2} lg={1}>
+                <Typography className={classes.time}>
+                  {time < 10 ? 0 : ''}
+                  {time}:00
+                </Typography>
+              </Grid>
+              {/* Day */}
+              {days.map((day) => {
                 return (
                     <div style={{width: "100vw"}}>
                     <Grid container item xs>
@@ -78,7 +93,7 @@ const WeekView = ({currentSession, currentSchedule}) => {
                         {/* Day */}
                         {days.map((day) => {
                             return (
-                                <Grid item xs style={{borderLeft: "0.15vw solid black"}}>
+                                <Grid item xs key={day} style={{borderLeft: "0.15vw solid black"}}>
                                 {/* Courses */}
                                 {selectedSchedule.map((selectedCourse) => {
 
@@ -142,6 +157,11 @@ const WeekView = ({currentSession, currentSchedule}) => {
             })
             }
             </Grid>
-    )};
+          </div>
+        );
+      })}
+    </Grid>
+  );
+};
 
 export default WeekView;

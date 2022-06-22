@@ -1,13 +1,13 @@
-const express = require('express')
-const router = express.Router()
-const { catchAsync } = require('../utils/catchAsync')
-const { getCourse } = require('../controllers/courses')
+const express = require('express');
+const router = express.Router();
+const { catchAsync } = require('../utils/catchAsync');
+const { getCourse } = require('../controllers/courses');
 
 // handles course CRUD
 
 /**
  * @swagger
- * 
+ *
  * /courses:
  *  post:
  *      summary:
@@ -23,6 +23,6 @@ const { getCourse } = require('../controllers/courses')
  *          200:
  *              description: return a course object
  */
-router.post('/', catchAsync(getCourse))
+router.post('/', catchAsync(getCourse));
 
-module.exports = router
+module.exports = router;

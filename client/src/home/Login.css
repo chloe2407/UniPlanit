@@ -1,9 +1,9 @@
-.background{
-    height: 100vh;
-    display:flex;
-    background-image: url('../../public/login.jpg');
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+.background {
+  height: 100vh;
+  display: flex;
+  background-image: url('../../public/login.jpg');
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }

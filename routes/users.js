@@ -1,24 +1,41 @@
 const express = require('express');
 const router = express.Router();
 const cors = require('cors');
-const { catchAsync } = require('../utils/catchAsync')
-const { register, login, logout, createNewUserEvent,
-    patchUserEventById, deleteUserEventById, getUserEventById,
-    getUserEventsByDate, createNewUserCourse, deleteUserCourseByCode,
-    saveCourseHolder, lockCourse, saveTimeTable, newTimetable,
-    getUserCourse, getLoggedIn, uploadImage, deleteImage, addNewFriend,
-    getUserFriend, getUser, lockSection, deleteSection, deleteFriend
-} = require('../controllers/users')
-const { isLoggedIn } = require('../controllers/middleware')
-const passport = require('passport')
+const { catchAsync } = require('../utils/catchAsync');
+const {
+  register,
+  login,
+  logout,
+  createNewUserEvent,
+  patchUserEventById,
+  deleteUserEventById,
+  getUserEventById,
+  getUserEventsByDate,
+  createNewUserCourse,
+  deleteUserCourseByCode,
+  saveCourseHolder,
+  lockCourse,
+  saveTimeTable,
+  newTimetable,
+  getUserCourse,
+  getLoggedIn,
+  uploadImage,
+  deleteImage,
+  getUser,
+  lockSection,
+  deleteSection,
+  readMessages,
+} = require('../controllers/users');
+const { isLoggedIn } = require('../controllers/middleware');
+const passport = require('passport');
 
-router.use(cors())
+router.use(cors());
 
-router.get('/', catchAsync(getUser))
+router.get('/', catchAsync(getUser));
 
 /**
  * @swagger
- * 
+ *
  *  /users/register:
  *  post:
  *      summary: register a user
@@ -36,10 +53,9 @@ router.get('/', catchAsync(getUser))
 
 router.post('/register', catchAsync(register));
 
-
 /**
  * @swagger
- * 
+ *
  *  /users/login:
  *  post:
  *      summary: login a user
@@ -50,16 +66,19 @@ router.post('/register', catchAsync(register));
  *          200:
  *              description: user has successfully logged in
  */
-router.post('/login', passport.authenticate('local', {
+router.post(
+  '/login',
+  passport.authenticate('local', {
     failureMessage: true,
-}), catchAsync(login))
+  }),
+  catchAsync(login)
+);
 
-router.post('/getLoggedIn', catchAsync(getLoggedIn))
-
+router.post('/getLoggedIn', catchAsync(getLoggedIn));
 
 /**
  * @swagger
- * 
+ *
  *  /users/logout:
  *  post:
  *      summary: log out a user
@@ -67,7 +86,7 @@ router.post('/getLoggedIn', catchAsync(getLoggedIn))
  *          200:
  *              description: user has successfully logged out
  */
-router.post('/logout', isLoggedIn, catchAsync(logout))
+router.post('/logout', isLoggedIn, catchAsync(logout));
 
 /**
  * @swagger
@@ -83,7 +102,7 @@ router.post('/logout', isLoggedIn, catchAsync(logout))
  *          200:
  *              description: A list of events
  */
-router.get('/events', isLoggedIn, catchAsync(getUserEventsByDate))
+router.get('/events', isLoggedIn, catchAsync(getUserEventsByDate));
 
 /**
  * @swagger
@@ -94,11 +113,10 @@ router.get('/events', isLoggedIn, catchAsync(getUserEventsByDate))
  *      responses:
  *          200:
  *              description: A list of events
- * 
+ *
  */
 
-
-router.post('/events/new', isLoggedIn, catchAsync(createNewUserEvent))
+router.post('/events/new', isLoggedIn, catchAsync(createNewUserEvent));
 
 /**
  * @swagger
@@ -113,52 +131,51 @@ router.post('/events/new', isLoggedIn, catchAsync(createNewUserEvent))
  *      responses:
  *          200:
  *              A event
- * 
+ *
  */
 
-router.route('/events/:eventId')
-    .get(isLoggedIn, catchAsync(getUserEventById))
-    .patch(isLoggedIn, catchAsync(patchUserEventById))
-    .delete(isLoggedIn, catchAsync(deleteUserEventById))
+router
+  .route('/events/:eventId')
+  .get(isLoggedIn, catchAsync(getUserEventById))
+  .patch(isLoggedIn, catchAsync(patchUserEventById))
+  .delete(isLoggedIn, catchAsync(deleteUserEventById));
 
-router.post('/uploadImage', isLoggedIn, catchAsync(uploadImage))    
+router.post('/uploadImage', isLoggedIn, catchAsync(uploadImage));
 
-router.post('/deleteImage', isLoggedIn, catchAsync(deleteImage))
+router.delete('/deleteImage', isLoggedIn, catchAsync(deleteImage));
 
 // create a new course for user
-router.post('/courses/new', isLoggedIn, catchAsync(createNewUserCourse))
-    
-// when a use selects a course but does not manually choose a time or 
+router.post('/courses/new', isLoggedIn, catchAsync(createNewUserCourse));
+
+// when a use selects a course but does not manually choose a time or
 // wants to use the generator, save the course code as a placeholder first
 // These courses will be replaced with meeting times when the timetable is generated
 
-router.post('/courses/saveCourseHolder', isLoggedIn, catchAsync(saveCourseHolder))
+router.post(
+  '/courses/saveCourseHolder',
+  isLoggedIn,
+  catchAsync(saveCourseHolder)
+);
 
 // generate new timetables
-router.post('/courses/timetable/new', isLoggedIn, catchAsync(newTimetable))
+router.post('/courses/timetable/new', isLoggedIn, catchAsync(newTimetable));
 
 // save timetable
-router.post('/courses/timetable/save', isLoggedIn, catchAsync(saveTimeTable))
+router.post('/courses/timetable/save', isLoggedIn, catchAsync(saveTimeTable));
 
-// locking a course. Need to manually choose a time first
-router.post('/courses/lock', isLoggedIn, catchAsync(lockCourse))
+router.post('/courses/lock', isLoggedIn, catchAsync(lockCourse));
 
-router.delete('/courses/delete', isLoggedIn, catchAsync(deleteUserCourseByCode))
+router.post('/courses/delete', isLoggedIn, catchAsync(deleteUserCourseByCode));
 
-router.post('/courses/lockSection', isLoggedIn, catchAsync(lockSection))
+router.post('/courses/sections/lock', isLoggedIn, catchAsync(lockSection));
 
-router.post('/courses/deleteSection', isLoggedIn, catchAsync(deleteSection))
-
+router.post('/courses/sections/delete', isLoggedIn, catchAsync(deleteSection));
 
 // get users courses
-router.get('/courses', isLoggedIn, catchAsync(getUserCourse))
+router.get('/courses', isLoggedIn, catchAsync(getUserCourse));
 
-// friends
+router.get('/messages/:id', isLoggedIn, catchAsync(readMessages));
 
-router.get('/friends', isLoggedIn, catchAsync(getUserFriend))
-
-router.post('/friends/new', isLoggedIn, catchAsync(addNewFriend))
-
-router.post('/friends/delete', isLoggedIn, catchAsync(deleteFriend))
+router.get('/:id', catchAsync(getUser));
 
 module.exports = router;

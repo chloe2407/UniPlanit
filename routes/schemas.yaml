@@ -8,11 +8,10 @@ components:
           required: true
         location: string
         course: object
-        start: 
+        start:
           type: string
           required: true
         end:
           type: string
           required: true
         repeat: object
-        
