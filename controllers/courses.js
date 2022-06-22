@@ -40,7 +40,8 @@ module.exports.getCourse = async (req, res, next) => {
 module.exports.generateCourse = async (req, res, next) => {
   const listOfCourses = req.body.listOfCourses;
 
-  getValidSchedules(listOfCourses, true);
+  const validSchedules = getValidSchedules(listOfCourses, true);
+  return validSchedules;
 };
 
 // helper functions for generateCourse
