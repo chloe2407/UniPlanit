@@ -44,7 +44,10 @@ const Login = () => {
       <Grid container>
         <Grid item xs={12} md={6}>
           <Container maxWidth="xs">
-            <Box mt={10} sx={{ backgroundColor: 'white', borderRadius: 5, p: 5 }}>
+            <Box
+              mt={10}
+              sx={{ backgroundColor: 'white', borderRadius: 5, p: 5 }}
+            >
               <Typography sx={{ mb: 1, display: 'flex' }} variant="h3">
                 Login
               </Typography>
@@ -81,7 +84,11 @@ const Login = () => {
                       autoComplete="username"
                       autoFocus
                       error={errors.username ? true : false}
-                      helperText={errors.username && touched.username && 'Incorrect Email Format'}
+                      helperText={
+                        errors.username &&
+                        touched.username &&
+                        'Incorrect Email Format'
+                      }
                     />
                     <TextField
                       margin="normal"
@@ -97,7 +104,9 @@ const Login = () => {
                       error={errors.password ? true : false}
                     />
                     {err ? (
-                      <Typography sx={{ display: 'flex' }}>Incorrect password or email</Typography>
+                      <Typography sx={{ display: 'flex' }}>
+                        Incorrect password or email
+                      </Typography>
                     ) : (
                       ''
                     )}
@@ -123,7 +132,10 @@ const Login = () => {
                     </Typography>
                     <Typography sx={{ display: 'flex' }}>
                       Don't have an account?{' '}
-                      <Link style={{ textDecoration: 'none', color: 'black' }} to="/signup">
+                      <Link
+                        style={{ textDecoration: 'none', color: 'black' }}
+                        to="/signup"
+                      >
                         {'Sign Up'}
                       </Link>
                     </Typography>

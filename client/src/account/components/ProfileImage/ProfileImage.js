@@ -43,7 +43,9 @@ const ProfileImage = ({ paramUser }) => {
         <Avatar
           src={paramUser.profileImg}
           sx={{
-            bgcolor: initialToColor(`${paramUser.first[0]}${paramUser.last[0]}`),
+            bgcolor: initialToColor(
+              `${paramUser.first[0]}${paramUser.last[0]}`
+            ),
             height: '10rem',
             width: '10rem',
             fontSize: '2rem',
@@ -51,7 +53,9 @@ const ProfileImage = ({ paramUser }) => {
         >
           <Typography variant="h3">{`${paramUser.first[0]}${paramUser.last[0]}`}</Typography>
         </Avatar>
-        {user._id === paramUser._id ? <FileUpload handleFileUpload={handleFileUpload} /> : null}
+        {user._id === paramUser._id ? (
+          <FileUpload handleFileUpload={handleFileUpload} />
+        ) : null}
       </Grid>
     </div>
   );

@@ -10,7 +10,15 @@ import Stack from '@mui/material/Stack';
 
 const ScheduleCard = ({ name, filters, snapshot }) => {
   return (
-    <Grid item xs={12} sm={6} md={4} xl={3} display="flex" justifyContent="center">
+    <Grid
+      item
+      xs={12}
+      sm={6}
+      md={4}
+      xl={3}
+      display="flex"
+      justifyContent="center"
+    >
       <Card
         sx={{
           width: 270,

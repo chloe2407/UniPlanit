@@ -40,6 +40,12 @@ const userSchema = new mongoose.Schema({
   profileImg: {
     type: String,
   },
+  friendRequests: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
 });
 
 // passport set up here

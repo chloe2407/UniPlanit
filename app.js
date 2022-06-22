@@ -31,7 +31,25 @@ const io = require('socket.io')(httpServer, {
     methods: ['GET', 'POST'],
   },
 });
-const { updateFriend, sendPrivateMessage, readMessage } = require('./handlers/messageHandler')(io);
+const {
+  addFriend,
+  acceptFriendRequest,
+  rejectFriendRequest,
+  getFriendRequest,
+  removeFriend,
+  getFriend,
+} = require('./handlers/friendHandler')(io);
+
+const { sendPrivateMessage } = require('./handlers/messageHandler')(io);
+
+const {
+  getUserCourse,
+  addUserCourse,
+  lockUserCourse,
+  deleteUserCourse,
+  lockCourseSection,
+  deleteCourseSection,
+} = require('./handlers/courseHandler')(io);
 
 dayjs.extend(duration);
 require('dotenv').config();
@@ -75,7 +93,8 @@ const swaggerDefinition = {
   info: {
     title: 'Event API for MyCalendar',
     version: '1.0.0',
-    description: 'Event Restful API for MyCalendar. Used for CRUD operations related to events',
+    description:
+      'Event Restful API for MyCalendar. Used for CRUD operations related to events',
   },
   host: `localhost:${port}`,
   basePath: `/`,
@@ -147,7 +166,10 @@ app.get('/photo', async (req, res, next) => {
         res.json(newBackground.imgUrl);
       })
       .catch((err) => next(new ExpressError(err, 500)));
-  } else if (now.diff(lastSavedBackground.savedTime) > dayjs.duration(1, 'hours').as('ms')) {
+  } else if (
+    now.diff(lastSavedBackground.savedTime) >
+    dayjs.duration(1, 'hours').as('ms')
+  ) {
     fetch(
       'https://api.unsplash.com/photos/random?' +
         new URLSearchParams({
@@ -194,19 +216,20 @@ app.use(function (err, req, res, next) {
 
 // socket io for live messaging
 
-const wrap = (middleware) => (socket, next) => middleware(socket.request, {}, next);
+const wrap = (middleware) => (socket, next) =>
+  middleware(socket.request, {}, next);
 
 io.use(wrap(session(sessionOptions)));
 io.use(wrap(passport.initialize()));
 io.use(wrap(passport.session()));
 
-io.use((socket, next) => {
+io.use(async (socket, next) => {
   const session = socket.request.session;
   if (socket.request.user) {
     session.socketId = socket.id;
     socket.userId = socket.request.user.id;
     socket.join(socket.userId);
-    session.save();
+    await session.save();
     next();
   } else {
     console.log('Not authorized');
@@ -215,8 +238,20 @@ io.use((socket, next) => {
 });
 
 io.on('connection', (socket) => {
-  socket.on('update friend', updateFriend);
+  console.log(`A user has connected ${socket.id}`);
+  socket.on('get friend', getFriend);
+  socket.on('add friend', addFriend);
+  socket.on('remove friend', removeFriend);
+  socket.on('accept friend request', acceptFriendRequest);
+  socket.on('reject friend request', rejectFriendRequest);
   socket.on('private message', sendPrivateMessage);
+  socket.on('get friend request', getFriendRequest);
+  socket.on('get user course', getUserCourse);
+  socket.on('add user course', addUserCourse);
+  socket.on('lock course', lockUserCourse);
+  socket.on('delete course', deleteUserCourse);
+  socket.on('lock section', lockCourseSection);
+  socket.on('delete section', deleteCourseSection);
   socket.on('user status', (msg) => {
     console.log(msg);
   });

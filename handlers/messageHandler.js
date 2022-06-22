@@ -1,14 +1,8 @@
 const Message = require('../models/message');
+const User = require('../models/user');
 
 module.exports = (io) => {
-  const updateFriend = function (arg1, arg2, callback) {
-    const socket = this;
-    callback({
-      status: 'ok',
-    });
-  };
-
-  const sendPrivateMessage = function ({ msg, to }) {
+  const sendPrivateMessage = async function ({ msg, to }) {
     const socket = this;
     const message = new Message({
       from: socket.userId,
@@ -16,12 +10,10 @@ module.exports = (io) => {
       time: new Date(),
       message: msg,
     });
-    message.save();
+    await message.save();
     io.to(to).to(socket.userId).emit('private message', message);
   };
-
   return {
-    updateFriend,
     sendPrivateMessage,
   };
 };

@@ -5,12 +5,13 @@ import WeekView from './weekview.js';
 import OptionsTab from './optionstab.js';
 import Collapse from '@mui/material/Collapse';
 import Drawer from '@mui/material/Drawer';
-import SideMenu from 'calendar/sideMenu/SideMenu';
+import SideMenu from './sideMenu/SideMenu';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
 
 const Calendar = () => {
   const [currentSession, setCurrentSession] = useState(0);
+  const [currentSchedule, setCurrentSchedule] = useState();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const handleOpenDrawer = () => {
@@ -19,6 +20,8 @@ const Calendar = () => {
   const handleCloseDrawer = () => {
     setOpenDrawer(false);
   };
+  const [anchor, setAnchor] = useState();
+
   return (
     // <Grid container sx={{ height: '100vh'}}>
     //     <Grid item xs={3} sm={3} sx={{ p: 2 }}>
@@ -59,9 +62,16 @@ const Calendar = () => {
           </Grid>
         )}
       </Drawer>
-      <div sx={{ zIndex: 1 }}>
-        <OptionsTab openDrawer={handleOpenDrawer} setCurrentSession={setCurrentSession} />
-        <WeekView currentSession={currentSession} />
+      <div sx={{ zIndex: 1 }} style={{ height: '100vh', overflow: 'scroll' }}>
+        <OptionsTab
+          openDrawer={openDrawer}
+          setCurrentSession={setCurrentSession}
+          setCurrentSchedule={setCurrentSchedule}
+        />
+        <WeekView
+          currentSession={currentSession}
+          currentSchedule={currentSchedule}
+        />
       </div>
     </>
   );

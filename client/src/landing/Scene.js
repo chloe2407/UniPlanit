@@ -109,7 +109,19 @@ export default function Scene({ width, height }) {
 
     const getRandNum = (min, max) => Math.random() * (max - min) + min;
 
-    const addAssetBody = (x, y, w, h, path, xScale, yScale, group, force, density, frictionAir) => {
+    const addAssetBody = (
+      x,
+      y,
+      w,
+      h,
+      path,
+      xScale,
+      yScale,
+      group,
+      force,
+      density,
+      frictionAir
+    ) => {
       Composite.add(
         world,
         Bodies.rectangle(x, y, w, h, {
@@ -199,5 +211,7 @@ export default function Scene({ width, height }) {
     });
     // eslint-disable-next-line
   }, []);
-  return <div style={{ backgroundColor: 'black', height: '100vh' }} ref={canvaRef} />;
+  return (
+    <div style={{ backgroundColor: 'black', height: '100vh' }} ref={canvaRef} />
+  );
 }

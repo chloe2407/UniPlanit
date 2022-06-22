@@ -1,4 +1,4 @@
-import Navbar from './Navbar';
+import Navbar from './navbar/Navbar';
 import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
 import ChatWidget from '../chat/ChatWidget';
@@ -18,7 +18,11 @@ export default function Layout() {
       <Navbar handleShowChat={handleShowChat} />
       {chats
         ? chats.map((chat) => (
-            <ChatWidget key={chat._id} friendInfo={chat} handleCloseChat={handleCloseChat} />
+            <ChatWidget
+              key={chat._id}
+              friendInfo={chat}
+              handleCloseChat={handleCloseChat}
+            />
           ))
         : null}
       <Outlet />

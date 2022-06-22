@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import useSocket from '../context/socket';
 import useAuth from '../context/Auth';
 import initialToColor from '../globalComponents/InitialToColor';
+import { getConversation } from './api/chatApi';
 
 export default function ChatWidget({ friendInfo, handleCloseChat }) {
   const { socket } = useSocket();
@@ -21,17 +22,7 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
   const endRef = useRef();
 
   useEffect(() => {
-    fetch('../users/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ friendId: friendInfo._id }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setConversation(data);
-      });
+    getConversation(friendInfo._id).then((data) => setConversation(data));
   }, [socket]);
 
   useEffect(() => {
@@ -48,6 +39,7 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
   useEffect(() => {
     scrollToBottom();
   }, [conversation]);
+
   const handleMessage = (e) => {
     setMsg(e.target.value);
   };
@@ -87,14 +79,19 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
               sx={{
                 width: 30,
                 height: 30,
-                backgroundColor: initialToColor(`${friendInfo.first[0]}${friendInfo.last[0]}`),
+                backgroundColor: initialToColor(
+                  `${friendInfo.first[0]}${friendInfo.last[0]}`
+                ),
               }}
               src={friendInfo.profileImg}
             >
               <Typography>{`${friendInfo.first[0]}${friendInfo.last[0]}`}</Typography>
             </Avatar>
             <Typography>{`${friendInfo.first} ${friendInfo.last}`}</Typography>
-            <IconButton sx={{ color: 'inherit' }} onClick={() => handleCloseChat(friendInfo)}>
+            <IconButton
+              sx={{ color: 'inherit' }}
+              onClick={() => handleCloseChat(friendInfo)}
+            >
               <MinimizeIcon style={{ transform: 'rotate(0.5turn)' }} />
             </IconButton>
           </Stack>
@@ -105,31 +102,63 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
               overflow: 'auto',
             }}
             sx={{
-              height: '35vh',
-              width: '25vh',
+              height: '300px',
+              width: '250px',
               p: 1,
               textAlign: 'start',
             }}
           >
             {conversation &&
               conversation.map((m) => (
-                <Box key={m._id}>
+                <>
                   {m.from === friendInfo._id ? (
-                    <>
-                      <Typography>
+                    <Box>
+                      <Stack direction="row" alignItems={'center'}>
+                        <Avatar
+                          sx={{
+                            width: 25,
+                            height: 25,
+                            mr: 1,
+                            backgroundColor: initialToColor(
+                              `${friendInfo.first[0]}${friendInfo.last[0]}`
+                            ),
+                          }}
+                          src={friendInfo.profileImg}
+                        >
+                          <Typography>{`${friendInfo.first[0]}${friendInfo.last[0]}`}</Typography>
+                        </Avatar>
                         <strong>{`${friendInfo.first} ${friendInfo.last}`}</strong>
-                      </Typography>
-                      <Typography sx={{ mb: 1 }}>{m.message}</Typography>
-                    </>
+                      </Stack>
+                      <Typography sx={{ mb: 1, ml: 4 }}>{m.message}</Typography>
+                    </Box>
                   ) : (
-                    <>
-                      <Typography sx={{ textAlign: 'end' }}>
-                        <strong>{`${user.first} ${user.last}`}</strong>
-                      </Typography>
-                      <Typography sx={{ textAlign: 'end', mb: 1 }}>{m.message}</Typography>
-                    </>
+                    <Box sx={{ textAlign: 'end' }}>
+                      <Stack
+                        direction={'row'}
+                        justifyContent="flex-end"
+                        alignItems={'center'}
+                      >
+                        <Typography>
+                          <strong>{`${user.first} ${user.last}`}</strong>
+                        </Typography>
+                        <Avatar
+                          sx={{
+                            width: 25,
+                            height: 25,
+                            ml: 1,
+                            backgroundColor: initialToColor(
+                              `${user.first[0]}${user.last[0]}`
+                            ),
+                          }}
+                          src={user.profileImg}
+                        >
+                          <Typography>{`${user.first[0]}${user.last[0]}`}</Typography>
+                        </Avatar>
+                      </Stack>
+                      <Typography sx={{ mb: 1, mr: 4 }}>{m.message}</Typography>
+                    </Box>
                   )}
-                </Box>
+                </>
               ))}
             <div ref={endRef} />
           </Box>
@@ -150,7 +179,15 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
               onChange={handleMessage}
             />
             <Button
-              sx={{ color: 'white' }}
+              sx={{
+                color: 'white',
+                p: 0,
+                ml: 1,
+                ':hover': {
+                  backgroundColor: 'white',
+                  color: 'black',
+                },
+              }}
               onClick={() => handleSendMessage(socket, friendInfo._id, msg)}
             >
               Send

@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { BASE_URL } from '../config/index';
+import { BASE_URL } from '../configure/index';
 
 export const axios = Axios.create({
   headers: {

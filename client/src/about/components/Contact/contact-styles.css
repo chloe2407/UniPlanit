@@ -10,8 +10,9 @@
 
 html {
   font-size: 16px;
-  font-family: -apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica,
-    ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'avenir next', avenir,
+    'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial,
+    sans-serif;
   margin: 0;
   padding: 0;
   text-decoration-skip-ink: 'auto';
@@ -256,8 +257,9 @@ textarea {
   background-color: var(--gray-100);
   box-sizing: border-box;
   padding: 0.65rem 0.5rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica,
-    ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'avenir next', avenir,
+    'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial,
+    sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -491,7 +493,8 @@ td {
 /* Code
   ––––––––––––––––––––––––––––––––– */
 code {
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
+    monospace;
   font-size: 0.8rem;
   white-space: nowrap;
   background: var(--gray-100);
@@ -568,7 +571,8 @@ li {
 kbd {
   display: inline-block;
   padding: 0 0.328rem;
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
+    monospace;
   font-size: 0.64rem;
   color: var(--gray-700);
   vertical-align: middle;

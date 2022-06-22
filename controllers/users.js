@@ -11,7 +11,6 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(duration);
 
-const passport = require('passport');
 const cloudinary = require('cloudinary').v2;
 
 // cloudinary
@@ -224,57 +223,59 @@ module.exports.createNewUserEvent = async (req, res, next) => {
   }
 };
 
-module.exports.createNewUserCourse = async (req, res, next) => {
-  // creates a new course for the user
-  // default end
-  // course is a courseOneSectionSchema
-  const { course } = req.body;
-  const user = await User.findById(req.user.id);
-  // need an event for each meeting time for lecture and tutorial
-  // let isInUserCourses
-  user.courses = user.courses.filter((c) => c.courseCode !== course.courseCode);
-  user.courses.push(course);
-  // user.courses.forEach((c, i) => {
-  //     if (c.courseCode === course.courseCode) {
-  //         user.courses[i] = course
-  //         console.log(user.courses[i])
-  //         isInUserCourses = true
-  //     }
-  // })
-  // await createEventByCourseMeetingTime(user, course, user.id)
-  // if (!isInUserCourses){
-  //     user.courses.push(course)
-  // }
-  await user.save();
-  res.status(200).send({ success: 'Successfully added a new course for user' });
-};
+// module.exports.createNewUserCourse = async (req, res, next) => {
+//   // creates a new course for the user
+//   // default end
+//   // course is a courseOneSectionSchema
+//   const { course } = req.body;
+//   const user = await User.findById(req.user.id);
+//   // need an event for each meeting time for lecture and tutorial
+//   // let isInUserCourses
+//   user.courses = user.courses.filter((c) => c.courseCode !== course.courseCode);
+//   user.courses.push(course);
+//   // user.courses.forEach((c, i) => {
+//   //     if (c.courseCode === course.courseCode) {
+//   //         user.courses[i] = course
+//   //         console.log(user.courses[i])
+//   //         isInUserCourses = true
+//   //     }
+//   // })
+//   // await createEventByCourseMeetingTime(user, course, user.id)
+//   // if (!isInUserCourses){
+//   //     user.courses.push(course)
+//   // }
+//   await user.save();
+//   res.status(200).send({ success: 'Successfully added a new course for user' });
+// };
 
-module.exports.deleteUserCourseByCode = async (req, res, next) => {
-  // removes the course that belongs to the user
-  // returns the courses after filtering
-  const user = await User.findById(req.user.id);
-  const { courseCode } = req.body;
-  // filter out all the courses from user
-  user.courses = user.courses.filter((course) => course.courseCode !== courseCode);
-  // remove associated events from user events and events
-  // await user.populate('events')
-  // user.events = user.events.filter(event => {
-  //     if (event.course) {
-  //         event.course.courseCode !== courseCode
-  //     }
-  // })
-  await user.save();
-  // await Event.deleteMany({
-  //     $and: [
-  //         {
-  //             owner: { $eq: user.id },
-  //         }, {
-  //             courseCode: { $eq: courseCode }
-  //         }
-  //     ]
-  // })
-  res.status(200).send({ success: 'Successfully added a new course for user' });
-};
+// module.exports.deleteUserCourseByCode = async (req, res, next) => {
+//   // removes the course that belongs to the user
+//   // returns the courses after filtering
+//   const user = await User.findById(req.user.id);
+//   const { courseCode } = req.body;
+//   // filter out all the courses from user
+//   user.courses = user.courses.filter(
+//     (course) => course.courseCode !== courseCode
+//   );
+//   // remove associated events from user events and events
+//   // await user.populate('events')
+//   // user.events = user.events.filter(event => {
+//   //     if (event.course) {
+//   //         event.course.courseCode !== courseCode
+//   //     }
+//   // })
+//   await user.save();
+//   // await Event.deleteMany({
+//   //     $and: [
+//   //         {
+//   //             owner: { $eq: user.id },
+//   //         }, {
+//   //             courseCode: { $eq: courseCode }
+//   //         }
+//   //     ]
+//   // })
+//   res.status(200).send({ success: 'Successfully added a new course for user' });
+// };
 
 module.exports.saveCourseHolder = async (req, res, next) => {
   const { courseCode, university, term } = req.body;
@@ -288,52 +289,56 @@ module.exports.saveCourseHolder = async (req, res, next) => {
   res.sendStatus(200);
 };
 
-module.exports.lockSection = async (req, res, next) => {
-  const { type, courseCode } = req.body;
-  const user = await User.findById(req.user.id);
-  await user.populate('courses');
-  const course = user.courses.filter((c) => c.courseCode === courseCode)[0];
-  if (course.isLocked) {
-    return res.send({
-      error: 'Cannot lock/unlock section when course is locked!',
-    });
-  } else if (type === 'section') {
-    course.section.isLocked = !course.section.isLocked;
-  } else {
-    course.tutorial.isLocked = !course.tutorial.isLocked;
-  }
-  await user.save();
-  return res.status(200).send({ success: 'Successfully lock/unlocked section/tutorial' });
-};
+// module.exports.lockSection = async (req, res, next) => {
+//   const { type, courseCode } = req.body;
+//   const user = await User.findById(req.user.id);
+//   await user.populate('courses');
+//   const course = user.courses.filter((c) => c.courseCode === courseCode)[0];
+//   if (course.isLocked) {
+//     return res.send({
+//       error: 'Cannot lock/unlock section when course is locked!',
+//     });
+//   } else if (type === 'section') {
+//     course.section.isLocked = !course.section.isLocked;
+//   } else {
+//     course.tutorial.isLocked = !course.tutorial.isLocked;
+//   }
+//   await user.save();
+//   return res
+//     .status(200)
+//     .send({ success: 'Successfully lock/unlocked section/tutorial' });
+// };
 
-module.exports.deleteSection = async (req, res, next) => {
-  const { type, courseCode } = req.body;
-  const user = await User.findById(req.user.id);
-  await user.populate('courses');
-  const course = user.courses.filter((c) => c.courseCode === courseCode)[0];
-  if (type === 'section') {
-    course.section = undefined;
-  } else {
-    course.tutorial = undefined;
-  }
-  await user.save();
-  return res.status(200).send({ success: 'Successfully deleted section/tutorial' });
-};
+// module.exports.deleteSection = async (req, res, next) => {
+//   const { type, courseCode } = req.body;
+//   const user = await User.findById(req.user.id);
+//   await user.populate('courses');
+//   const course = user.courses.filter((c) => c.courseCode === courseCode)[0];
+//   if (type === 'section') {
+//     course.section = undefined;
+//   } else {
+//     course.tutorial = undefined;
+//   }
+//   await user.save();
+//   return res
+//     .status(200)
+//     .send({ success: 'Successfully deleted section/tutorial' });
+// };
 
-module.exports.lockCourse = async (req, res, next) => {
-  const { courseCode } = req.body;
-  const user = await User.findById(req.user.id);
-  await user.populate('courses');
-  user.courses.forEach((c) => {
-    if (c.courseCode === courseCode) {
-      c.isLocked = !c.isLocked;
-      if (c.tutorial) c.tutorial.isLocked = true;
-      if (c.section) c.section.isLocked = true;
-    }
-  });
-  await user.save();
-  res.status(200).send({ success: 'Successfully lock/unlocked course' });
-};
+// module.exports.lockCourse = async (req, res, next) => {
+//   const { courseCode } = req.body;
+//   const user = await User.findById(req.user.id);
+//   await user.populate('courses');
+//   user.courses.forEach((c) => {
+//     if (c.courseCode === courseCode) {
+//       c.isLocked = !c.isLocked;
+//       if (c.tutorial) c.tutorial.isLocked = true;
+//       if (c.section) c.section.isLocked = true;
+//     }
+//   });
+//   await user.save();
+//   res.status(200).send({ success: 'Successfully lock/unlocked course' });
+// };
 
 module.exports.saveTimeTable = async (req, res, next) => {
   // remove all previous courses and events and save current timetable
@@ -413,51 +418,8 @@ module.exports.deleteImage = async (req, res, next) => {
     });
 };
 
-module.exports.addNewFriend = async (req, res, next) => {
-  const user = await User.findById(req.user && req.user.id);
-  const { friendEmail } = req.body;
-  if (friendEmail === user.email) return res.status(200).send({ err: 'Cannot add yourself' });
-  else {
-    User.findOne({ email: friendEmail }, (err, friend) => {
-      // mutually add friend
-      if (!friend) res.status(200).send({ err: 'Could not find user' });
-      // need to check if they are already friends
-      else if (!user.friends.includes(friend.id)) {
-        user.friends.push(friend.id);
-        friend.friends.push(user.id);
-        user.save();
-        friend.save();
-        res.status(200).send({ success: `Added ${friend.first} ${friend.last}` });
-      } else {
-        res.status(200).send({ err: 'Already Friends!' });
-      }
-    });
-  }
-};
-
-module.exports.getUserFriend = async (req, res, next) => {
-  const user = await User.findById(req.user && req.user.id);
-  if (user) {
-    await user.populate('friends');
-    res.json(user.friends);
-  } else {
-    res.send({ err: 'No user found' });
-  }
-};
-
-module.exports.deleteFriend = async (req, res, next) => {
-  const user = await User.findById(req.user && req.user.id);
-  const { friendId } = req.body;
-  const friend = await User.findById(friendId);
-  user.friends = user.friends.filter((f) => f._id != friendId);
-  friend.friends = friend.friends.filter((f) => f._id != user.id);
-  await friend.save();
-  await user.save();
-  res.json({ success: 'Successfully deleted' });
-};
-
 module.exports.readMessages = async (req, res, next) => {
-  const { friendId } = req.body;
+  const { id } = req.params;
   const messages = await Message.find({
     $or: [
       {
@@ -466,14 +428,14 @@ module.exports.readMessages = async (req, res, next) => {
             from: req.user.id,
           },
           {
-            to: friendId,
+            to: id,
           },
         ],
       },
       {
         $and: [
           {
-            from: friendId,
+            from: id,
           },
           {
             to: req.user.id,
@@ -505,8 +467,12 @@ const createEventByCourseMeetingTime = async (user, course) => {
         location: m.assignedRoom1,
         type: 'lecture',
         course: course,
-        start: new Date(toUTC(getEventDateTime(adjustedNowTime, m.day, m.startTime))),
-        end: new Date(toUTC(getEventDateTime(adjustedNowTime, m.day, m.endTime))),
+        start: new Date(
+          toUTC(getEventDateTime(adjustedNowTime, m.day, m.startTime))
+        ),
+        end: new Date(
+          toUTC(getEventDateTime(adjustedNowTime, m.day, m.endTime))
+        ),
         repeat: {
           repeatInterval: msInWeek,
           start: new Date(toUTC(now)),

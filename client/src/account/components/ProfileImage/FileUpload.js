@@ -13,7 +13,9 @@ export default function FileUpload({ handleFileUpload }) {
         onChange={(e) => handleFileChange(e)}
         accept="image/png"
       />
-      <Button onClick={(e) => handleFileUpload(img)}>Upload Profile Photo</Button>
+      <Button onClick={(e) => handleFileUpload(img)}>
+        Upload Profile Photo
+      </Button>
     </>
   );
 }

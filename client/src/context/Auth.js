@@ -1,6 +1,7 @@
 import React, { createContext, useMemo, useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { axios } from '../lib/axios';
+import useSocket from './socket';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
@@ -8,13 +9,21 @@ export function AuthProvider({ children }) {
   const [err, setErr] = useState();
   const navigate = useNavigate();
   const location = useLocation();
+  const { socket } = useSocket();
 
   const authenticate = (type, values) => {
     axios
       .post(`users/${type}`, values)
       .then((data) => {
+        console.log('authenticating');
+        if (socket) {
+          socket.disconnect();
+          socket.connect();
+        }
         setUser(data);
-        navigate((location.state && location.state.from.pathname) || '../calendar');
+        navigate(
+          (location.state && location.state.from.pathname) || '../calendar'
+        );
       })
       .catch((err) => {
         setErr(err.message);
@@ -30,6 +39,7 @@ export function AuthProvider({ children }) {
   };
 
   const checkLoggedIn = () => {
+    console.log('Checking logged in');
     axios
       .post('users/getLoggedIn')
       .then((data) => {
@@ -43,6 +53,7 @@ export function AuthProvider({ children }) {
   const memo = useMemo(
     () => ({
       user,
+
       err,
       authenticate,
       logout,

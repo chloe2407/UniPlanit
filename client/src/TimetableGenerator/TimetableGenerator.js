@@ -185,7 +185,13 @@ function filterByTerm(course, term) {
 function getValidSchedules(courseData, courses, term) {
   listOfCourses = [];
   for (let i = 1; i <= courses.length; i++) {
-    eval('var ' + 'c' + i + ' = ' + `${filterByTerm(courseData[courses[i - 1]], term)};`);
+    eval(
+      'var ' +
+        'c' +
+        i +
+        ' = ' +
+        `${filterByTerm(courseData[courses[i - 1]], term)};`
+    );
     listOfCourses.push(eval('c' + i));
   }
   return validCourseSchedules(listOfCourses.values());
