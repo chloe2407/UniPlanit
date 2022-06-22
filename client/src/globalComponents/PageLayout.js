@@ -1,8 +1,8 @@
-import Navbar from './navbar/Navbar';
+import Navbar from 'globalComponents/navbar/Navbar';
 import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
-import ChatWidget from '../chat/ChatWidget';
-import ErrorFallback from './error';
+import ChatWidget from 'chat/ChatWidget';
+import ErrorFallback from 'globalComponents/error';
 import { ErrorBoundary } from 'react-error-boundary';
 
 export default function Layout() {

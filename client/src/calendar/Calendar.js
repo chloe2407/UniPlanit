@@ -1,11 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
 
-import WeekView from './weekview.js';
-import OptionsTab from './optionstab.js';
+import WeekView from 'calendar/weekview.js';
+import OptionsTab from 'calendar/optionstab.js';
 import Collapse from '@mui/material/Collapse';
 import Drawer from '@mui/material/Drawer';
-import SideMenu from './sideMenu/SideMenu';
+import SideMenu from 'calendar/sideMenu/SideMenu';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
 

@@ -1,7 +1,7 @@
 import React, { createContext, useMemo, useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { axios } from '../lib/axios';
-import useSocket from './socket';
+import { axios } from 'lib/axios';
+import useSocket from 'context/socket';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
