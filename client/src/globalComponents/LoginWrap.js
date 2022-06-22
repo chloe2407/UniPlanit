@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import useAuth from '../context/Auth';
+import useAuth from 'context/Auth';
 
 export default function LoginWrap({ children }) {
   const [checked, setChecked] = useState(null);

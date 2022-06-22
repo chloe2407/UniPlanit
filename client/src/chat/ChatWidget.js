@@ -9,10 +9,10 @@ import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import MinimizeIcon from '@mui/icons-material/Minimize';
 import IconButton from '@mui/material/IconButton';
-import useSocket from '../context/socket';
-import useAuth from '../context/Auth';
-import initialToColor from '../globalComponents/InitialToColor';
-import { getConversation } from './api/chatApi';
+import useSocket from 'context/socket';
+import useAuth from 'context/Auth';
+import initialToColor from 'globalComponents/InitialToColor';
+import { getConversation } from 'chat/api/chatApi';
 
 export default function ChatWidget({ friendInfo, handleCloseChat }) {
   const { socket } = useSocket();

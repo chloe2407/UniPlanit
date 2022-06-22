@@ -1,26 +1,40 @@
-import React from 'react';
-import { useState } from 'react';
-
-import WeekView from './weekview.js';
-import OptionsTab from './optionstab.js';
+import React, { useEffect, useState } from 'react';
+import WeekView from 'calendar/Weekview.js';
+import OptionsTab from 'calendar/Optionstab.js';
 import Collapse from '@mui/material/Collapse';
 import Drawer from '@mui/material/Drawer';
-import SideMenu from './sideMenu/SideMenu';
+import SideMenu from 'calendar/sideMenu/SideMenu';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
+import useSocket from 'context/socket';
 
 const Calendar = () => {
-  const [currentSession, setCurrentSession] = useState(0);
-  const [currentSchedule, setCurrentSchedule] = useState();
+  // save 10 users schedule
+  const [timetableIndex, setTimetableIndex] = useState({
+    term: 'F',
+    index: 0,
+  });
+  const [userTimetable, setUserTimetable] = useState();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    socket.on('get timetable', (timetable) => {
+      setUserTimetable(timetable);
+    });
+    return () => {
+      socket.off('get timetable');
+    };
+  }, []);
+
   const handleOpenDrawer = () => {
     setOpenDrawer(true);
   };
+
   const handleCloseDrawer = () => {
     setOpenDrawer(false);
   };
-  const [anchor, setAnchor] = useState();
 
   return (
     // <Grid container sx={{ height: '100vh'}}>
@@ -45,8 +59,15 @@ const Calendar = () => {
             {/* <Divider sx={{ mt: 1, mb: 1, mx: 2 }} orientation='vertical'/> */}
             <Grid item xs={6} sm={9}>
               <Collapse in={openEdit} unmountOnExit>
-                <OptionsTab setCurrentSession={setCurrentSession} />
-                <WeekView currentSession={currentSession} />
+                <OptionsTab
+                  handleOpenDrawer={handleOpenDrawer}
+                  timetableIndex={timetableIndex}
+                  setTimetableIndex={setTimetableIndex}
+                />
+                <WeekView
+                  userTimetable={userTimetable}
+                  timetableIndex={timetableIndex}
+                />
               </Collapse>
             </Grid>
           </Grid>
@@ -62,15 +83,15 @@ const Calendar = () => {
           </Grid>
         )}
       </Drawer>
-      <div sx={{ zIndex: 1 }} style={{ height: '100vh', overflow: 'scroll' }}>
+      <div sx={{ zIndex: 1 }}>
         <OptionsTab
-          openDrawer={openDrawer}
-          setCurrentSession={setCurrentSession}
-          setCurrentSchedule={setCurrentSchedule}
+          handleOpenDrawer={handleOpenDrawer}
+          timetableIndex={timetableIndex}
+          setTimetableIndex={setTimetableIndex}
         />
         <WeekView
-          currentSession={currentSession}
-          currentSchedule={currentSchedule}
+          userTimetable={userTimetable}
+          timetableIndex={timetableIndex}
         />
       </div>
     </>

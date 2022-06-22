@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import SearchBar from './SearchBar';
-import UserCourse from './UserCourse';
+import SearchBar from 'calendar/sideMenu/SearchBar';
+import UserCourse from 'calendar/sideMenu/UserCourse';
 import Button from '@mui/material/Button';
-import useSocket from '../../context/socket';
-import { getUserCourse } from '../api/sideMenuApi';
+import useSocket from 'context/socket';
+import { getUserCourse } from 'calendar/api/sideMenuApi';
 
 export default function SideMenu({ openEdit, setOpenEdit, handleCloseDrawer }) {
   const [userCourse, setUserCourse] = useState();

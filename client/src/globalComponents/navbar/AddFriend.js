@@ -2,21 +2,21 @@ import { useState, useEffect } from 'react';
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { NavbarMenu } from '../../globalComponents/navbar/NavbarMenu';
+import { NavbarMenu } from 'globalComponents/navbar/NavbarMenu';
 import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import NavbarTooltip from '../../globalComponents/navbar/NavbarTooltip';
-import useSocket from '../../context/socket';
+import NavbarTooltip from 'globalComponents/navbar/NavbarTooltip';
+import useSocket from 'context/socket';
 import {
   addFriend,
   getFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
-} from '../../globalComponents/navbar/api/navbarApi';
+} from 'globalComponents/navbar/api/navbarApi';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 

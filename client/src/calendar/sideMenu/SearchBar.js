@@ -15,8 +15,8 @@ import FormGroup from '@mui/material/FormGroup';
 import Radio from '@mui/material/Radio';
 import Divider from '@mui/material/Divider';
 import RadioGroup from '@mui/material/RadioGroup';
-import useSocket from '../../context/socket';
-import { getCourse, addUserCourse } from '../api/sideMenuApi';
+import useSocket from 'context/socket';
+import { getCourse, addUserCourse } from 'calendar/api/sideMenuApi';
 
 export default function SearchBar({ userCourse }) {
   const [input, setInput] = useState({

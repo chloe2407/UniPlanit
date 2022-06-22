@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import Matter, { Common, Render } from 'matter-js';
-import theme from '../theme/theme';
+import theme from 'theme/theme';
 
 export default function Scene({ width, height }) {
   const canvaRef = useRef();

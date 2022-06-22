@@ -8,9 +8,9 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import useAuth from '../context/Auth';
-import { useImg } from '../hooks/api/hooks';
-import Loading from '../globalComponents/Loading';
+import useAuth from 'context/Auth';
+import { useImg } from 'hooks/api/hooks';
+import Loading from 'globalComponents/Loading';
 
 const loginSchema = yup.object().shape({
   username: yup.string().email().required(),
