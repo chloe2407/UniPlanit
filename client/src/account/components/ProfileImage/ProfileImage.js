@@ -8,7 +8,7 @@ import { Box } from '@mui/system';
 import { Grid } from '@mui/material';
 import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
-import initialToColor from 'globalComponents/InitialToColor';
+import initialToColor from '../../../globalComponents/InitialToColor';
 import FileUpload from './FileUpload';
 
 const ProfileImage = ({ paramUser }) => {

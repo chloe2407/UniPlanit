@@ -8,22 +8,19 @@ import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import Profile from 'globalComponents/navbar/Profile';
-import NavbarButton from 'globalComponents/navbar/NavbarButton';
-import useAuth from 'context/Auth';
-import FriendProfile from 'globalComponents/navbar/FriendProfile';
-import AddFriend from 'globalComponents/navbar/AddFriend';
-import OverflowIcon from 'globalComponents/navbar/OverflowIcon';
-import { StyledMenuItem, NavbarMenu } from 'globalComponents/navbar/NavbarMenu';
+import Profile from './Profile';
+import NavbarButton from './NavbarButton';
+import useAuth from '../../context/Auth';
+import FriendProfile from './FriendProfile';
+import AddFriend from './AddFriend';
+import OverflowIcon from './OverflowIcon';
+import { StyledMenuItem, NavbarMenu } from './NavbarMenu';
 import { Typography } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import CloseIcon from '@mui/icons-material/Close';
-import useSocket from 'context/socket';
-import {
-  getFriend,
-  getFriendRequest,
-} from 'globalComponents/navbar/api/navbarApi';
+import useSocket from '../../context/socket';
+import { getFriend, getFriendRequest } from './api/navbarApi';
 
 // figure out user not updated when login
 

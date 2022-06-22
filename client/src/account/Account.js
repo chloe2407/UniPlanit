@@ -4,7 +4,7 @@ import AccountInfo from './components/AccountInfo';
 import Grid from '@mui/material/Grid';
 import { Typography } from '@mui/material';
 import Favorites from './components/Favorites/Favorites';
-import { useImg } from 'hooks/api/hooks';
+import { useImg } from '../hooks/api/hooks';
 import { useParams } from 'react-router-dom';
 import { getParamUserData } from './api/getParamUserData';
 

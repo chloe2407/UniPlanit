@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { axios } from 'lib/axios';
+import { axios } from '../../lib/axios';
 
 export function useImg() {
   const [imgUrl, setImgUrl] = useState();

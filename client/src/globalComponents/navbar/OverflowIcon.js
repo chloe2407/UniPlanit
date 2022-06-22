@@ -2,7 +2,7 @@ import { useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import { StyledMenuItem, NavbarMenu } from './NavbarMenu';
 import Avatar from '@mui/material/Avatar';
-import initialToColor from 'globalComponents/InitialToColor';
+import initialToColor from '../../globalComponents/InitialToColor';
 import Typography from '@mui/material/Typography';
 // import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 // import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';

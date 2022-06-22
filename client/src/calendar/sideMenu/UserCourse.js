@@ -11,13 +11,13 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
-import useSocket from 'context/socket';
+import useSocket from '../../context/socket';
 import {
   lockCourse,
   deleteCourse,
   lockCourseSection,
   deleteCourseSection,
-} from 'calendar/api/sideMenuApi';
+} from '../api/sideMenuApi';
 
 export default function UserCourses({ userCourse }) {
   const endRef = useRef();

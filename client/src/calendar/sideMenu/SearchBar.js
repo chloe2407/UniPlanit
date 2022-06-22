@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import courseData from 'calendar/data/course_and_title.json';
+import courseData from '../data/course_and_title.json';
 import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
@@ -15,8 +15,8 @@ import FormGroup from '@mui/material/FormGroup';
 import Radio from '@mui/material/Radio';
 import Divider from '@mui/material/Divider';
 import RadioGroup from '@mui/material/RadioGroup';
-import useSocket from 'context/socket';
-import { getCourse, addUserCourse } from 'calendar/api/sideMenuApi';
+import useSocket from '../../context/socket';
+import { getCourse, addUserCourse } from '../api/sideMenuApi';
 
 export default function SearchBar({ userCourse }) {
   const [input, setInput] = useState({

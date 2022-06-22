@@ -4,8 +4,8 @@ import { StyledMenuItem, NavbarMenu } from './NavbarMenu';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
-import useAuth from 'context/Auth';
-import initialToColor from 'globalComponents/InitialToColor';
+import useAuth from '../../context/Auth';
+import initialToColor from '../../globalComponents/InitialToColor';
 import Divider from '@mui/material/Divider';
 
 export default function Profile({ sx, userInfo }) {
