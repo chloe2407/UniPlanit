@@ -3,10 +3,10 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  border: '1px solid black',
-  borderTop: '0',
-  borderBottom: '0',
-  width: '100px',
+  // border: '1px solid black',
+
+  border: '1px solid rgba(224, 224, 224, 1)',
+  width: '20vh',
 }));
 
 // export const TableCell = ({children, rowSpan, colSpan}) => {
