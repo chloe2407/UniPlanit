@@ -1,97 +1,93 @@
-import React, { useState } from 'react';
+import React from 'react';
+
 import { Typography, Button, IconButton } from '@mui/material';
-// import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
+
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
-// import StarIcon from '@mui/icons-material/Star';
-// import StarBorderIcon from '@mui/icons-material/StarBorder';
-import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 import schedule from './schedule';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Stack from '@mui/material/Stack';
 
-const OptionsTab = ({
-  timetableIndex,
-  setTimetableIndex,
-  handleOpenDrawer,
-}) => {
-  //   const listOfSchedulesKeys = Object.keys(schedule);
+const useStyles = makeStyles((theme) => ({
+  button: {
+    float: 'left',
+    marginLeft: '1vw',
+  },
+}));
 
-  // preload next 10 timetable if we are running out
+var listOfSchedulesKeys = Object.keys(schedule);
+var listOfSchedulesValues = Object.values(schedule);
+var currentScheduleNumber;
+if (!currentScheduleNumber) {
+  currentScheduleNumber = 0;
+}
 
-  const handlePrev = () => {
-    setTimetableIndex({
-      ...timetableIndex,
-      index: timetableIndex.index - 1 < 0 ? 0 : timetableIndex.index - 1,
-    });
+const goPrev = () => {
+  console.log('prev');
+  if (currentScheduleNumber === 0) {
+    currentScheduleNumber = listOfSchedulesValues.length - 1;
+  } else {
+    currentScheduleNumber = currentScheduleNumber - 1;
+  }
+  console.log(currentScheduleNumber);
+  // setCurrentSchedule(listOfSchedulesValues[currentScheduleNumber])
+};
+const goNext = () => {
+  console.log('next');
+  if (currentScheduleNumber === listOfSchedulesValues.length - 1) {
+    currentScheduleNumber = 0;
+  } else {
+    currentScheduleNumber = currentScheduleNumber + 1;
+  }
+  // setCurrentSchedule(listOfSchedulesValues[currentScheduleNumber])
+};
+
+const OptionsTab = ({ setCurrentSession, setCurrentSchedule, openDrawer }) => {
+  const classes = useStyles();
+  const [value, setValue] = React.useState('F');
+  const handleChange = (event) => {
+    setValue(event.target.value);
+    setCurrentSession(event.target.value);
   };
-  const handleNext = () => {
-    setTimetableIndex({
-      ...timetableIndex,
-      index: timetableIndex.index == 9 ? 0 : timetableIndex.index + 1,
-    });
-    if (timetableIndex.index == 9) {
-      // fetch next 10
-    }
-  };
-
-  const handleTermChange = (e) => {
-    setTimetableIndex({
-      ...timetableIndex,
-      term: e.target.value,
-    });
-  };
+  setCurrentSchedule(listOfSchedulesValues[currentScheduleNumber]);
+  console.log(listOfSchedulesValues[currentScheduleNumber]);
 
   return (
-    <Box sx={{ backgroundColor: 'lightgray' }}>
-      <Container>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-            <Button onClick={handleOpenDrawer} sx={{ mr: 2 }}>
-              <MenuOpenIcon />
-              <Typography>Side Menu</Typography>
-            </Button>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
-              value={timetableIndex.term}
-              onChange={handleTermChange}
-            >
-              <FormControlLabel
-                value="F"
-                control={<Radio size="small" />}
-                label="Fall"
-                defaultChecked={true}
-              />
-              <FormControlLabel
-                value="S"
-                control={<Radio size="small" />}
-                label="Winter"
-              />
-            </RadioGroup>
-          </Box>
-          <Box>
-            <Button onClick={handlePrev}>
-              <ChevronLeftRoundedIcon />
-              <Typography>Prev</Typography>
-            </Button>
-            <Button onClick={handleNext}>
-              <Typography>Next</Typography>
-              <ChevronRightRoundedIcon />
-            </Button>
-          </Box>
-        </Stack>
-      </Container>
-    </Box>
+    <div style={{ display: 'inlinedBlock' }}>
+      <Button onClick={openDrawer}>Open Side Bar</Button>
+      <RadioGroup
+        row
+        aria-labelledby="demo-row-radio-buttons-group-label"
+        name="row-radio-buttons-group"
+        className={classes.button}
+        value={value}
+        onChange={handleChange}
+      >
+        <FormControlLabel
+          value="F"
+          control={<Radio />}
+          label="Fall"
+          defaultChecked={true}
+        />
+        <FormControlLabel value="S" control={<Radio />} label="Winter" />
+      </RadioGroup>
+      <div style={{ float: 'right' }}>
+        <Button onClick={goPrev}>
+          <ChevronLeftRoundedIcon />
+          <Typography>Prev</Typography>
+        </Button>
+        <Button onClick={goNext}>
+          <Typography>Next</Typography>
+          <ChevronRightRoundedIcon />
+        </Button>
+      </div>
+    </div>
   );
 };
 
