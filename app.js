@@ -49,6 +49,7 @@ const {
   deleteUserCourse,
   lockCourseSection,
   deleteCourseSection,
+  makeTimeTable,
 } = require('./handlers/courseHandler')(io);
 
 dayjs.extend(duration);
@@ -237,7 +238,7 @@ io.use(async (socket, next) => {
   }
 });
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   console.log(`A user has connected ${socket.id}`);
   socket.on('get friend', getFriend);
   socket.on('add friend', addFriend);
@@ -252,6 +253,7 @@ io.on('connection', (socket) => {
   socket.on('delete course', deleteUserCourse);
   socket.on('lock section', lockCourseSection);
   socket.on('delete section', deleteCourseSection);
+  socket.on('generate timetable', makeTimeTable);
   socket.on('user status', (msg) => {
     console.log(msg);
   });
