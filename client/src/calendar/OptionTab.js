@@ -14,33 +14,27 @@ const OptionsTab = ({
   timetableIndex,
   setTimetableIndex,
   handleOpenDrawer,
+  timetableLength,
 }) => {
-  //   const listOfSchedulesKeys = Object.keys(schedule);
-
   // preload next 10 timetable if we are running out
 
   const handlePrev = () => {
-    setTimetableIndex({
-      ...timetableIndex,
-      index: timetableIndex.index - 1 < 0 ? 0 : timetableIndex.index - 1,
-    });
+    setTimetableIndex(timetableIndex - 1 < 0 ? 0 : timetableIndex - 1);
   };
   const handleNext = () => {
-    setTimetableIndex({
-      ...timetableIndex,
-      index: timetableIndex.index == 9 ? 0 : timetableIndex.index + 1,
-    });
-    if (timetableIndex.index == 9) {
+    timetableIndex < timetableLength - 1 &&
+      setTimetableIndex(timetableIndex == 9 ? 0 : timetableIndex + 1);
+    if (timetableIndex == 9) {
       // fetch next 10
     }
   };
 
-  const handleTermChange = (e) => {
-    setTimetableIndex({
-      ...timetableIndex,
-      term: e.target.value,
-    });
-  };
+  // const handleTermChange = (e) => {
+  //   setTimetableIndex({
+  //     ...timetableIndex,
+  //     term: e.target.value,
+  //   });
+  // };
 
   return (
     <Box sx={{ backgroundColor: 'lightgray' }}>
@@ -59,8 +53,9 @@ const OptionsTab = ({
               row
               aria-labelledby="demo-row-radio-buttons-group-label"
               name="row-radio-buttons-group"
-              value={timetableIndex.term}
-              onChange={handleTermChange}
+              defaultValue={'F'}
+              // value={}
+              // onChange={handleTermChange}
             >
               <FormControlLabel
                 value="F"
@@ -76,7 +71,14 @@ const OptionsTab = ({
             </RadioGroup>
           </Box>
           <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-            <Typography>Timetable {`1/30`}</Typography>
+            <Typography>
+              {`Timetable 
+              ${
+                timetableLength > 0
+                  ? `${timetableIndex + 1}/${timetableLength}`
+                  : 'N/A'
+              } `}
+            </Typography>
             <Button onClick={handlePrev}>
               <ChevronLeftRoundedIcon />
               <Typography>Prev</Typography>

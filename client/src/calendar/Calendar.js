@@ -11,59 +11,28 @@ import { getTimetable } from 'calendar/api/calendarApi';
 
 const Calendar = () => {
   // save 10 users schedule
-  const [timetableIndex, setTimetableIndex] = useState({
-    term: 'F',
-    index: 0,
-  });
-  const [userTimetable, setUserTimetable] = useState([
-    // demo, waiting for generator to be fixed
-    [
-      {
-        courseCode: 'FIN100H1',
-        courseTitle: 'Elementary Finnish I',
-        term: 'F',
-        isLocked: true,
-      },
-      {
-        courseCode: 'EST100H1',
-        courseTitle: 'Elementary Estonian Language and Culture I',
-        term: 'F',
-        isLocked: false,
-        section: {
-          isLocked: false,
-          sectionCode: 'LEC-5101',
-          term: 'F',
-          instructors: [],
-          meetingTimes: [
-            {
-              day: 'Monday',
-              startTime: '17:00',
-              endTime: '19:00',
-              assignedRoom1: '',
-            },
-            {
-              day: 'Thursday',
-              startTime: '17:00',
-              endTime: '19:00',
-              assignedRoom1: '',
-            },
-          ],
-        },
-      },
-    ],
-  ]);
+  const [timetableIndex, setTimetableIndex] = useState(0);
+  const [timetableLength, setTimetableLength] = useState(0);
+  const [userTimetable, setUserTimetable] = useState();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const { socket } = useSocket();
 
   // useEffect(() => {
+  //  get timetable if there is saved timetable
   //   getTimetable(socket)
   // },[])
 
   useEffect(() => {
     socket.on('get timetable', (timetable) => {
-      console.log(timetable);
-      setUserTimetable(timetable);
+      if (timetable?.length > 0) {
+        setUserTimetable(timetable);
+        setTimetableIndex(0);
+        // console.log(timetable.length)
+        setTimetableLength(timetable.length);
+      } else {
+        setUserTimetable(null);
+      }
     });
     return () => {
       socket.off('get timetable');
@@ -104,6 +73,7 @@ const Calendar = () => {
                 <OptionTab
                   handleOpenDrawer={handleOpenDrawer}
                   timetableIndex={timetableIndex}
+                  timetableLength={timetableLength}
                   setTimetableIndex={setTimetableIndex}
                 />
                 <WeekView
@@ -114,7 +84,7 @@ const Calendar = () => {
             </Grid>
           </Grid>
         ) : (
-          <Grid container sx={{ height: '100vh', width: '25vw' }}>
+          <Grid container sx={{ height: '100vh', width: '40vw' }}>
             <Grid item xs={12} sm={12} sx={{ p: 2, borderRight: 1 }}>
               <SideMenu
                 handleCloseDrawer={handleCloseDrawer}
@@ -129,6 +99,7 @@ const Calendar = () => {
         <OptionTab
           handleOpenDrawer={handleOpenDrawer}
           timetableIndex={timetableIndex}
+          timetableLength={timetableLength}
           setTimetableIndex={setTimetableIndex}
         />
         <WeekView

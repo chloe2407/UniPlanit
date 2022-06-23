@@ -89,9 +89,14 @@ module.exports = (io) => {
       },
     });
     const validSchedules = getValidSchedules(courses, true);
-    console.log(validSchedules);
+    const formated = validSchedules.map((s) => {
+      return Object.keys(s).map((key) => {
+        return s[key];
+      });
+    });
+    // console.log(formated);
     // console.log(getValidSchedules(courseCodes, true));
-    // socket.emit('get timetable', validSchedules);
+    socket.emit('get timetable', formated);
   };
 
   function getPossibleSchedules(

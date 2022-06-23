@@ -21,13 +21,16 @@ const WeekView = ({ userTimetable, timetableIndex }) => {
   useEffect(() => {
     const days = createDay();
     userTimetable &&
-      userTimetable[timetableIndex.index].map((course) => {
+      userTimetable[timetableIndex] &&
+      userTimetable[timetableIndex].map((course) => {
         if (course.section) {
           course.section.meetingTimes.map((meetingTime) => {
             // need to extract the time
             const day = meetingTime.day;
-            const start = meetingTime.startTime.slice(0, 2);
-            const end = meetingTime.endTime.slice(0, 2);
+            const start = parseInt(
+              meetingTime.startTime.slice(0, 2)
+            ).toString();
+            const end = parseInt(meetingTime.endTime.slice(0, 2)).toString();
             const diff = parseInt(end) - parseInt(start);
             const courseEvent = courseToEvent(course, meetingTime);
             days[day][start] = courseEvent;
@@ -36,12 +39,11 @@ const WeekView = ({ userTimetable, timetableIndex }) => {
                 days[day][(parseInt(start) + i).toString()] = 'skip';
               }
             }
-            setParsedTimetable({ ...days });
           });
         }
       });
     setParsedTimetable({ ...days });
-  }, [userTimetable]);
+  }, [userTimetable, timetableIndex]);
 
   const createDay = () => {
     return days.reduce((acc, curr) => ((acc[curr] = createTime()), acc), {});
@@ -96,12 +98,14 @@ const WeekView = ({ userTimetable, timetableIndex }) => {
             >{`${time}:00`}</Typography>
           </StyledTableCell>
           {parsedTimetable &&
-            days.map((day) => (
-              <TableSlot
-                key={`${time}${day}`}
-                event={parsedTimetable[day][time]}
-              />
-            ))}
+            days.map((day) => {
+              return (
+                <TableSlot
+                  key={`${time}${day}`}
+                  event={parsedTimetable[day][time]}
+                />
+              );
+            })}
         </TableRow>
       )),
     ];
