@@ -30,6 +30,7 @@
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^7.1.2",
     "path": "^0.12.7",
+    "react-error-boundary": "^3.1.4",
     "save": "^2.5.0",
     "socket.io": "^4.5.1",
     "swagger-jsdoc": "6.2.1",
