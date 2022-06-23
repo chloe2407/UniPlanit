@@ -169,3 +169,35 @@ function sections_conflict(s1, s2, onlyLectures) {
     return sameSemester && sameMeeting();
   }
 }
+
+function times_conflict(m1, m2) {
+  //m1, m2 are ['day', startTime, endTime]
+  if (m1[0] === 'error' || m2[0] === 'error') {
+    //asynch classes will never conflict
+    return false;
+  }
+  let sameDay = m1[0] === m2[0];
+  let same_time =
+    (m1[1] <= m2[1] && m2[1] < m1[2]) || (m2[1] <= m1[1] && m1[1] < m2[2]);
+  return sameDay && same_time;
+}
+
+function convertToDateArray(meetingTimeDict) {
+  //convert into m1, m2 format
+
+  //check for asynch classes
+  if (meetingTimeDict['day'] !== 'error') {
+    startTime = new Date();
+    startTime.setHours(parseInt(meetingTimeDict['startTime']));
+    endTime = new Date();
+    endTime.setHours(parseInt(meetingTimeDict['endTime']));
+    //return [meetingTimeDict['day'], startTime, endTime]
+    return [
+      meetingTimeDict['day'],
+      parseInt(meetingTimeDict['startTime']),
+      parseInt(meetingTimeDict['endTime']),
+    ];
+  } else {
+    return [meetingTimeDict['day'], null, null];
+  }
+}
