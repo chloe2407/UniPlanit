@@ -1,8 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
 
-import WeekView from './Weekview.js';
-import OptionsTab from './Optionstab.js';
+import WeekView from './weekview.js';
+import OptionsTab from './optionstab.js';
 import Collapse from '@mui/material/Collapse';
 import Drawer from '@mui/material/Drawer';
 import SideMenu from 'calendar/sideMenu/SideMenu';
