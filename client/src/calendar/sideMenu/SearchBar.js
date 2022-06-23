@@ -16,7 +16,11 @@ import Radio from '@mui/material/Radio';
 import Divider from '@mui/material/Divider';
 import RadioGroup from '@mui/material/RadioGroup';
 import useSocket from 'context/socket';
-import { getCourse, addUserCourse } from 'calendar/api/sideMenuApi';
+import {
+  getCourse,
+  addUserCourse,
+  generateTimeTable,
+} from 'calendar/api/sideMenuApi';
 
 export default function SearchBar({ userCourse }) {
   const [input, setInput] = useState({
@@ -89,6 +93,11 @@ export default function SearchBar({ userCourse }) {
     }
 
     addUserCourse(socket, course);
+  };
+
+  const handleGenerate = () => {
+    const courseCodes = userCourse.map((c) => c.courseCode);
+    generateTimeTable(socket, courseCodes);
   };
 
   return (
@@ -224,7 +233,9 @@ export default function SearchBar({ userCourse }) {
             <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
           </List>
         )}
-        <Button variant={'contained'}>Generate Timetable</Button>
+        <Button onClick={() => handleGenerate()} variant={'contained'}>
+          Generate Timetable
+        </Button>
       </Container>
     </Box>
   );
