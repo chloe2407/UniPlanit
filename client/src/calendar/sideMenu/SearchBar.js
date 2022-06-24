@@ -16,6 +16,7 @@ import Radio from '@mui/material/Radio';
 import Divider from '@mui/material/Divider';
 import RadioGroup from '@mui/material/RadioGroup';
 import useSocket from 'context/socket';
+import { ListItemIcon } from '@mui/material';
 import {
   getCourse,
   addUserCourse,
@@ -31,6 +32,7 @@ export default function SearchBar({ userCourse }) {
   const [searchData, setSearchData] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const { socket } = useSocket();
+  const bottomRef = useRef();
 
   const filterOptions = createFilterOptions({
     limit: 15,
@@ -88,10 +90,9 @@ export default function SearchBar({ userCourse }) {
     }
     if (type === 'lec') {
       course.section = section;
-    } else {
+    } else if (type === 'tut') {
       course.tutorial = section;
     }
-
     addUserCourse(socket, course);
   };
 
@@ -141,7 +142,7 @@ export default function SearchBar({ userCourse }) {
         {searchData === undefined ? (
           isLoading ? (
             <>
-              <Container sx={{ m: 7, transform: 'scale(0.6)' }}>
+              <Container sx={{ transform: 'scale(0.6)' }}>
                 <img
                   className="ld ld-bounce"
                   style={{ animationDuration: '1s' }}
@@ -151,88 +152,85 @@ export default function SearchBar({ userCourse }) {
             </>
           ) : null
         ) : (
-          <List sx={{ maxHeight: 300, overflow: 'auto' }}>
-            <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
+          <Box sx={{ maxHeight: 300, overflow: 'auto', mb: 2 }}>
             {searchData.length === 0 ? (
               <Typography align="center">
                 No Course With Matching Name And Term
               </Typography>
             ) : (
               <>
-                <ListItem
-                  sx={{
-                    flexDirection: 'column',
-                    alignItems: 'baseline',
-                    pt: 0,
-                    pb: 0,
-                  }}
-                >
-                  <Typography>List of Lectures</Typography>
-                  <List>
-                    {searchData[0].sections.map((lecture) => (
-                      <ListItem
+                <Typography>Course</Typography>
+                <Box sx={{ display: 'flex', m: 1 }}>
+                  <Typography variant="h6">
+                    {searchData[0].courseTitle}
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    sx={{ ml: 'auto' }}
+                    onClick={() => handleAddCourseWithSection(null, null)}
+                  >
+                    Add this course
+                  </Button>
+                </Box>
+                <Divider sx={{ mt: 2, mb: 1, mx: 2 }} />
+                <Typography>Lectures</Typography>
+                <Box sx={{ m: 1 }}>
+                  {searchData[0].sections.length > 0 ? (
+                    searchData[0].sections.map((lecture) => (
+                      <Box
                         key={lecture._id}
-                        sx={{
-                          flexDirection: 'column',
-                          alignItems: 'baseline',
-                          pt: 0,
-                          pb: 0,
-                        }}
+                        sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
                       >
-                        <Typography>[{lecture.sectionCode}]</Typography>
+                        <Typography>
+                          <strong>{lecture.sectionCode}</strong>
+                        </Typography>
                         <Button
-                          lecture={lecture}
-                          sx={{ border: 1, borderRadius: 2 }}
+                          variant="contained"
+                          sx={{ ml: 'auto', textTransform: 'capitalize' }}
                           onClick={() =>
                             handleAddCourseWithSection('lec', lecture)
                           }
                         >
                           <Typography>Add</Typography>
                         </Button>
-                      </ListItem>
-                    ))}
-                  </List>
-                </ListItem>
-                <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
-                <ListItem
-                  sx={{
-                    flexDirection: 'column',
-                    alignItems: 'baseline',
-                    pt: 0,
-                    pb: 0,
-                  }}
-                >
-                  <Typography>List of Tutorials</Typography>
-                  <List>
-                    {searchData[0].tutorials.map((tutorial) => (
-                      <ListItem
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography>No Lecture Found For This Course!</Typography>
+                  )}
+                </Box>
+                <Divider sx={{ mt: 2, mb: 1, mx: 2 }} />
+                <Typography>Tutorials</Typography>
+                <Box sx={{ m: 1 }}>
+                  {searchData[0].tutorials.length > 0 ? (
+                    searchData[0].tutorials.map((tutorial) => (
+                      <Box
                         key={tutorial._id}
-                        sx={{
-                          flexDirection: 'column',
-                          alignItems: 'baseline',
-                          pt: 0,
-                          pb: 0,
-                        }}
+                        sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
                       >
-                        <Typography>[{tutorial.tutorialCode}]</Typography>
+                        <Typography>
+                          <strong>{tutorial.tutorialCode}</strong>
+                        </Typography>
                         <Button
-                          tutorial={tutorial}
-                          sx={{ border: 1, borderRadius: 2 }}
+                          sx={{ ml: 'auto', textTransform: 'capitalize' }}
+                          variant="contained"
                           onClick={() =>
                             handleAddCourseWithSection('tut', tutorial)
                           }
                         >
                           <Typography>Add</Typography>
                         </Button>
-                      </ListItem>
-                    ))}
-                  </List>
-                </ListItem>
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography>No Lecture Found For This Course!</Typography>
+                  )}
+                </Box>
               </>
             )}
-            <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
-          </List>
+          </Box>
         )}
+        <div ref={bottomRef}></div>
         <Button onClick={() => handleGenerate()} variant={'contained'}>
           Generate Timetable
         </Button>

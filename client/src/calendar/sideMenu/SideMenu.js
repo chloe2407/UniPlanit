@@ -25,15 +25,14 @@ export default function SideMenu({ openEdit, setOpenEdit, handleCloseDrawer }) {
   }, []);
 
   return (
-    <Box mt={2} sx={{ overflow: 'auto' }}>
+    <Box mt={2}>
       {openEdit ? (
         <Typography>Editing</Typography>
       ) : (
         <>
-          <Button onClick={handleCloseDrawer}>click to go back</Button>
           <Typography
             variant="h5"
-            sx={{ display: 'flex', justifyContent: 'start', marginLeft: 3 }}
+            sx={{ display: 'flex', justifyContent: 'start', ml: 2 }}
           >
             Your Courses
           </Typography>
@@ -41,11 +40,11 @@ export default function SideMenu({ openEdit, setOpenEdit, handleCloseDrawer }) {
           <SearchBar userCourse={userCourse} />
         </>
       )}
-      <Button onClick={() => setOpenEdit(!openEdit)}>
+      {/* <Button onClick={() => setOpenEdit(!openEdit)}>
         <Typography>
           {openEdit ? <>click to close edit</> : <>click to edit</>}
         </Typography>
-      </Button>
+      </Button> */}
     </Box>
   );
 }

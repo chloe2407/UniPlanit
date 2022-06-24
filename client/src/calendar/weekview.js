@@ -6,6 +6,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Container from '@mui/material/Container';
 import { StyledTableCell } from 'calendar/StyledTableCell';
 import { useCourseToEvent } from 'hooks/hook';
 
@@ -56,7 +57,9 @@ const WeekView = ({ userTimetable, timetableIndex }) => {
   const DayHeader = () => {
     return (
       <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-        <StyledTableCell align="center">Time</StyledTableCell>
+        <StyledTableCell sx={{ width: 'auto' }} align="center">
+          Time
+        </StyledTableCell>
         {days.map((day) => (
           <StyledTableCell key={day} align="center">
             {day}
@@ -71,11 +74,11 @@ const WeekView = ({ userTimetable, timetableIndex }) => {
     return (
       <>
         {event !== 'skip' ? (
-          <StyledTableCell align="center" rowSpan={dur}>
+          <StyledTableCell align="center" rowSpan={dur} sx={{ padding: 0 }}>
             {event && (
               <EventCard
                 event={event}
-                sx={{ maxHeight: `${dur * 5}vh`, overflowY: 'auto' }}
+                sx={{ height: `${dur * 4.2}em`, overflowY: 'auto' }}
               />
             )}
           </StyledTableCell>
@@ -88,10 +91,10 @@ const WeekView = ({ userTimetable, timetableIndex }) => {
     // do not render a cell if an event spans over it
     return [
       times.map((time) => (
-        <TableRow key={time} sx={{ height: '5vh' }}>
+        <TableRow key={time} sx={{ height: '2rem' }}>
           <StyledTableCell
             align="center"
-            sx={{ width: '50px', borderTop: '0', borderBottom: '0' }}
+            sx={{ borderTop: '0', borderBottom: '0' }}
           >
             <Typography
               sx={{ position: 'relative', top: '-2em' }}
@@ -113,14 +116,16 @@ const WeekView = ({ userTimetable, timetableIndex }) => {
 
   return (
     <Box>
-      <Table>
-        <TableHead>
-          <DayHeader />
-        </TableHead>
-        <TableBody>
-          <TableSlots parsedTimetable={parsedTimetable} />
-        </TableBody>
-      </Table>
+      <Container>
+        <Table>
+          <TableHead>
+            <DayHeader />
+          </TableHead>
+          <TableBody>
+            <TableSlots parsedTimetable={parsedTimetable} />
+          </TableBody>
+        </Table>
+      </Container>
     </Box>
   );
 };
