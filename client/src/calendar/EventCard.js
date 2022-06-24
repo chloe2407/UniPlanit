@@ -10,24 +10,18 @@ import IconButton from '@mui/material/IconButton';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Grid from '@mui/material/Grid';
 
 const EventCard = ({ event, sx }) => {
   const [anchorEl, setAnchorEl] = useState();
   const open = Boolean(anchorEl);
   return (
-    <Card sx={sx}>
-      <CardActionArea onClick={(e) => setAnchorEl(e.currentTarget)}>
-        <CardContent sx={{ textAlign: 'start' }}>
+    <Card sx={{ borderRadius: 0 }}>
+      <CardActionArea sx={sx} onClick={(e) => setAnchorEl(e.currentTarget)}>
+        <CardContent sx={{ textAlign: 'center', p: 0 }}>
           <Typography>
             <strong>{event.eventName}</strong>
           </Typography>
-          <Typography>Type: {event.type}</Typography>
-          {/* <Typography>
-            Location: {event.location !== '' ? event.location : 'N/A'}
-          </Typography>
-          <Typography>Day: {event.day}</Typography>
-          <Typography>Starts: {event.start}</Typography>
-          <Typography>Ends: {event.end}</Typography> */}
         </CardContent>
       </CardActionArea>
       <Box>
@@ -35,13 +29,21 @@ const EventCard = ({ event, sx }) => {
           open={open}
           anchorEl={anchorEl}
           anchorOrigin={{
-            vertical: 'center',
+            vertical: 'top',
             horizontal: 'right',
           }}
           onClose={() => setAnchorEl(null)}
         >
-          <Paper>
-            <Typography>CardContent</Typography>
+          <Paper sx={{ padding: 2 }}>
+            <Typography>{event.eventName}</Typography>
+            <Typography>{event.course && event.course.courseTitle}</Typography>
+            <Typography>Type: {event.type}</Typography>
+            <Typography>
+              Location: {event.location !== '' ? event.location : 'N/A'}
+            </Typography>
+            <Typography>Day: {event.day}</Typography>
+            <Typography>Starts: {event.start}</Typography>
+            <Typography>Ends: {event.end}</Typography>
           </Paper>
         </Popover>
       </Box>

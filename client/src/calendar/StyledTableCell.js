@@ -6,13 +6,7 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   // border: '1px solid black',
 
   border: '1px solid rgba(224, 224, 224, 1)',
-  width: '20vh',
+  borderLeft: '0',
+  borderRight: '0',
+  width: '20em',
 }));
-
-// export const TableCell = ({children, rowSpan, colSpan}) => {
-//   return (
-//     <StyledTableCell rowSpan={rowSpan} colSpan={colSpan}>
-//         {children}
-//     </StyledTableCell>
-//   )
-// }
