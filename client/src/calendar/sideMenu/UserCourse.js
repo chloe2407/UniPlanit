@@ -1,6 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import LockIcon from '@mui/icons-material/Lock';
@@ -44,7 +42,7 @@ export default function UserCourses({ userCourse }) {
 
   return (
     <Box sx={{ maxHeight: 500, overflow: 'auto', m: 3 }}>
-      {userCourse &&
+      {userCourse && userCourse.length > 0 ? (
         userCourse.map((course) => (
           <Box key={course.courseCode}>
             <Typography>{course.courseTitle}</Typography>
@@ -151,7 +149,13 @@ export default function UserCourses({ userCourse }) {
             )}
             <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
           </Box>
-        ))}
+        ))
+      ) : (
+        <Typography variant="h6">
+          {' '}
+          No courses yet. Start by adding a course!{' '}
+        </Typography>
+      )}
       <div ref={endRef} />
     </Box>
   );

@@ -5,9 +5,11 @@ import SearchBar from 'calendar/sideMenu/SearchBar';
 import UserCourse from 'calendar/sideMenu/UserCourse';
 import Button from '@mui/material/Button';
 import useSocket from 'context/socket';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { getUserCourse } from 'calendar/api/sideMenuApi';
 
-export default function SideMenu({ openEdit, setOpenEdit, handleCloseDrawer }) {
+export default function SideMenu({ handleOpenDrawer }) {
   const [userCourse, setUserCourse] = useState();
   const { socket } = useSocket();
 
@@ -25,26 +27,23 @@ export default function SideMenu({ openEdit, setOpenEdit, handleCloseDrawer }) {
   }, []);
 
   return (
-    <Box mt={2}>
-      {openEdit ? (
-        <Typography>Editing</Typography>
-      ) : (
-        <>
-          <Typography
-            variant="h5"
-            sx={{ display: 'flex', justifyContent: 'start', ml: 2 }}
-          >
-            Your Courses
-          </Typography>
-          {userCourse && <UserCourse userCourse={userCourse} />}
-          <SearchBar userCourse={userCourse} />
-        </>
-      )}
-      {/* <Button onClick={() => setOpenEdit(!openEdit)}>
-        <Typography>
-          {openEdit ? <>click to close edit</> : <>click to edit</>}
-        </Typography>
-      </Button> */}
+    <Box
+      sx={{
+        width: '30vw',
+        p: 2,
+      }}
+    >
+      <Typography
+        variant="h5"
+        sx={{ display: 'flex', justifyContent: 'start', ml: 2 }}
+      >
+        Your Courses
+        <IconButton sx={{ ml: 'auto ' }} onClick={() => handleOpenDrawer()}>
+          <ArrowBackIosIcon />
+        </IconButton>
+      </Typography>
+      {userCourse && <UserCourse userCourse={userCourse} />}
+      <SearchBar userCourse={userCourse} />
     </Box>
   );
 }

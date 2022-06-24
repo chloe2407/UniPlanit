@@ -10,7 +10,7 @@ import Container from '@mui/material/Container';
 import { StyledTableCell } from 'calendar/StyledTableCell';
 import { useCourseToEvent } from 'hooks/hook';
 
-const WeekView = ({ userTimetable, timetableIndex }) => {
+const WeekView = ({ sx, userTimetable, timetableIndex }) => {
   // const classes = useStyles();
   const times = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -115,7 +115,7 @@ const WeekView = ({ userTimetable, timetableIndex }) => {
   };
 
   return (
-    <Box>
+    <Box sx={sx}>
       <Container>
         <Table>
           <TableHead>
