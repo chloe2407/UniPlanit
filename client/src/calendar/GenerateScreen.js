@@ -72,7 +72,7 @@ const GenerateScreen = () => {
                     sx={{ border: 1 }}
                   >
                     {' '}
-                    Add to favourite
+                    Add to favourites
                   </Button>
                 </Grid>
                 <Grid item xs={12}>
