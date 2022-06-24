@@ -33,3 +33,7 @@ export const deleteCourseSection = (socket, courseCode, type) => {
 export const addUserCourse = (socket, course) => {
   socket.emit('add user course', course);
 };
+
+export const generateTimeTable = (socket, courses) => {
+  socket.emit('generate timetable', courses);
+};

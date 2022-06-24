@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import { Typography, Button, IconButton } from '@mui/material';
-// import { makeStyles } from '@material-ui/core/styles';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
-// import StarIcon from '@mui/icons-material/Star';
-// import StarBorderIcon from '@mui/icons-material/StarBorder';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
-import schedule from './Schedule';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
@@ -18,33 +14,28 @@ const OptionsTab = ({
   timetableIndex,
   setTimetableIndex,
   handleOpenDrawer,
+  timetableLength,
+  sidebar,
 }) => {
-  //   const listOfSchedulesKeys = Object.keys(schedule);
-
   // preload next 10 timetable if we are running out
 
   const handlePrev = () => {
-    setTimetableIndex({
-      ...timetableIndex,
-      index: timetableIndex.index - 1 < 0 ? 0 : timetableIndex.index - 1,
-    });
+    setTimetableIndex(timetableIndex - 1 < 0 ? 0 : timetableIndex - 1);
   };
   const handleNext = () => {
-    setTimetableIndex({
-      ...timetableIndex,
-      index: timetableIndex.index == 9 ? 0 : timetableIndex.index + 1,
-    });
-    if (timetableIndex.index == 9) {
+    timetableIndex < timetableLength - 1 &&
+      setTimetableIndex(timetableIndex == 9 ? 0 : timetableIndex + 1);
+    if (timetableIndex == 9) {
       // fetch next 10
     }
   };
 
-  const handleTermChange = (e) => {
-    setTimetableIndex({
-      ...timetableIndex,
-      term: e.target.value,
-    });
-  };
+  // const handleTermChange = (e) => {
+  //   setTimetableIndex({
+  //     ...timetableIndex,
+  //     term: e.target.value,
+  //   });
+  // };
 
   return (
     <Box sx={{ backgroundColor: 'lightgray' }}>
@@ -55,16 +46,22 @@ const OptionsTab = ({
           alignItems="center"
         >
           <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-            <Button onClick={handleOpenDrawer} sx={{ mr: 2 }}>
-              <MenuOpenIcon />
-              <Typography>Side Menu</Typography>
-            </Button>
+            {sidebar ? (
+              <Button onClick={handleOpenDrawer} sx={{ mr: 2 }}>
+                <MenuOpenIcon />
+                <Typography>Side Menu</Typography>
+              </Button>
+            ) : (
+              <></>
+            )}
+
             <RadioGroup
               row
               aria-labelledby="demo-row-radio-buttons-group-label"
               name="row-radio-buttons-group"
-              value={timetableIndex.term}
-              onChange={handleTermChange}
+              defaultValue={'F'}
+              // value={}
+              // onChange={handleTermChange}
             >
               <FormControlLabel
                 value="F"
@@ -79,7 +76,15 @@ const OptionsTab = ({
               />
             </RadioGroup>
           </Box>
-          <Box>
+          <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
+            <Typography>
+              {`Timetable 
+              ${
+                timetableLength > 0
+                  ? `${timetableIndex + 1}/${timetableLength}`
+                  : 'N/A'
+              } `}
+            </Typography>
             <Button onClick={handlePrev}>
               <ChevronLeftRoundedIcon />
               <Typography>Prev</Typography>

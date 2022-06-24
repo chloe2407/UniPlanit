@@ -43,7 +43,7 @@ export default function UserCourses({ userCourse }) {
   };
 
   return (
-    <List sx={{ maxHeight: 500, overflow: 'auto' }}>
+    <List sx={{ maxHeight: '50vh', overflow: 'auto' }}>
       {userCourse &&
         userCourse.map((course) => (
           <Box key={course.courseCode}>
@@ -56,28 +56,38 @@ export default function UserCourses({ userCourse }) {
                 pb: 0,
               }}
             >
-              <Typography>
-                <IconButton
-                  onClick={() => handleApiCall(lockCourse, course.courseCode)}
-                >
-                  {course.isLocked ? <LockIcon /> : <LockOpenIcon />}
-                </IconButton>
-                <IconButton
-                  onClick={() => handleApiCall(deleteCourse, course.courseCode)}
-                >
-                  <DeleteOutlineIcon />
-                </IconButton>
-                [{course.courseCode}] {course.courseTitle}
-                <IconButton
-                  onClick={() => handleCourseCollapse(course.courseCode)}
-                >
-                  {courseCodeShow.includes(course.courseCode) ? (
-                    <ExpandLess />
-                  ) : (
-                    <ExpandMore />
-                  )}
-                </IconButton>
-              </Typography>
+              <Box>
+                <Typography>{course.courseTitle}</Typography>
+              </Box>
+              <Box>
+                <Typography sx={{ display: 'inline-block' }}>
+                  {course.courseCode}
+                </Typography>
+                <Box sx={{ display: 'inline-block' }}>
+                  <IconButton
+                    onClick={() => handleCourseCollapse(course.courseCode)}
+                  >
+                    {courseCodeShow.includes(course.courseCode) ? (
+                      <ExpandLess />
+                    ) : (
+                      <ExpandMore />
+                    )}
+                  </IconButton>
+                  <IconButton
+                    onClick={() => handleApiCall(lockCourse, course.courseCode)}
+                  >
+                    {course.isLocked ? <LockIcon /> : <LockOpenIcon />}
+                  </IconButton>
+                  <IconButton
+                    onClick={() =>
+                      handleApiCall(deleteCourse, course.courseCode)
+                    }
+                  >
+                    <DeleteOutlineIcon />
+                  </IconButton>
+                </Box>
+              </Box>
+
               {course.section && (
                 <Collapse
                   in={courseCodeShow.includes(course.courseCode)}
@@ -86,6 +96,7 @@ export default function UserCourses({ userCourse }) {
                   <List sx={{ p: 0 }}>
                     <ListItem sx={{ pb: 0, pt: 0 }}>
                       <Typography>
+                        {course.section.sectionCode}
                         <IconButton
                           onClick={() =>
                             handleApiCall(
@@ -113,7 +124,6 @@ export default function UserCourses({ userCourse }) {
                         >
                           <DeleteOutlineIcon />
                         </IconButton>
-                        {course.section.sectionCode}
                       </Typography>
                     </ListItem>
                   </List>
