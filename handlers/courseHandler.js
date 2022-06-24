@@ -89,14 +89,7 @@ module.exports = (io) => {
       },
     });
     const validSchedules = getValidSchedules(courses, true);
-    const formated = validSchedules.map((s) => {
-      return Object.keys(s).map((key) => {
-        return s[key];
-      });
-    });
-    // console.log(formated);
-    // console.log(getValidSchedules(courseCodes, true));
-    socket.emit('get timetable', formated);
+    socket.emit('get timetable', validSchedules);
   };
 
   function getPossibleSchedules(
@@ -166,9 +159,10 @@ module.exports = (io) => {
       onlyLectures,
       lockedCourses
     );
-    return allPossibleSchedules.filter((schedule) =>
+    const allValidSchedules = allPossibleSchedules.filter((schedule) =>
       isValid(schedule, onlyLectures)
     );
+    return allValidSchedules.map((schedule) => Object.values(schedule));
   }
 
   function isValid(schedule, onlyLectures) {
