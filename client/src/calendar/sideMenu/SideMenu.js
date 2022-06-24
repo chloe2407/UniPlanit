@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import SearchBar from 'calendar/sideMenu/SearchBar';
-import UserCourse from 'calendar/sideMenu/UserCourse';
-import Button from '@mui/material/Button';
 import useSocket from 'context/socket';
-import IconButton from '@mui/material/IconButton';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { getUserCourse } from 'calendar/api/sideMenuApi';
+import CourseSelection from 'calendar/sideMenu/CourseSelection';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import TabPanel from 'calendar/sideMenu/TabPanel';
+import MakeTimetable from 'calendar/sideMenu/MakeTimetable';
 
-export default function SideMenu({ handleOpenDrawer, openDrawer }) {
+export default function SideMenu({
+  drawerWidth,
+  handleOpenDrawer,
+  openDrawer,
+}) {
   const [userCourse, setUserCourse] = useState();
   const { socket } = useSocket();
+  const [tab, setTab] = useState(0);
 
   useEffect(() => {
     getUserCourse(socket);
@@ -25,36 +29,41 @@ export default function SideMenu({ handleOpenDrawer, openDrawer }) {
       socket.off('get user course');
     };
   }, []);
-
+  const handleTabChange = (e, newTab) => {
+    setTab(newTab);
+  };
   return (
     <Box
       sx={{
-        width: '25vw',
+        width: `${drawerWidth}vw`,
+        height: '100vh',
         p: 2,
       }}
     >
-      <Typography
-        variant="h5"
-        sx={{ display: 'flex', textAlign: 'start', m: 3, mb: 1 }}
-      >
-        Your Courses
-        <IconButton
-          sx={{
-            ml: 'auto ',
-            transform: !openDrawer && 'rotate(90deg)',
-            transition: (theme) =>
-              theme.transitions.create('transform', {
-                easing: theme.transitions.easing.sharp,
-                duration: 225,
-              }),
-          }}
-          onClick={() => handleOpenDrawer()}
-        >
-          <ArrowBackIosIcon />
-        </IconButton>
-      </Typography>
-      {userCourse && <UserCourse userCourse={userCourse} />}
-      <SearchBar userCourse={userCourse} />
+      <Tabs variant="scrollable" value={tab} onChange={handleTabChange}>
+        <Tab value={0} label={'Select'} />
+        <Tab value={1} label={'Build'} />
+        <Tab value={2} label={'Generate'} />
+        <Tab value={3} label={'Favorites'} />
+      </Tabs>
+      <TabPanel value={tab} index={0}>
+        <CourseSelection
+          userCourse={userCourse}
+          openDrawer={openDrawer}
+          handleOpenDrawer={handleOpenDrawer}
+          handleTabChange={handleTabChange}
+        />
+      </TabPanel>
+      <TabPanel value={tab} index={1}>
+        <MakeTimetable
+          userCourse={userCourse}
+          openDrawer={openDrawer}
+          handleOpenDrawer={handleOpenDrawer}
+        />
+        {/* <Typography>This is a test</Typography> */}
+      </TabPanel>
+      <TabPanel value={tab} index={2}></TabPanel>
+      <TabPanel value={tab} index={3}></TabPanel>
     </Box>
   );
 }

@@ -49,7 +49,7 @@ export default function UserCourses({ userCourse }) {
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography>{course.courseCode}</Typography>
               <Box sx={{ ml: 'auto' }}>
-                <IconButton
+                {/* <IconButton
                   onClick={() => handleCourseCollapse(course.courseCode)}
                 >
                   {courseCodeShow.includes(course.courseCode) ? (
@@ -57,12 +57,12 @@ export default function UserCourses({ userCourse }) {
                   ) : (
                     <ExpandMore />
                   )}
-                </IconButton>
-                <IconButton
+                </IconButton> */}
+                {/* <IconButton
                   onClick={() => handleApiCall(lockCourse, course.courseCode)}
                 >
                   {course.isLocked ? <LockIcon /> : <LockOpenIcon />}
-                </IconButton>
+                </IconButton> */}
                 <IconButton
                   onClick={() => handleApiCall(deleteCourse, course.courseCode)}
                 >
@@ -71,7 +71,7 @@ export default function UserCourses({ userCourse }) {
               </Box>
             </Box>
 
-            {course.section && (
+            {/* {course.section && (
               <Collapse in={courseCodeShow.includes(course.courseCode)}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Typography sx={{ ml: 2 }}>
@@ -108,8 +108,8 @@ export default function UserCourses({ userCourse }) {
                   </Box>
                 </Box>
               </Collapse>
-            )}
-            {course.tutorial && (
+            )} */}
+            {/* {course.tutorial && (
               <Collapse in={courseCodeShow.includes(course.courseCode)}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Typography sx={{ ml: 2 }}>
@@ -146,14 +146,13 @@ export default function UserCourses({ userCourse }) {
                   </Box>
                 </Box>
               </Collapse>
-            )}
+            )} */}
             <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
           </Box>
         ))
       ) : (
         <Typography variant="h6">
-          {' '}
-          No courses yet. Start by adding a course!{' '}
+          No courses yet. Start by adding a course!
         </Typography>
       )}
       <div ref={endRef} />

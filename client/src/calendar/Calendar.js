@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Snackbar from '@mui/material/Snackbar';
 import Box from '@mui/material/Box';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const Calendar = () => {
   // save 10 users schedule
@@ -16,17 +17,17 @@ const Calendar = () => {
   const [timetableLength, setTimetableLength] = useState(0);
   const [userTimetable, setUserTimetable] = useState();
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
   const [timetableMsg, setTimetableMsg] = useState();
   const { socket } = useSocket();
+  const matchSm = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+  const matchMd = useMediaQuery((theme) => theme.breakpoints.down('md'));
   const openMsg = Boolean(timetableMsg);
-
   // useEffect(() => {
   //  get timetable if there is saved timetable
   //   getTimetable(socket)
   // },[])
 
-  const drawerWidth = 25;
+  const drawerWidth = matchMd ? 100 : 25;
 
   useEffect(() => {
     socket.on('get timetable', (timetable) => {
@@ -59,13 +60,16 @@ const Calendar = () => {
         sx={{
           '.MuiDrawer-paperAnchorLeft': {
             position: 'absolute',
-            top: '6.4em',
-            height: 'max-content',
+            top: matchSm ? '8.4em' : '6.4em',
           },
         }}
         // onClose={() => handleCloseDrawer()}
       >
-        <SideMenu handleOpenDrawer={handleOpenDrawer} openDrawer={openDrawer} />
+        <SideMenu
+          handleOpenDrawer={handleOpenDrawer}
+          openDrawer={openDrawer}
+          drawerWidth={drawerWidth}
+        />
       </Drawer>
       <OptionTab
         handleOpenDrawer={handleOpenDrawer}
