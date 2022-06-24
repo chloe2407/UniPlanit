@@ -97,7 +97,7 @@ const WeekView = ({ sx, userTimetable, timetableIndex }) => {
             sx={{ borderTop: '0', borderBottom: '0' }}
           >
             <Typography
-              sx={{ position: 'relative', top: '-2em' }}
+              sx={{ position: 'relative', top: '-1.7em' }}
             >{`${time}:00`}</Typography>
           </StyledTableCell>
           {parsedTimetable &&

@@ -41,7 +41,7 @@ export default function UserCourses({ userCourse }) {
   };
 
   return (
-    <Box sx={{ maxHeight: 500, overflow: 'auto', m: 3 }}>
+    <Box sx={{ overflow: 'auto', m: 3, my: 1, textAlign: 'left' }}>
       {userCourse && userCourse.length > 0 ? (
         userCourse.map((course) => (
           <Box key={course.courseCode}>

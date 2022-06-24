@@ -26,7 +26,7 @@ const Calendar = () => {
   //   getTimetable(socket)
   // },[])
 
-  const drawerWidth = 30;
+  const drawerWidth = 25;
 
   useEffect(() => {
     socket.on('get timetable', (timetable) => {
@@ -36,7 +36,9 @@ const Calendar = () => {
         // console.log(timetable.length)
         setTimetableLength(timetable.length);
       } else {
-        setTimetableMsg("Sorry! Couldn't generate a timetable");
+        setTimetableMsg(
+          "Sorry! We couldn't generate a timetable with the selected courses"
+        );
         setUserTimetable(null);
       }
     });
@@ -58,22 +60,28 @@ const Calendar = () => {
           '.MuiDrawer-paperAnchorLeft': {
             position: 'absolute',
             top: '6.4em',
+            height: 'max-content',
           },
         }}
         // onClose={() => handleCloseDrawer()}
       >
-        <SideMenu handleOpenDrawer={handleOpenDrawer} />
+        <SideMenu handleOpenDrawer={handleOpenDrawer} openDrawer={openDrawer} />
       </Drawer>
       <OptionTab
         handleOpenDrawer={handleOpenDrawer}
         timetableIndex={timetableIndex}
         timetableLength={timetableLength}
         setTimetableIndex={setTimetableIndex}
+        openDrawer={openDrawer}
       />
       <WeekView
         sx={{
-          marginLeft: openDrawer && `${drawerWidth}vw`,
-          width: openDrawer ? `${100 - drawerWidth}vw` : '100vw',
+          marginLeft: openDrawer ? `${drawerWidth}vw` : 0,
+          transition: (theme) =>
+            theme.transitions.create('margin', {
+              easing: theme.transitions.easing.easeInOut,
+              duration: 225,
+            }),
         }}
         userTimetable={userTimetable}
         timetableIndex={timetableIndex}
@@ -81,6 +89,7 @@ const Calendar = () => {
       <Snackbar
         open={openMsg}
         onClose={() => setTimetableMsg(null)}
+        autoHideDuration={3000}
         action={
           <IconButton
             size="small"

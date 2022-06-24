@@ -102,7 +102,7 @@ export default function SearchBar({ userCourse }) {
   };
 
   return (
-    <Box mb={2}>
+    <Box mb={2} sx={{ textAlign: 'start' }}>
       <Container>
         <FormGroup sx={{ mb: 1 }}>
           <FormLabel id="search-label" sx={{ textAlign: 'left', mb: 2 }}>

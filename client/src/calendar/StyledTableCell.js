@@ -10,11 +10,3 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   borderRight: '0',
   width: '20em',
 }));
-
-// export const TableCell = ({children, rowSpan, colSpan}) => {
-//   return (
-//     <StyledTableCell rowSpan={rowSpan} colSpan={colSpan}>
-//         {children}
-//     </StyledTableCell>
-//   )
-// }
