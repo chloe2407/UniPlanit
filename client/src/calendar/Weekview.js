@@ -10,6 +10,7 @@ import Container from '@mui/material/Container';
 import { StyledTableCell } from 'calendar/StyledTableCell';
 import { useCourseToEvent } from 'hooks/hook';
 import useSocket from 'context/socket';
+import useFeedback from 'context/feedback';
 
 const WeekView = ({ sx, generatedTimetable, timetableIndex }) => {
   // const classes = useStyles();
@@ -19,26 +20,32 @@ const WeekView = ({ sx, generatedTimetable, timetableIndex }) => {
   const [courseToEvent] = useCourseToEvent();
   const [buildTimetable, setBuildTimetable] = useState();
   const [parsedTimetable, setParsedTimetable] = useState(null);
-
   const { socket } = useSocket();
+  const { setMsg } = useFeedback();
+
   // build an object of all the time and courses
+  // give warning when overlapping is detected
+
   useEffect(() => {
     socket.on('update timetable', (timetable) => {
       setBuildTimetable(timetable);
     });
     return () => socket.off('update timetable');
   }, []);
+
+  // parse the current timetable
   useEffect(() => {
     const days = createDay();
+    // get current timetable
     const timetable = generatedTimetable
       ? generatedTimetable[timetableIndex]
       : buildTimetable;
-    console.log(timetable);
     timetable &&
       timetable.map((course) => {
         if (course.section) {
           course.section.meetingTimes.map((meetingTime) => {
             // need to extract the time
+            // give warning if overlapping is detected
             const day = meetingTime.day;
             const start = parseInt(
               meetingTime.startTime.slice(0, 2)
@@ -46,6 +53,12 @@ const WeekView = ({ sx, generatedTimetable, timetableIndex }) => {
             const end = parseInt(meetingTime.endTime.slice(0, 2)).toString();
             const diff = parseInt(end) - parseInt(start);
             const courseEvent = courseToEvent(course, meetingTime);
+            if (days[day][start]) {
+              setMsg({
+                snackVariant: 'error',
+                msg: `We detected a overlap between ${days[day][start].eventName} and ${courseEvent.eventName}! Timetable may not be accurate`,
+              });
+            }
             days[day][start] = courseEvent;
             if (diff > 1) {
               for (let i = 1; i < diff; i++) {
@@ -55,7 +68,6 @@ const WeekView = ({ sx, generatedTimetable, timetableIndex }) => {
           });
         }
       });
-    console.log(days);
     setParsedTimetable({ ...days });
   }, [generatedTimetable, buildTimetable, timetableIndex]);
 

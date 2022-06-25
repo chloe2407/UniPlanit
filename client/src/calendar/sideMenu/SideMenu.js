@@ -12,12 +12,11 @@ import GenerateScreen from 'calendar/sideMenu/GenerateScreen';
 
 export default function SideMenu({
   drawerWidth,
-  handleOpenDrawer,
-  openDrawer,
   buildTimetable,
   generatedTimetable,
   view,
   handleViewChange,
+  setTimetableIndex,
 }) {
   const [userCourse, setUserCourse] = useState();
   const [tab, setTab] = useState(0);
@@ -56,22 +55,22 @@ export default function SideMenu({
           ) : view === 'select' ? (
             <CourseSelection
               userCourse={userCourse}
-              openDrawer={openDrawer}
-              handleOpenDrawer={handleOpenDrawer}
               handleTabChange={handleTabChange}
               handleViewChange={handleViewChange}
             />
           ) : view === 'build' ? (
             <MakeTimetable
               userCourse={userCourse}
-              openDrawer={openDrawer}
               buildTimetable={buildTimetable}
               generatedTimetable={generatedTimetable}
-              handleOpenDrawer={handleOpenDrawer}
               handleViewChange={handleViewChange}
             />
           ) : (
-            <GenerateScreen handleViewChange={handleViewChange} />
+            <GenerateScreen
+              handleViewChange={handleViewChange}
+              generatedTimetable={generatedTimetable}
+              setTimetableIndex={setTimetableIndex}
+            />
           )}
         </>
       </TabPanel>

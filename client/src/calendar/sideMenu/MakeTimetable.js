@@ -8,10 +8,7 @@ export default function MakeTimetable({
   openDrawer,
   handleViewChange,
   buildTimetable,
-  generatedTimetable,
 }) {
-  console.log(buildTimetable);
-  console.log(generatedTimetable);
   return (
     <>
       <Typography
@@ -22,27 +19,13 @@ export default function MakeTimetable({
         <IconButton
           sx={{
             ml: 'auto ',
-            transform: !openDrawer && 'rotate(90deg)',
-            transition: (theme) =>
-              theme.transitions.create('transform', {
-                easing: theme.transitions.easing.sharp,
-                duration: 225,
-              }),
           }}
           onClick={() => handleViewChange(null, 'start')}
         >
           <ArrowBackIosIcon />
         </IconButton>
       </Typography>
-      <UserCourseSectionSelect
-        userCourse={buildTimetable ? buildTimetable : generatedTimetable}
-      />
-      {/* <Button
-        variant={'contained'}
-        onClick={() => handleViewChange(null, 'start')}
-      >
-        Go Back
-      </Button> */}
+      <UserCourseSectionSelect userCourse={buildTimetable} />
     </>
   );
 }

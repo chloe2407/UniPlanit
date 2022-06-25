@@ -187,22 +187,21 @@ export default function SearchBar({ userCourse }) {
           </Box>
         )}
         <div ref={bottomRef}></div>
-        <Box sx={{ display: 'flex' }}>
-          <Button
-            sx={{ textTransform: 'capitalize' }}
-            onClick={() => handleMake()}
-            variant={'contained'}
-          >
-            <Typography>Build!</Typography>
-          </Button>
-          <Button
-            sx={{ textTransform: 'capitalize', ml: 'auto' }}
-            onClick={() => handleGenerate()}
-            variant={'contained'}
-          >
-            <Typography>Generate!</Typography>
-          </Button>
-        </Box>
+
+        <Button
+          sx={{ display: 'block', textTransform: 'capitalize', mb: 1 }}
+          onClick={() => handleMake()}
+          variant={'contained'}
+        >
+          <Typography>Choose Sections</Typography>
+        </Button>
+        <Button
+          sx={{ textTransform: 'capitalize', ml: 'auto' }}
+          onClick={() => handleGenerate()}
+          variant={'contained'}
+        >
+          <Typography>Generate Timetables</Typography>
+        </Button>
       </Container>
     </Box>
   );

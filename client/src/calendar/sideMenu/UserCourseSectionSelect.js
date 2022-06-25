@@ -10,6 +10,7 @@ import useSocket from 'context/socket';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
 import { updateTimetable, getMultipleCourse } from 'calendar/api/sideMenuApi';
 
 export default function UserCourseSectionSelect({ userCourse }) {
@@ -18,6 +19,8 @@ export default function UserCourseSectionSelect({ userCourse }) {
   const [userCourseObj, setUserCourseObj] = useState();
   const [searchData, setSearchData] = useState();
   const { socket } = useSocket();
+
+  // turn user course into objects
   useEffect(() => {
     if (userCourse) {
       const temp = {};
@@ -28,6 +31,7 @@ export default function UserCourseSectionSelect({ userCourse }) {
     }
   }, [userCourse]);
 
+  // for currently selected courses, fetch their data from course collection
   useEffect(() => {
     userCourse &&
       Promise.all(getMultipleCourse(userCourse)).then((val) => {
@@ -43,20 +47,12 @@ export default function UserCourseSectionSelect({ userCourse }) {
     scrollToBottom();
   }, [userCourse]);
 
-  // useEffect(() => {
-  //   socket.on('update timetable', userCourse => {
-  //     console.log(userCourse)
-  //   })
-  //   return () => socket.off('update timetable')
-  // }, [])
-
+  // add section/tutorials to a course in the current timetable
   const handleAddCourseWithSection = (courseCode, type, sectionCode) => {
     const course = userCourseObj[courseCode];
-    // console.log(userCourseObj[courseCode])
     const targetCourse = JSON.parse(
       JSON.stringify({ ...searchData[courseCode] })
     );
-    console.log(sectionCode);
     if (sectionCode === 'Choose a Lecture') {
       delete course.section;
     } else if (sectionCode === ' Choose a Tutorial') {
@@ -70,16 +66,11 @@ export default function UserCourseSectionSelect({ userCourse }) {
         if (s.tutorialCode === sectionCode) course.tutorial = s;
       }
     }
-    console.log(course);
     updateTimetable(socket, course);
   };
 
   const scrollToBottom = () => {
     endRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  };
-
-  const handleApiCall = (cb, courseCode, type) => {
-    cb(socket, courseCode, type);
   };
 
   const handleCourseCollapse = (courseCode) => {
@@ -94,8 +85,6 @@ export default function UserCourseSectionSelect({ userCourse }) {
         ? userCourseObj[courseCode].section.sectionCode
         : 'Choose a Lecture'
     );
-    // userCourseObj && console.log(userCourseObj[courseCode])
-    // console.log(userCourseObj[courseCode].section)
     return searchData && searchData[courseCode]?.sections?.length > 0 ? (
       <Box sx={{ display: 'flex' }}>
         <FormControl sx={{ width: 'fit-content' }}>
@@ -103,7 +92,6 @@ export default function UserCourseSectionSelect({ userCourse }) {
             id="section-select"
             value={lecture}
             onChange={(e) => {
-              // change timetable here
               setLecture(e.target.value);
               handleAddCourseWithSection(courseCode, 'lec', e.target.value);
             }}
@@ -191,26 +179,19 @@ export default function UserCourseSectionSelect({ userCourse }) {
                     <ExpandMore />
                   )}
                 </IconButton>
-                {/* <IconButton
-                  onClick={() => handleApiCall(deleteCourse, course.courseCode)}
-                >
-                  <DeleteOutlineIcon />
-                </IconButton> */}
               </Box>
             </Box>
-            {/* <Divider sx={{ mt: 2, mb: 1, mx: 2 }} /> */}
             <Collapse in={courseCodeShow.includes(course.courseCode)}>
               <Typography>Lectures</Typography>
               <Box sx={{ m: 1 }}>
                 <SelectLecture courseIndex={i} courseCode={course.courseCode} />
               </Box>
-              {/* <Divider sx={{ mt: 2, mb: 1, mx: 2 }} /> */}
               <Typography>Tutorials</Typography>
               <Box sx={{ m: 1 }}>
                 <SelectTutorial courseCode={course.courseCode} />
               </Box>
             </Collapse>
-            <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
+            <Divider sx={{ my: 1 }} />
           </Box>
         ))
       ) : (
@@ -219,6 +200,14 @@ export default function UserCourseSectionSelect({ userCourse }) {
         </Typography>
       )}
       <div ref={endRef} />
+      <Button
+        sx={{ textTransform: 'capitalize' }}
+        onClick={() => {
+          updateTimetable(socket, null, true);
+        }}
+      >
+        Clear all sections
+      </Button>
     </Box>
   );
 }

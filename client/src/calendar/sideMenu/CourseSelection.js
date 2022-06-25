@@ -21,7 +21,6 @@ export default function CourseSelection({
         <IconButton
           sx={{
             ml: 'auto ',
-            transform: !openDrawer && 'rotate(90deg)',
             transition: (theme) =>
               theme.transitions.create('transform', {
                 easing: theme.transitions.easing.sharp,
