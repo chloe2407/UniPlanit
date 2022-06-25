@@ -93,17 +93,25 @@ module.exports = (io) => {
     socket.emit('get build timetable', user.currentTimetable);
   };
 
-  const updateTimetable = async function (course) {
+  const updateTimetable = async function (course, clear) {
     socket = this;
     const user = await User.findById(socket.userId);
-    let index;
-    for (let i = 0; i <= user.currentTimetable.length; i++) {
-      if (user.currentTimetable[i].courseCode === course.courseCode) {
-        index = i;
-        break;
+    if (clear) {
+      user.currentTimetable = user.currentTimetable.map((c) => {
+        c.section = null;
+        c.tutorial = null;
+        return c;
+      }, user.currentTimetable);
+    } else {
+      let index;
+      for (let i = 0; i <= user.currentTimetable.length; i++) {
+        if (user.currentTimetable[i].courseCode === course.courseCode) {
+          index = i;
+          break;
+        }
       }
+      user.currentTimetable[index] = course;
     }
-    user.currentTimetable[index] = course;
     await user.save();
     socket.emit('update timetable', user.currentTimetable);
   };
@@ -112,7 +120,10 @@ module.exports = (io) => {
     const socket = this;
     // limit to 10 time tables to send back at once
     const user = await User.findById(socket.userId);
-    io.to(socket.userId).emit('get generated timetable', user.savedTimetables);
+    io.to(socket.userId).emit(
+      'get generated timetable',
+      user.generatedTimetables
+    );
   };
 
   const generateTimetable = async function (userCourse) {
