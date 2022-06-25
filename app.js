@@ -49,8 +49,11 @@ const {
   deleteUserCourse,
   lockCourseSection,
   deleteCourseSection,
-  makeTimeTable,
-  getTimetable,
+  generateTimetable,
+  getBuildTimetable,
+  buildTimetable,
+  updateTimetable,
+  getGeneratedTimetable,
 } = require('./handlers/courseHandler')(io);
 
 dayjs.extend(duration);
@@ -254,8 +257,11 @@ io.on('connection', async (socket) => {
   socket.on('delete course', deleteUserCourse);
   socket.on('lock section', lockCourseSection);
   socket.on('delete section', deleteCourseSection);
-  socket.on('get timetable', getTimetable);
-  socket.on('generate timetable', makeTimeTable);
+  socket.on('get generated timetable', getGeneratedTimetable);
+  socket.on('get build timetable', getBuildTimetable);
+  socket.on('build timetable', buildTimetable);
+  socket.on('update timetable', updateTimetable);
+  socket.on('generate timetable', generateTimetable);
   socket.on('user status', (msg) => {
     console.log(msg);
   });

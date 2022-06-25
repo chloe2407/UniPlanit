@@ -10,17 +10,45 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
 import useSocket from 'context/socket';
-import {
-  lockCourse,
-  deleteCourse,
-  lockCourseSection,
-  deleteCourseSection,
-} from 'calendar/api/sideMenuApi';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+import FormGroup from '@mui/material/FormGroup';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import { getCourse, addUserCourse } from 'calendar/api/sideMenuApi';
+
+import { deleteCourse } from 'calendar/api/sideMenuApi';
 
 export default function UserCourses({ userCourse }) {
   const endRef = useRef();
-  const [courseCodeShow, setCourseCodeShow] = useState([]);
+  // const [courseCodeShow, setCourseCodeShow] = useState([]);
+  // const [lecture, setLecture] = useState('Choose a Lecture');
+  // const [tutorial, setTutorial] = useState('Choose a Tutorial');
+  // const [searchData, setSearchData] = useState(undefined);
   const { socket } = useSocket();
+
+  // const handleAddCourseWithSection = (type, section) => {
+  //   // call server make change
+  //   // update current state for new user courses
+  //   // handleAdding
+  //   let course;
+  //   userCourse.map((c) => {
+  //     if (c.courseCode === searchData[0].courseCode) course = c;
+  //   });
+  //   if (!course) {
+  //     course = { ...searchData[0] };
+  //     delete course.tutorials;
+  //     delete course.sections;
+  //   }
+  //   if (type === 'lec') {
+  //     course.section = section;
+  //   } else if (type === 'tut') {
+  //     course.tutorial = section;
+  //   }
+  //   addUserCourse(socket, course);
+  // };
 
   const scrollToBottom = () => {
     endRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -34,11 +62,11 @@ export default function UserCourses({ userCourse }) {
     cb(socket, courseCode, type);
   };
 
-  const handleCourseCollapse = (courseCode) => {
-    courseCodeShow.includes(courseCode)
-      ? setCourseCodeShow([...courseCodeShow.filter((c) => c !== courseCode)])
-      : setCourseCodeShow([...courseCodeShow, courseCode]);
-  };
+  // const handleCourseCollapse = (courseCode) => {
+  //   courseCodeShow.includes(courseCode)
+  //     ? setCourseCodeShow([...courseCodeShow.filter((c) => c !== courseCode)])
+  //     : setCourseCodeShow([...courseCodeShow, courseCode]);
+  // };
 
   return (
     <Box sx={{ overflow: 'auto', m: 3, my: 1, textAlign: 'left' }}>
@@ -49,7 +77,7 @@ export default function UserCourses({ userCourse }) {
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography>{course.courseCode}</Typography>
               <Box sx={{ ml: 'auto' }}>
-                <IconButton
+                {/* <IconButton
                   onClick={() => handleCourseCollapse(course.courseCode)}
                 >
                   {courseCodeShow.includes(course.courseCode) ? (
@@ -57,12 +85,7 @@ export default function UserCourses({ userCourse }) {
                   ) : (
                     <ExpandMore />
                   )}
-                </IconButton>
-                <IconButton
-                  onClick={() => handleApiCall(lockCourse, course.courseCode)}
-                >
-                  {course.isLocked ? <LockIcon /> : <LockOpenIcon />}
-                </IconButton>
+                </IconButton> */}
                 <IconButton
                   onClick={() => handleApiCall(deleteCourse, course.courseCode)}
                 >
@@ -70,8 +93,7 @@ export default function UserCourses({ userCourse }) {
                 </IconButton>
               </Box>
             </Box>
-
-            {course.section && (
+            {/* {course.section && (
               <Collapse in={courseCodeShow.includes(course.courseCode)}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Typography sx={{ ml: 2 }}>
@@ -108,8 +130,8 @@ export default function UserCourses({ userCourse }) {
                   </Box>
                 </Box>
               </Collapse>
-            )}
-            {course.tutorial && (
+            )} */}
+            {/* {course.tutorial && (
               <Collapse in={courseCodeShow.includes(course.courseCode)}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Typography sx={{ ml: 2 }}>
@@ -146,14 +168,13 @@ export default function UserCourses({ userCourse }) {
                   </Box>
                 </Box>
               </Collapse>
-            )}
+            )} */}
             <Divider sx={{ mt: 1, mb: 1, mx: 2 }} />
           </Box>
         ))
       ) : (
         <Typography variant="h6">
-          {' '}
-          No courses yet. Start by adding a course!{' '}
+          No courses yet. Start by adding a course!
         </Typography>
       )}
       <div ref={endRef} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -10,7 +10,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Grid from '@mui/material/Grid';
 
-const GenerateScreen = () => {
+const GenerateScreen = ({ handleViewChange }) => {
   const [demo, setDemo] = useState([
     {
       more: false,
@@ -104,6 +104,12 @@ const GenerateScreen = () => {
           </ListItem>
         ))}
       </List>
+      <Button
+        variant={'contained'}
+        onClick={() => handleViewChange(null, 'select')}
+      >
+        Go Back
+      </Button>
     </Box>
   );
 };

@@ -10,6 +10,16 @@ export const getCourse = (courseBody) => {
     .then((data) => Promise.resolve(data));
 };
 
+export const getMultipleCourse = (courses) => {
+  const promises = courses.map(
+    (c) =>
+      new Promise((res, rej) =>
+        res(axios.post('courses', c).then((data) => data[0]))
+      )
+  );
+  return promises;
+};
+
 export const getUserCourse = (socket) => {
   socket.emit('get user course');
 };
@@ -36,4 +46,12 @@ export const addUserCourse = (socket, course) => {
 
 export const generateTimeTable = (socket, courses) => {
   socket.emit('generate timetable', courses);
+};
+
+export const makeNewTimetable = (socket, courses) => {
+  socket.emit('build timetable', courses);
+};
+
+export const updateTimetable = (socket, course) => {
+  socket.emit('update timetable', course);
 };
