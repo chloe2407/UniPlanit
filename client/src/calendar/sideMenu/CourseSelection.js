@@ -1,19 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import SearchBar from 'calendar/sideMenu/SearchBar';
 import UserCourse from 'calendar/sideMenu/UserCourse';
-import Button from '@mui/material/Button';
-import useSocket from 'context/socket';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { getUserCourse } from 'calendar/api/sideMenuApi';
 
 export default function CourseSelection({
   userCourse,
   openDrawer,
-  handleOpenDrawer,
   handleTabChange,
+  handleViewChange,
 }) {
   return (
     <>
@@ -32,13 +28,17 @@ export default function CourseSelection({
                 duration: 225,
               }),
           }}
-          onClick={() => handleOpenDrawer()}
+          onClick={() => handleViewChange(null, 'start')}
         >
           <ArrowBackIosIcon />
         </IconButton>
       </Typography>
-      {userCourse && <UserCourse userCourse={userCourse} />}
-      <SearchBar handleTabChange={handleTabChange} userCourse={userCourse} />
+      <UserCourse userCourse={userCourse} />
+      <SearchBar
+        handleTabChange={handleTabChange}
+        userCourse={userCourse}
+        handleViewChange={handleViewChange}
+      />
     </>
   );
 }

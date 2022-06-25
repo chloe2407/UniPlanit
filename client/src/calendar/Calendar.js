@@ -12,12 +12,18 @@ import Box from '@mui/material/Box';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 const Calendar = () => {
+  // used for getting current operation: build/generate
   // save 10 users schedule
   const [timetableIndex, setTimetableIndex] = useState(0);
   const [timetableLength, setTimetableLength] = useState(0);
-  const [userTimetable, setUserTimetable] = useState();
+  // used for seeing generated timetable
+  const [generatedTimetable, setGenerateTimetable] = useState();
+  // used for seeing the timetable being built
+  const [buildTimetable, setBuildTimetable] = useState();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [timetableMsg, setTimetableMsg] = useState();
+  const [view, setView] = useState('start');
+
   const { socket } = useSocket();
   const matchSm = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   const matchMd = useMediaQuery((theme) => theme.breakpoints.down('md'));
@@ -30,26 +36,44 @@ const Calendar = () => {
   const drawerWidth = matchMd ? 100 : 25;
 
   useEffect(() => {
-    socket.on('get timetable', (timetable) => {
+    socket.on('get generated timetable', (timetable) => {
+      console.log(timetable);
       if (timetable?.length > 0) {
-        setUserTimetable(timetable);
+        setBuildTimetable(null);
+        setGenerateTimetable(timetable);
         setTimetableIndex(0);
-        // console.log(timetable.length)
         setTimetableLength(timetable.length);
+        handleViewChange(null, 'generated');
       } else {
         setTimetableMsg(
           "Sorry! We couldn't generate a timetable with the selected courses"
         );
-        setUserTimetable(null);
+        setGenerateTimetable(null);
       }
     });
     return () => {
-      socket.off('get timetable');
+      socket.off('get generated timetable');
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.on('get build timetable', (timetable) => {
+      console.log(timetable);
+      setGenerateTimetable(null);
+      setBuildTimetable(timetable);
+      handleViewChange(null, 'build');
+    });
+    return () => {
+      socket.off('get build timetable');
     };
   }, []);
 
   const handleOpenDrawer = () => {
     setOpenDrawer(!openDrawer);
+  };
+
+  const handleViewChange = (e, view) => {
+    setView(view);
   };
 
   return (
@@ -68,7 +92,11 @@ const Calendar = () => {
         <SideMenu
           handleOpenDrawer={handleOpenDrawer}
           openDrawer={openDrawer}
+          buildTimetable={buildTimetable}
+          generatedTimetable={generatedTimetable}
           drawerWidth={drawerWidth}
+          view={view}
+          handleViewChange={handleViewChange}
         />
       </Drawer>
       <OptionTab
@@ -87,7 +115,8 @@ const Calendar = () => {
               duration: 225,
             }),
         }}
-        userTimetable={userTimetable}
+        buildTimetable={buildTimetable}
+        generatedTimetable={generatedTimetable}
         timetableIndex={timetableIndex}
       />
       <Snackbar

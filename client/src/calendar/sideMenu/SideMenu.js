@@ -7,16 +7,21 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import TabPanel from 'calendar/sideMenu/TabPanel';
 import MakeTimetable from 'calendar/sideMenu/MakeTimetable';
+import SideMenuStart from 'calendar/sideMenu/SideMenuStart';
+import GenerateScreen from 'calendar/sideMenu/GenerateScreen';
 
 export default function SideMenu({
   drawerWidth,
   handleOpenDrawer,
   openDrawer,
+  buildTimetable,
+  generatedTimetable,
+  view,
+  handleViewChange,
 }) {
   const [userCourse, setUserCourse] = useState();
-  const { socket } = useSocket();
   const [tab, setTab] = useState(0);
-
+  const { socket } = useSocket();
   useEffect(() => {
     getUserCourse(socket);
   }, []);
@@ -29,8 +34,8 @@ export default function SideMenu({
       socket.off('get user course');
     };
   }, []);
-  const handleTabChange = (e, newTab) => {
-    setTab(newTab);
+  const handleTabChange = (e, tab) => {
+    setTab(tab);
   };
   return (
     <Box
@@ -42,28 +47,35 @@ export default function SideMenu({
     >
       <Tabs variant="scrollable" value={tab} onChange={handleTabChange}>
         <Tab value={0} label={'Select'} />
-        <Tab value={1} label={'Build'} />
-        <Tab value={2} label={'Generate'} />
-        <Tab value={3} label={'Favorites'} />
+        <Tab value={1} label={'Favorites'} />
       </Tabs>
       <TabPanel value={tab} index={0}>
-        <CourseSelection
-          userCourse={userCourse}
-          openDrawer={openDrawer}
-          handleOpenDrawer={handleOpenDrawer}
-          handleTabChange={handleTabChange}
-        />
+        <>
+          {view === 'start' ? (
+            <SideMenuStart handleViewChange={handleViewChange} />
+          ) : view === 'select' ? (
+            <CourseSelection
+              userCourse={userCourse}
+              openDrawer={openDrawer}
+              handleOpenDrawer={handleOpenDrawer}
+              handleTabChange={handleTabChange}
+              handleViewChange={handleViewChange}
+            />
+          ) : view === 'build' ? (
+            <MakeTimetable
+              userCourse={userCourse}
+              openDrawer={openDrawer}
+              buildTimetable={buildTimetable}
+              generatedTimetable={generatedTimetable}
+              handleOpenDrawer={handleOpenDrawer}
+              handleViewChange={handleViewChange}
+            />
+          ) : (
+            <GenerateScreen handleViewChange={handleViewChange} />
+          )}
+        </>
       </TabPanel>
-      <TabPanel value={tab} index={1}>
-        <MakeTimetable
-          userCourse={userCourse}
-          openDrawer={openDrawer}
-          handleOpenDrawer={handleOpenDrawer}
-        />
-        {/* <Typography>This is a test</Typography> */}
-      </TabPanel>
-      <TabPanel value={tab} index={2}></TabPanel>
-      <TabPanel value={tab} index={3}></TabPanel>
+      <TabPanel value={tab} index={1}></TabPanel>
     </Box>
   );
 }

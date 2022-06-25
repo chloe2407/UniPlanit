@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
-const { courseOneSectionSchema } = require('../models/course');
+const { courseSchema, courseOneSectionSchema } = require('./course');
+const { timetableSchema } = require('./timetable');
 // need to set up cloudinary for user profile img
 
 const userSchema = new mongoose.Schema({
@@ -17,7 +18,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  courses: [courseOneSectionSchema],
+  courses: [courseSchema],
+  currentTimetable: [courseOneSectionSchema],
+  savedTimetables: {
+    type: [[courseOneSectionSchema]],
+  },
+  generatedTimetables: {
+    type: [[courseOneSectionSchema]],
+  },
   friends: [
     {
       type: mongoose.Schema.Types.ObjectId,

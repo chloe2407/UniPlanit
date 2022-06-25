@@ -9,21 +9,33 @@ import TableRow from '@mui/material/TableRow';
 import Container from '@mui/material/Container';
 import { StyledTableCell } from 'calendar/StyledTableCell';
 import { useCourseToEvent } from 'hooks/hook';
+import useSocket from 'context/socket';
 
-const WeekView = ({ sx, userTimetable, timetableIndex }) => {
+const WeekView = ({ sx, generatedTimetable, timetableIndex }) => {
   // const classes = useStyles();
   const times = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
   const [courseToEvent] = useCourseToEvent();
+  const [buildTimetable, setBuildTimetable] = useState();
   const [parsedTimetable, setParsedTimetable] = useState(null);
 
+  const { socket } = useSocket();
   // build an object of all the time and courses
   useEffect(() => {
+    socket.on('update timetable', (timetable) => {
+      setBuildTimetable(timetable);
+    });
+    return () => socket.off('update timetable');
+  }, []);
+  useEffect(() => {
     const days = createDay();
-    userTimetable &&
-      userTimetable[timetableIndex] &&
-      userTimetable[timetableIndex].map((course) => {
+    const timetable = generatedTimetable
+      ? generatedTimetable[timetableIndex]
+      : buildTimetable;
+    console.log(timetable);
+    timetable &&
+      timetable.map((course) => {
         if (course.section) {
           course.section.meetingTimes.map((meetingTime) => {
             // need to extract the time
@@ -43,8 +55,9 @@ const WeekView = ({ sx, userTimetable, timetableIndex }) => {
           });
         }
       });
+    console.log(days);
     setParsedTimetable({ ...days });
-  }, [userTimetable, timetableIndex]);
+  }, [generatedTimetable, buildTimetable, timetableIndex]);
 
   const createDay = () => {
     return days.reduce((acc, curr) => ((acc[curr] = createTime()), acc), {});

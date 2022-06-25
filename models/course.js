@@ -109,14 +109,16 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  university: {
+    type: String,
+    lowercase: true,
+    enum: ['uoft'],
+    required: true,
+  },
   term: {
     type: String,
     enum: ['F', 'S', 'Y'],
     required: true,
-  },
-  isLocked: {
-    type: Boolean,
-    default: false,
   },
   section: {
     type: {
@@ -226,4 +228,5 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
   },
 });
 
+module.exports.courseSchema = courseSchema;
 module.exports.Course = mongoose.model('Course', courseSchema);

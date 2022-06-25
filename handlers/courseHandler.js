@@ -1,5 +1,4 @@
 const User = require('../models/user');
-const { Course } = require('../models/course');
 
 module.exports = (io) => {
   const addUserCourse = async function (course) {
@@ -9,7 +8,6 @@ module.exports = (io) => {
       (c) => c.courseCode !== course.courseCode
     );
     user.courses.push(course);
-    // await user.save();
     await user.save();
     io.to(socket.userId).emit('get user course', user.courses);
   };
@@ -74,22 +72,56 @@ module.exports = (io) => {
     io.to(socket.userId).emit('get user course', user.courses);
   };
 
-  const getTimetable = async function () {
+  const getBuildTimetable = async function () {
+    // returns the current work-in-progress timetable
+    socket = this;
+    const user = await User.findById(socket.userId);
+    socket.emit('get build timetable', user.currentTimetable);
+  };
+
+  const buildTimetable = async function (userCourse, reset) {
+    socket = this;
+    const user = await User.findById(socket.userId);
+    if (userCourse && userCourse.length > 0) {
+      user.currentTimetable = userCourse.map((c) => {
+        delete c.tutorials;
+        delete c.lectures;
+        return c;
+      });
+      await user.save();
+    }
+    socket.emit('get build timetable', user.currentTimetable);
+  };
+
+  const updateTimetable = async function (course) {
+    socket = this;
+    const user = await User.findById(socket.userId);
+    let index;
+    for (let i = 0; i <= user.currentTimetable.length; i++) {
+      if (user.currentTimetable[i].courseCode === course.courseCode) {
+        index = i;
+        break;
+      }
+    }
+    user.currentTimetable[index] = course;
+    await user.save();
+    socket.emit('update timetable', user.currentTimetable);
+  };
+
+  const getGeneratedTimetable = async function () {
     const socket = this;
     // limit to 10 time tables to send back at once
     const user = await User.findById(socket.userId);
-    io.to(socket.userId).emit('get timetable', user.savedTimetables);
+    io.to(socket.userId).emit('get generated timetable', user.savedTimetables);
   };
 
-  const makeTimeTable = async function (courseCodes) {
+  const generateTimetable = async function (userCourse) {
     const socket = this;
-    const courses = await Course.find({
-      courseCode: {
-        $in: courseCodes,
-      },
-    });
-    const validSchedules = getValidSchedules(courses, true);
-    socket.emit('get timetable', validSchedules);
+    const user = await User.findById(socket.userId);
+    const validSchedules = getValidSchedules(userCourse, true);
+    user.generatedTimetables = validSchedules;
+    await user.save();
+    socket.emit('get generated timetable', user.generatedTimetables);
   };
 
   function getPossibleSchedules(
@@ -269,7 +301,10 @@ module.exports = (io) => {
     deleteUserCourse,
     lockCourseSection,
     deleteCourseSection,
-    getTimetable,
-    makeTimeTable,
+    getGeneratedTimetable,
+    updateTimetable,
+    buildTimetable,
+    getBuildTimetable,
+    generateTimetable,
   };
 };

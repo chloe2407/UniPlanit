@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import SearchBar from 'calendar/sideMenu/SearchBar';
-import UserCourse from 'calendar/sideMenu/UserCourse';
-import Button from '@mui/material/Button';
-import useSocket from 'context/socket';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { getUserCourse } from 'calendar/api/sideMenuApi';
+import UserCourseSectionSelect from 'calendar/sideMenu/UserCourseSectionSelect';
 
 export default function MakeTimetable({
-  userCourse,
   openDrawer,
-  handleOpenDrawer,
+  handleViewChange,
+  buildTimetable,
+  generatedTimetable,
 }) {
+  console.log(buildTimetable);
+  console.log(generatedTimetable);
   return (
     <>
       <Typography
@@ -31,14 +29,20 @@ export default function MakeTimetable({
                 duration: 225,
               }),
           }}
-          onClick={() => {
-            handleOpenDrawer();
-          }}
+          onClick={() => handleViewChange(null, 'start')}
         >
           <ArrowBackIosIcon />
         </IconButton>
       </Typography>
-      {userCourse && <UserCourse userCourse={userCourse} />}
+      <UserCourseSectionSelect
+        userCourse={buildTimetable ? buildTimetable : generatedTimetable}
+      />
+      {/* <Button
+        variant={'contained'}
+        onClick={() => handleViewChange(null, 'start')}
+      >
+        Go Back
+      </Button> */}
     </>
   );
 }

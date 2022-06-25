@@ -18,12 +18,10 @@ import {
   getCourse,
   addUserCourse,
   generateTimeTable,
+  makeNewTimetable,
 } from 'calendar/api/sideMenuApi';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 
-export default function SearchBar({ userCourse, handleTabChange }) {
+export default function SearchBar({ userCourse }) {
   const [input, setInput] = useState({
     courseCode: '',
     university: 'uoft',
@@ -31,8 +29,8 @@ export default function SearchBar({ userCourse, handleTabChange }) {
   });
   const [searchData, setSearchData] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const [lecture, setLecture] = useState('Choose a Lecture');
-  const [tutorial, setTutorial] = useState('Choose a Tutorial');
+  // const [lecture, setLecture] = useState('Choose a Lecture');
+  // const [tutorial, setTutorial] = useState('Choose a Tutorial');
   const { socket } = useSocket();
   const bottomRef = useRef();
 
@@ -56,8 +54,8 @@ export default function SearchBar({ userCourse, handleTabChange }) {
         setIsLoading(false);
       });
     }
-    setLecture('Choose a Lecture');
-    setTutorial('Choose a Tutorial');
+    // setLecture('Choose a Lecture');
+    // setTutorial('Choose a Tutorial');
   }, [input]);
 
   const handleInputChange = (option, v) => {
@@ -79,34 +77,38 @@ export default function SearchBar({ userCourse, handleTabChange }) {
     }
   };
 
-  const handleAddCourseWithSection = (type, section) => {
-    // call server make change
-    // update current state for new user courses
-    // handleAdding
-    let course;
-    userCourse.map((c) => {
-      if (c.courseCode === searchData[0].courseCode) course = c;
-    });
-    if (!course) {
-      course = { ...searchData[0] };
-      delete course.tutorials;
-      delete course.sections;
-    }
-    if (type === 'lec') {
-      course.section = section;
-    } else if (type === 'tut') {
-      course.tutorial = section;
-    }
-    addUserCourse(socket, course);
+  // const handleAddCourseWithSection = (type, section) => {
+  //   // call server make change
+  //   // update current state for new user courses
+  //   // handleAdding
+  //   let course;
+  //   userCourse.map((c) => {
+  //     if (c.courseCode === searchData[0].courseCode) course = c;
+  //   });
+  //   if (!course) {
+  //     course = { ...searchData[0] };
+  //     delete course.tutorials;
+  //     delete course.sections;
+  //   }
+  //   if (type === 'lec') {
+  //     course.section = section;
+  //   } else if (type === 'tut') {
+  //     course.tutorial = section;
+  //   }
+  //   addUserCourse(socket, course);
+  // };
+
+  const handleAddCourse = () => {
+    addUserCourse(socket, searchData[0]);
   };
 
   const handleGenerate = () => {
-    const courseCodes = userCourse.map((c) => c.courseCode);
-    generateTimeTable(socket, courseCodes);
+    generateTimeTable(socket, userCourse);
   };
 
   const handleMake = () => {
-    handleTabChange(null, 1);
+    console.log(userCourse);
+    makeNewTimetable(socket, userCourse);
   };
 
   return (
@@ -175,135 +177,32 @@ export default function SearchBar({ userCourse, handleTabChange }) {
                   <Button
                     variant="contained"
                     sx={{ ml: 'auto', textTransform: 'capitalize' }}
-                    onClick={() => handleAddCourseWithSection(null, null)}
+                    onClick={() => handleAddCourse()}
                   >
                     Add this course
                   </Button>
                 </Box>
-                {/* <Divider sx={{ mt: 2, mb: 1, mx: 2 }} />
-                <Typography>Lectures</Typography>
-                <Box sx={{ m: 1 }}>
-                  {searchData[0].sections.length > 0 ? (
-                    <Box sx={{ display: 'flex' }}>
-                      <FormControl sx={{ width: 'fit-content' }}>
-                        <Select
-                          id="section-select"
-                          value={lecture}
-                          onChange={(e) => {
-                            console.log(e.target.value);
-                            setLecture(e.target.value);
-                          }}
-                        >
-                          <MenuItem value={'Choose a Lecture'}>
-                            <Typography>
-                              <strong>Choose a Lecture</strong>
-                            </Typography>
-                          </MenuItem>
-                          {searchData[0].sections.map((lecture) => (
-                            <MenuItem
-                              key={lecture._id}
-                              value={lecture}
-                              sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                mb: 1,
-                              }}
-                            >
-                              <Typography>
-                                <strong>{lecture.sectionCode}</strong>
-                              </Typography>
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <Button
-                        variant="contained"
-                        sx={{
-                          display: 'flex',
-                          ml: 'auto',
-                          textTransform: 'capitalize',
-                        }}
-                        onClick={() =>
-                          lecture !== 'Choose a Lecture' &&
-                          handleAddCourseWithSection('lec', lecture)
-                        }
-                      >
-                        <Typography>Add</Typography>
-                      </Button>
-                    </Box>
-                  ) : (
-                    <Typography>No Lectures Found For This Course!</Typography>
-                  )}
-                </Box> */}
-                {/* <Divider sx={{ mt: 2, mb: 1, mx: 2 }} />
-                <Typography>Tutorials</Typography>
-                <Box sx={{ m: 1 }}>
-                  {searchData[0].tutorials.length > 0 ? (
-                    <Box sx={{ display: 'flex' }}>
-                      <FormControl>
-                        <Select
-                          id="tutorial-select"
-                          value={tutorial}
-                          onChange={(e) => {
-                            console.log(e.target.value);
-                            setTutorial(e.target.value);
-                          }}
-                        >
-                          <MenuItem value={'Choose a Tutorial'}>
-                            <Typography>
-                              <strong>Choose a Tutorial</strong>
-                            </Typography>
-                          </MenuItem>
-                          {searchData[0].tutorials.map((tutorial) => (
-                            <MenuItem
-                              key={tutorial._id}
-                              sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                mb: 1,
-                              }}
-                              value={tutorial}
-                            >
-                              <Typography>
-                                <strong>{tutorial.tutorialCode}</strong>
-                              </Typography>
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <Button
-                        sx={{ ml: 'auto', textTransform: 'capitalize' }}
-                        variant="contained"
-                        onClick={() =>
-                          handleAddCourseWithSection('tut', tutorial)
-                        }
-                      >
-                        <Typography>Add</Typography>
-                      </Button>
-                    </Box>
-                  ) : (
-                    <Typography>No Tutorials Found For This Course!</Typography>
-                  )}
-                </Box> */}
               </>
             )}
           </Box>
         )}
         <div ref={bottomRef}></div>
-        <Button
-          sx={{ textTransform: 'capitalize', display: 'block', mb: 1 }}
-          onClick={() => handleMake()}
-          variant={'contained'}
-        >
-          <Typography>Build!</Typography>
-        </Button>
-        <Button
-          sx={{ textTransform: 'capitalize', display: 'block' }}
-          onClick={() => handleGenerate()}
-          variant={'contained'}
-        >
-          <Typography>Generate!</Typography>
-        </Button>
+        <Box sx={{ display: 'flex' }}>
+          <Button
+            sx={{ textTransform: 'capitalize' }}
+            onClick={() => handleMake()}
+            variant={'contained'}
+          >
+            <Typography>Build!</Typography>
+          </Button>
+          <Button
+            sx={{ textTransform: 'capitalize', ml: 'auto' }}
+            onClick={() => handleGenerate()}
+            variant={'contained'}
+          >
+            <Typography>Generate!</Typography>
+          </Button>
+        </Box>
       </Container>
     </Box>
   );
