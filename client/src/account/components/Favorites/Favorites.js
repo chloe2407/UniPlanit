@@ -58,15 +58,13 @@ const Favorites = ({ paramUser }) => {
     },
   ];
   return (
-    <div style={{ padding: '4rem' }}>
-      {/* <FavoriteIcon sx={{ paddingRight: "5px", paddingTop: '2px', height: '18px' }} /> */}
-      <Typography variant="h4">My favorite schedules</Typography>
+    <div>
       <Grid
         container
         display="flex"
         spacing={1}
         justifyContent="flex-start"
-        padding="3em"
+        padding="1em"
       >
         {favSchedules.map((schedule) => (
           <ScheduleCard

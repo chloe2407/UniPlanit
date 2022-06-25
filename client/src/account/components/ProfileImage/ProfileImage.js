@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Avatar, Typography } from '@mui/material';
+import { Avatar, Typography, Button } from '@mui/material';
 import { orange } from '@mui/material/colors';
 import { height } from '@mui/system';
 import useAuth from '../../../context/Auth';
 import './ProfileImage.css';
-import { Box } from '@mui/system';
 import { Grid } from '@mui/material';
 import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
@@ -46,15 +45,34 @@ const ProfileImage = ({ paramUser }) => {
             bgcolor: initialToColor(
               `${paramUser.first[0]}${paramUser.last[0]}`
             ),
-            height: '10rem',
-            width: '10rem',
-            fontSize: '2rem',
+            height: '15rem',
+            width: '15rem',
           }}
         >
           <Typography variant="h3">{`${paramUser.first[0]}${paramUser.last[0]}`}</Typography>
         </Avatar>
+        <Typography variant="h4" pt="10px" fontWeight="bold">
+          {user.first} {user.last}
+        </Typography>
+        <Typography variant="h7" pb="10px">
+          {user.email}
+        </Typography>
+
         {user._id === paramUser._id ? (
-          <FileUpload handleFileUpload={handleFileUpload} />
+          <Button
+            variant="contained"
+            sx={{
+              color: '#0583D2',
+              backgroundColor: 'white',
+              mt: '10px',
+              ':hover': {
+                backgroundColor: 'white',
+              },
+            }}
+          >
+            Edit Profile Photo
+            {/* <FileUpload handleFileUpload={handleFileUpload} /> */}
+          </Button>
         ) : null}
       </Grid>
     </div>

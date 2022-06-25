@@ -25,17 +25,6 @@ const AccountInfo = ({ paramUser }) => {
         alignItems="flex-start"
         textAlign="left"
       >
-        <Typography variant="h4">{`${first} ${last}`}</Typography>
-        {user._id === paramUser._id ? (
-          <Button
-            sx={{ color: '#0583D2', fontWeight: 'bold' }}
-            onClick={handleChange}
-          >
-            Edit Profile
-          </Button>
-        ) : null}
-
-        <hr></hr>
         <Grid container direction="row" sx={{ paddingTop: '15px' }} spacing={1}>
           <Grid item display="inline" id="first" md={6} xs={12}>
             <InfoBox
@@ -68,17 +57,43 @@ const AccountInfo = ({ paramUser }) => {
               value={university}
               onChange={(e) => setUniversity(e.target.value)}
             ></InfoBox>
+
+            {user._id === paramUser._id && !isEditing ? (
+              <Button
+                variant="contained"
+                sx={{
+                  color: '#0583D2',
+                  mt: '10px',
+                  width: '150px',
+                  background: 'white',
+                  ':hover': {
+                    backgroundColor: 'white',
+                  },
+                }}
+                onClick={handleChange}
+              >
+                Edit Profile
+              </Button>
+            ) : null}
+            {isEditing ? (
+              <Button
+                type="submit"
+                variant="contained"
+                onClick={handleChange}
+                sx={{
+                  color: '#0583D2',
+                  mt: '10px',
+                  width: '150px',
+                  background: 'white',
+                  ':hover': {
+                    backgroundColor: 'white',
+                  },
+                }}
+              >
+                Done
+              </Button>
+            ) : null}
           </Grid>
-          {isEditing ? (
-            <Button
-              type="submit"
-              variant="outlined"
-              onClick={handleChange}
-              sx={{ color: '#0583D2', justifyContent: 'flex-end' }}
-            >
-              Done
-            </Button>
-          ) : null}
         </Grid>
       </Grid>
     </div>
