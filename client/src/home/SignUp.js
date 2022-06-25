@@ -8,18 +8,26 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Autocomplete from '@mui/material/Autocomplete';
-import useAuth from '../context/Auth';
-import { useImg } from '../hooks/api/hooks';
-import Loading from '../globalComponents/Loading';
+import useAuth from 'context/Auth';
+import { useImg } from 'hooks/api/hooks';
+import Loading from 'globalComponents/Loading';
 
 const signupSchema = yup.object().shape({
   email: yup.string().email().required(),
   firstName: yup.string().required(),
   lastName: yup.string().required(),
-  password: yup.string().required(),
-  confirmPassword: yup.string().test('passwords-match', 'Passwords must match', function (value) {
-    return this.parent.password === value;
-  }),
+  password: yup
+    .string()
+    .required()
+    .matches(
+      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+      'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character'
+    ),
+  confirmPassword: yup
+    .string()
+    .test('passwords-match', 'Passwords must match', function (value) {
+      return this.parent.password === value;
+    }),
   university: yup.string().required(),
 });
 
@@ -70,7 +78,7 @@ const SignUp = () => {
             validationSchema={signupSchema}
             onSubmit={(values, { setSubmitting }) => {
               setSubmitting(true);
-              authenticate(values);
+              authenticate('register', values);
               setTimeout(() => {
                 setSubmitting(false);
               }, 1000);
@@ -125,7 +133,9 @@ const SignUp = () => {
                       name="email"
                       autoComplete="email"
                       error={errors.email ? true : false}
-                      helperText={errors.email && touched.email && 'Email is required'}
+                      helperText={
+                        errors.email && touched.email && 'Email is required'
+                      }
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -136,11 +146,18 @@ const SignUp = () => {
                       id="university"
                       label="University"
                       onChange={(e, value) =>
-                        setFieldValue('univeristy', value !== null ? value : values.university)
+                        setFieldValue(
+                          'univeristy',
+                          value !== null ? value : values.university
+                        )
                       }
                       value={values.university}
                       renderInput={(params) => (
-                        <TextField name="univeristy" {...params} label="University" />
+                        <TextField
+                          name="univeristy"
+                          {...params}
+                          label="University"
+                        />
                       )}
                     />
                   </Grid>
@@ -155,7 +172,7 @@ const SignUp = () => {
                       id="password"
                       autoComplete="new-password"
                       error={errors.password ? true : false}
-                      helperText={errors.password && 'Password is required'}
+                      helperText={errors.password}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -168,7 +185,9 @@ const SignUp = () => {
                       autoComplete="new-password"
                       onChange={handleChange}
                       error={errors.confirmPassword ? true : false}
-                      helperText={errors.confirmPassword && 'Password must match'}
+                      helperText={
+                        errors.confirmPassword && 'Password must match'
+                      }
                     />
                   </Grid>
                   <Grid item xs={12}>

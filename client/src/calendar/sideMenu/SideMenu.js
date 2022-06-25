@@ -3,40 +3,57 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import SearchBar from 'calendar/sideMenu/SearchBar';
 import UserCourse from 'calendar/sideMenu/UserCourse';
-import { getUser } from 'calendar/api/sideMenu';
-import useAuth from 'context/Auth';
-import Button from '@mui/material/Button';
+import useSocket from 'context/socket';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { getUserCourse } from 'calendar/api/sideMenuApi';
 
-export default function SideMenu({ openEdit, setOpenEdit, handleCloseDrawer }) {
-  const { user, setUser } = useAuth();
-  // const [userData, setUserData] = useState(demo) // whole thing is demo
-  const [courseChangeCount, setCourseChangeCount] = useState(0);
+export default function SideMenu({ handleOpenDrawer, openDrawer }) {
+  const [userCourse, setUserCourse] = useState();
+  const { socket } = useSocket();
 
   useEffect(() => {
-    getUser(user._id).then((data) => !user.err && setUser(data));
-  }, [courseChangeCount]);
+    getUserCourse(socket);
+  }, []);
 
-  const handleChangingCourse = () => {
-    setCourseChangeCount(courseChangeCount + 1);
-  };
+  useEffect(() => {
+    socket.on('get user course', (userCourse) => {
+      setUserCourse(userCourse);
+    });
+    return () => {
+      socket.off('get user course');
+    };
+  }, []);
 
   return (
-    <Box mt={2} sx={{ overflow: 'auto' }}>
-      {openEdit ? (
-        <Typography>Editing</Typography>
-      ) : (
-        <>
-          <Button onClick={handleCloseDrawer}>click to go back</Button>
-          <Typography variant="h5" sx={{ display: 'flex', justifyContent: 'start', marginLeft: 3 }}>
-            Your Courses
-          </Typography>
-          {user && <UserCourse user={user} handleChangingCourse={handleChangingCourse} />}
-          <SearchBar userCourses={user.courses} handleChangingCourse={handleChangingCourse} />
-        </>
-      )}
-      <Button onClick={() => setOpenEdit(!openEdit)}>
-        <Typography>{openEdit ? <>click to close edit</> : <>click to edit</>}</Typography>
-      </Button>
+    <Box
+      sx={{
+        width: '25vw',
+        p: 2,
+      }}
+    >
+      <Typography
+        variant="h5"
+        sx={{ display: 'flex', textAlign: 'start', m: 3, mb: 1 }}
+      >
+        Your Courses
+        <IconButton
+          sx={{
+            ml: 'auto ',
+            transform: !openDrawer && 'rotate(90deg)',
+            transition: (theme) =>
+              theme.transitions.create('transform', {
+                easing: theme.transitions.easing.sharp,
+                duration: 225,
+              }),
+          }}
+          onClick={() => handleOpenDrawer()}
+        >
+          <ArrowBackIosIcon />
+        </IconButton>
+      </Typography>
+      {userCourse && <UserCourse userCourse={userCourse} />}
+      <SearchBar userCourse={userCourse} />
     </Box>
   );
 }

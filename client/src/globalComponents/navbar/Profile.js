@@ -4,8 +4,8 @@ import { StyledMenuItem, NavbarMenu } from './NavbarMenu';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
-import useAuth from '../context/Auth';
-import initialToColor from './InitialToColor';
+import useAuth from '../../context/Auth';
+import initialToColor from '../../globalComponents/InitialToColor';
 import Divider from '@mui/material/Divider';
 
 export default function Profile({ sx, userInfo }) {
@@ -30,18 +30,28 @@ export default function Profile({ sx, userInfo }) {
           sx={{
             width: 30,
             height: 30,
-            backgroundColor: initialToColor(`${userInfo.first[0]}${userInfo.last[0]}`),
+            backgroundColor: initialToColor(
+              `${userInfo.first[0]}${userInfo.last[0]}`
+            ),
           }}
           src={userInfo.profileImg}
         >
           <Typography>{`${userInfo.first[0]}${userInfo.last[0]}`}</Typography>
         </Avatar>
       </IconButton>
-      <NavbarMenu id="menu-account" anchorElNav={anchorEl} handleMenuClose={handleMenuClose}>
+      <NavbarMenu
+        id="menu-account"
+        anchorElNav={anchorEl}
+        handleMenuClose={handleMenuClose}
+      >
         <StyledMenuItem disabled style={{ opacity: 1, paddingBottom: 5 }}>
           {`${userInfo.first} ${userInfo.last}`}
         </StyledMenuItem>
-        <Divider flexItem sx={{ mx: 2 }} style={{ marginTop: 0, backgroundColor: 'white' }} />
+        <Divider
+          flexItem
+          sx={{ mx: 2 }}
+          style={{ marginTop: 0, backgroundColor: 'white' }}
+        />
         <StyledMenuItem
           style={{ marginBottom: 0 }}
           onClick={() => navigate(`../account/${userInfo._id}`)}

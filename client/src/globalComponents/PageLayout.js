@@ -1,8 +1,8 @@
-import Navbar from './Navbar';
+import Navbar from 'globalComponents/navbar/Navbar';
 import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
-import ChatWidget from '../chat/ChatWidget';
-import ErrorFallback from './error';
+import ChatWidget from 'chat/ChatWidget';
+import ErrorFallback from 'globalComponents/error';
 import { ErrorBoundary } from 'react-error-boundary';
 
 export default function Layout() {
@@ -18,7 +18,11 @@ export default function Layout() {
       <Navbar handleShowChat={handleShowChat} />
       {chats
         ? chats.map((chat) => (
-            <ChatWidget key={chat._id} friendInfo={chat} handleCloseChat={handleCloseChat} />
+            <ChatWidget
+              key={chat._id}
+              friendInfo={chat}
+              handleCloseChat={handleCloseChat}
+            />
           ))
         : null}
       <Outlet />

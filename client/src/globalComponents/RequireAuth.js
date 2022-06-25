@@ -11,6 +11,12 @@ export default function RequireAuth({ children }) {
     setChecked('checked');
   }, []);
   return (
-    <>{checked && user ? children : <Navigate to="/login" replace state={{ from: location }} />}</>
+    <>
+      {checked && user ? (
+        children
+      ) : (
+        <Navigate to="/login" replace state={{ from: location }} />
+      )}
+    </>
   );
 }

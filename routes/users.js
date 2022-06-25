@@ -21,12 +21,9 @@ const {
   getLoggedIn,
   uploadImage,
   deleteImage,
-  addNewFriend,
-  getUserFriend,
   getUser,
   lockSection,
   deleteSection,
-  deleteFriend,
   readMessages,
 } = require('../controllers/users');
 const { isLoggedIn } = require('../controllers/middleware');
@@ -154,7 +151,11 @@ router.post('/courses/new', isLoggedIn, catchAsync(createNewUserCourse));
 // wants to use the generator, save the course code as a placeholder first
 // These courses will be replaced with meeting times when the timetable is generated
 
-router.post('/courses/saveCourseHolder', isLoggedIn, catchAsync(saveCourseHolder));
+router.post(
+  '/courses/saveCourseHolder',
+  isLoggedIn,
+  catchAsync(saveCourseHolder)
+);
 
 // generate new timetables
 router.post('/courses/timetable/new', isLoggedIn, catchAsync(newTimetable));
@@ -162,27 +163,18 @@ router.post('/courses/timetable/new', isLoggedIn, catchAsync(newTimetable));
 // save timetable
 router.post('/courses/timetable/save', isLoggedIn, catchAsync(saveTimeTable));
 
-// locking a course. Need to manually choose a time first
 router.post('/courses/lock', isLoggedIn, catchAsync(lockCourse));
 
-router.delete('/courses/delete', isLoggedIn, catchAsync(deleteUserCourseByCode));
+router.post('/courses/delete', isLoggedIn, catchAsync(deleteUserCourseByCode));
 
-router.patch('/courses/sections/lock', isLoggedIn, catchAsync(lockSection));
+router.post('/courses/sections/lock', isLoggedIn, catchAsync(lockSection));
 
-router.delete('/courses/sections/delete', isLoggedIn, catchAsync(deleteSection));
+router.post('/courses/sections/delete', isLoggedIn, catchAsync(deleteSection));
 
 // get users courses
 router.get('/courses', isLoggedIn, catchAsync(getUserCourse));
 
-// friends
-
-router.get('/friends', isLoggedIn, catchAsync(getUserFriend));
-
-router.post('/friends/new', isLoggedIn, catchAsync(addNewFriend));
-
-router.delete('/friends/delete', isLoggedIn, catchAsync(deleteFriend));
-
-router.post('/messages', isLoggedIn, catchAsync(readMessages));
+router.get('/messages/:id', isLoggedIn, catchAsync(readMessages));
 
 router.get('/:id', catchAsync(getUser));
 

@@ -54,9 +54,15 @@ const ForgotPassword = () => {
               Forgot Password
             </Typography>
             <Typography component="subtitle" variant="h5">
-              Enter your email address and we’ll send you a link to reset your password.
+              Enter your email address and we’ll send you a link to reset your
+              password.
             </Typography>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              noValidate
+              sx={{ mt: 1 }}
+            >
               <TextField
                 margin="normal"
                 required

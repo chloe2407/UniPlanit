@@ -20,10 +20,17 @@ const AccountInfo = ({ paramUser }) => {
 
   return (
     <div>
-      <Grid justifyContent="flex-start" alignItems="flex-start" textAlign="left">
+      <Grid
+        justifyContent="flex-start"
+        alignItems="flex-start"
+        textAlign="left"
+      >
         <Typography variant="h4">{`${first} ${last}`}</Typography>
         {user._id === paramUser._id ? (
-          <Button sx={{ color: '#0583D2', fontWeight: 'bold' }} onClick={handleChange}>
+          <Button
+            sx={{ color: '#0583D2', fontWeight: 'bold' }}
+            onClick={handleChange}
+          >
             Edit Profile
           </Button>
         ) : null}

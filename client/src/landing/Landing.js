@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Cursor from './Cursor';
 import Scene from './Scene';
 import './Cursor.css';
-import Loading from '../globalComponents/Loading';
+import Loading from 'globalComponents/Loading';
 
 const Landing = () => {
   const [addClass, setAddClass] = useState(false);
