@@ -53,7 +53,6 @@ export function AuthProvider({ children }) {
   const memo = useMemo(
     () => ({
       user,
-
       err,
       authenticate,
       logout,

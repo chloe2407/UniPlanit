@@ -17,13 +17,15 @@ import {
   acceptFriendRequest,
   rejectFriendRequest,
 } from 'globalComponents/navbar/api/navbarApi';
+import useFeedback from 'context/feedback';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 
-export default function AddFriend({ sx, handleSuccessMsg, handleErrorMsg }) {
+export default function AddFriend({ sx }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const { socket } = useSocket();
   const [friendRequest, setFriendRequest] = useState();
+  const { setMsg } = useFeedback();
 
   useEffect(() => {
     getFriendRequest(socket);
@@ -31,7 +33,14 @@ export default function AddFriend({ sx, handleSuccessMsg, handleErrorMsg }) {
 
   useEffect(() => {
     socket.on('received friend request', () => {
-      handleSuccessMsg('New friend request');
+      setMsg({
+        sx: { height: '15vh' },
+        msg: 'New friend request',
+        snackVariant: 'success',
+        anchorOrigin: { vertical: 'top', horizontal: 'right' },
+        autoHideDuration: 3000,
+      });
+      // handleSuccessMsg('New friend request');
       getFriendRequest(socket);
     });
     return () => {
@@ -50,7 +59,14 @@ export default function AddFriend({ sx, handleSuccessMsg, handleErrorMsg }) {
 
   useEffect(() => {
     socket.on('reject friend', (msg) => {
-      handleSuccessMsg(msg);
+      setMsg({
+        sx: { height: '15vh' },
+        msg: msg,
+        snackVariant: 'success',
+        anchorOrigin: { vertical: 'top', horizontal: 'right' },
+        autoHideDuration: 3000,
+      });
+      // handleSuccessMsg(msg);
     });
     return () => {
       socket.off('reject friend');
@@ -59,11 +75,13 @@ export default function AddFriend({ sx, handleSuccessMsg, handleErrorMsg }) {
 
   useEffect(() => {
     socket.on('add friend', (status, msg) => {
-      if (status === 'Success') {
-        handleSuccessMsg(msg);
-      } else {
-        handleErrorMsg(msg);
-      }
+      setMsg({
+        sx: { height: '15vh' },
+        msg: msg,
+        snackVariant: status.toLowerCase(),
+        anchorOrigin: { vertical: 'top', horizontal: 'right' },
+        autoHideDuration: 3000,
+      });
     });
     return () => {
       socket.off('add friend');
