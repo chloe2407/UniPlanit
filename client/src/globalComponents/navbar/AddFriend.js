@@ -180,6 +180,7 @@ export default function AddFriend({ sx, handleSuccessMsg, handleErrorMsg }) {
           {friendRequest ? (
             friendRequest.map((friend) => (
               <Box
+                key={friend._id}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
