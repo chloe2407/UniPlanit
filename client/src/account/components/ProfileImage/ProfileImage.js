@@ -5,6 +5,7 @@ import { height } from '@mui/system';
 import useAuth from '../../../context/Auth';
 import './ProfileImage.css';
 import { Grid } from '@mui/material';
+import TextField from '@mui/material/TextField';
 import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
 import initialToColor from '../../../globalComponents/InitialToColor';
@@ -57,6 +58,18 @@ const ProfileImage = ({ paramUser }) => {
         <Typography variant="h7" pb="10px">
           {user.email}
         </Typography>
+        <Typography variant="h7" pb="10px">
+          {user.university}
+        </Typography>
+        <TextField
+          id="outlined-multiline-static"
+          label="Bio"
+          multiline
+          rows={4}
+          // color="gray"
+          disabled={user._id === paramUser._id ? null : 'true'}
+          defaultValue="Say something!"
+        />
 
         {user._id === paramUser._id ? (
           <Button

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import useAuth from 'context/Auth';
 import { useParams } from 'react-router-dom';
 import { getParamUserData } from 'account/api/getParamUserData';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import PersonPinIcon from '@mui/icons-material/PersonPin';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -11,7 +13,7 @@ import AccountInfo from '../AccountInfo';
 import Favorites from '../Favorites/Favorites';
 import { height } from '@mui/system';
 
-function ProfileTabs(props) {
+function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
@@ -31,60 +33,67 @@ function ProfileTabs(props) {
   );
 }
 
-ProfileTabs.propTypes = {
+TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
 };
 
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
+// function a11yProps(index) {
+//     return {
+//         id: `simple-tab-${index}`,
+//         'aria-controls': `simple-tabpanel-${index}`,
+//     };
+// }
 
-export default function BasicTabs() {
+export default function ProfileTabs({ paramUser }) {
+  const { user } = useAuth();
   const [value, setValue] = React.useState(0);
-  const [paramUser, setParamUser] = useState();
-  const params = useParams();
 
-  useEffect(() => {
-    if (params.id) setParamUser(undefined);
-  }, [params.id]);
+  // useEffect(() => {
+  //     if (params.id) setParamUser(undefined);
+  // }, [params.id]);
 
-  useEffect(() => {
-    getParamUserData(params.id).then((data) => {
-      setParamUser(data);
-    });
-  }, [params.id]);
+  // useEffect(() => {
+  //     getParamUserData(params.id).then((data) => {
+  //         setParamUser(data);
+  //     });
+  // }, [params.id]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   return (
-    <Box sx={{ width: '50vw', height: '40vh' }}>
+    <Box sx={{ width: '94%', height: '40vh' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={value}
           onChange={handleChange}
-          aria-label="basic tabs example"
+          aria-label="icon label tabs example"
         >
-          <Tab label="Account Information" />
-          <Tab label="Favorites" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          {user._id === paramUser._id ? (
+            <Tab
+              label="Account Information"
+              icon={<PersonPinIcon />}
+              iconPosition="start"
+            />
+          ) : null}
+
+          <Tab label="Favorites" icon={<FavoriteIcon />} iconPosition="start" />
         </Tabs>
       </Box>
-      <ProfileTabs value={value} index={0}>
-        {paramUser && <AccountInfo paramUser={paramUser} />}
-      </ProfileTabs>
-      <ProfileTabs value={value} index={1}>
+      {user._id === paramUser._id ? (
+        <TabPanel value={value} index={0}>
+          <AccountInfo paramUser={paramUser} />
+        </TabPanel>
+      ) : null}
+      <TabPanel value={value} index={1}>
         {paramUser && <Favorites paramUser={paramUser} />}
-      </ProfileTabs>
-      <ProfileTabs value={value} index={2}>
+      </TabPanel>
+      <TabPanel value={value} index={2}>
         Item Three
-      </ProfileTabs>
+      </TabPanel>
     </Box>
   );
 }

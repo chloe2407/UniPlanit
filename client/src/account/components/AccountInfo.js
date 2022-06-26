@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import useAuth from '../../context/Auth';
 import InfoBox from './InfoBox/InfoBox';
 import Button from '@mui/material/Button';
@@ -56,43 +56,44 @@ const AccountInfo = ({ paramUser }) => {
               property="Institution"
               value={university}
               onChange={(e) => setUniversity(e.target.value)}
-            ></InfoBox>
-
-            {user._id === paramUser._id && !isEditing ? (
-              <Button
-                variant="contained"
-                sx={{
-                  color: '#0583D2',
-                  mt: '10px',
-                  width: '150px',
-                  background: 'white',
-                  ':hover': {
-                    backgroundColor: 'white',
-                  },
-                }}
-                onClick={handleChange}
-              >
-                Edit Profile
-              </Button>
-            ) : null}
-            {isEditing ? (
-              <Button
-                type="submit"
-                variant="contained"
-                onClick={handleChange}
-                sx={{
-                  color: '#0583D2',
-                  mt: '10px',
-                  width: '150px',
-                  background: 'white',
-                  ':hover': {
-                    backgroundColor: 'white',
-                  },
-                }}
-              >
-                Done
-              </Button>
-            ) : null}
+            />
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              {user._id === paramUser._id && !isEditing ? (
+                <Button
+                  variant="contained"
+                  sx={{
+                    color: '#0583D2',
+                    mt: '10px',
+                    width: '180px',
+                    background: 'white',
+                    ':hover': {
+                      backgroundColor: 'white',
+                    },
+                  }}
+                  onClick={handleChange}
+                >
+                  Edit Profile
+                </Button>
+              ) : null}
+              {isEditing ? (
+                <Button
+                  type="submit"
+                  variant="contained"
+                  onClick={handleChange}
+                  sx={{
+                    color: '#0583D2',
+                    mt: '10px',
+                    width: '180px',
+                    background: 'white',
+                    ':hover': {
+                      backgroundColor: 'white',
+                    },
+                  }}
+                >
+                  Done
+                </Button>
+              ) : null}
+            </Box>
           </Grid>
         </Grid>
       </Grid>

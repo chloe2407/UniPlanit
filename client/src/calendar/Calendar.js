@@ -20,7 +20,7 @@ const Calendar = () => {
   const [generatedTimetable, setGenerateTimetable] = useState();
   // used for seeing the timetable being built
   const [buildTimetable, setBuildTimetable] = useState();
-  const [openDrawer, setOpenDrawer] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(true);
   const [timetableMsg, setTimetableMsg] = useState();
   const [view, setView] = useState('start');
 

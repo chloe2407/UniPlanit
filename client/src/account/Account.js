@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import ProfileTabs from './components/ProfileTabs/ProfileTabs';
-import BasicTabs from './components/ProfileTabs/ProfileTabs';
+import FadeIn from 'react-fade-in';
 
 const Account = () => {
   const [imgUrl, loadImg] = useImg();
@@ -48,20 +48,21 @@ const Account = () => {
         <Typography variant="h3">Account Information</Typography>
       </div>
 
-      <Grid
-        container
-        direction="row"
-        justifyContent="center"
-        alignItems="flex-start"
-        paddingTop="70px"
-      >
-        <Grid item xs={12} md={5} xl={6}>
+      <Grid container direction="row" justifyContent="center" paddingTop="70px">
+        <Grid item xs={12} md={5}>
           {paramUser && <ProfileImage paramUser={paramUser} />}
         </Grid>
-        <Grid item xs={12} md={7} xl={7}>
+        <Grid
+          item
+          xs={12}
+          md={6}
+          display="flex"
+          direction="row"
+          justifyContent="center"
+          p="0px"
+        >
           {/* {paramUser && <AccountInfo paramUser={paramUser} />} */}
           {paramUser && <ProfileTabs paramUser={paramUser} />}
-          {/* <BasicTabs /> */}
         </Grid>
       </Grid>
       {/* {paramUser && <Favorites paramUser={paramUser} />} */}
