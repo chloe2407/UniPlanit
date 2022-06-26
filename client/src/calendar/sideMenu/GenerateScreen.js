@@ -8,12 +8,19 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { getGenerateTimetable } from 'calendar/api/sideMenuApi';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActionArea from '@mui/material/CardActionArea';
+import {
+  getGenerateTimetable,
+  addFavTimetable,
+  deleteFavTimetable,
+  getFavTimetable,
+} from 'calendar/api/sideMenuApi';
+// import Card from '@mui/material/Card';
+// import CardContent from '@mui/material/CardContent';
+// import CardActionArea from '@mui/material/CardActionArea';
 import Button from '@mui/material/Button';
 import useSocket from 'context/socket';
+import FadeContent from 'react-fade-in';
+import { FadeIn } from 'react-slide-fade-in';
 
 const GenerateScreen = ({
   handleViewChange,
@@ -21,11 +28,23 @@ const GenerateScreen = ({
   setTimetableIndex,
 }) => {
   const [timetableShow, setTimetableShow] = useState([]);
+  const [favTimetable, setFavTimetable] = useState();
   const { socket } = useSocket();
-  const [on, setOn] = useState();
 
   useEffect(() => {
     getGenerateTimetable(socket);
+  }, []);
+
+  useEffect(() => {
+    getFavTimetable(socket);
+  }, []);
+
+  useEffect(() => {
+    socket.on('get fav timetable', (tb) => {
+      console.log(tb);
+      setFavTimetable(tb);
+    });
+    return () => socket.off('get fav timetable');
   }, []);
 
   const handleExpandTimetable = (i) => {
@@ -36,73 +55,89 @@ const GenerateScreen = ({
     }
   };
 
-  const handleAddFavourite = () => {
-    setOn(!on);
+  const handleAddFavourite = (tb) => {
+    console.log(tb);
+    // favTimetable && console.log(favTimetable);
+    // if (favTimetable.includes(tb)) {
+    //   deleteFavTimetable(socket, tb)
+    // } else {
+    //   addFavTimetable(socket, tb);
+    // }
   };
 
   return (
-    <Box mt={2} sx={{ m: 3 }}>
-      <Typography
-        variant="h5"
-        sx={{ display: 'flex', textAlign: 'start', mb: 1 }}
-      >
-        Generated Timetables
-        <IconButton
-          sx={{
-            ml: 'auto ',
-            // transform: !openDrawer && 'rotate(90deg)',
-            // transition: (theme) =>
-            //   theme.transitions.create('transform', {
-            //     easing: theme.transitions.easing.sharp,
-            //     duration: 225,
-            //   }),
-          }}
-          onClick={() => handleViewChange(null, 'start')}
+    <FadeIn from="right" positionOffset={200} durationInMilliseconds={500}>
+      <Box mt={2} sx={{ m: 3 }}>
+        <Typography
+          variant="h5"
+          sx={{ display: 'flex', textAlign: 'start', mb: 1 }}
         >
-          <ArrowBackIosIcon />
-        </IconButton>
-      </Typography>
-
-      {generatedTimetable ? (
-        generatedTimetable.map((timetable, i) => (
-          <Box key={i}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Button onClick={() => setTimetableIndex(i)}>
-                <Typography>Timetable {i}</Typography>
-              </Button>
-              <Box sx={{ marginLeft: 'auto' }}>
-                <IconButton
-                  onClick={() => {
-                    handleExpandTimetable(i);
-                  }}
-                >
-                  {timetableShow.includes(i) ? <ExpandLess /> : <ExpandMore />}
-                </IconButton>
-                <IconButton onClick={() => handleAddFavourite()}>
-                  {on ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                </IconButton>
-              </Box>
-            </Box>
-            <Collapse in={timetableShow.includes(i)}>
-              {timetable.map((course) => (
-                <Box key={course.courseCode} sx={{ textAlign: 'start', ml: 1 }}>
-                  <Typography sx={{ ml: 1 }}>{course.courseCode}</Typography>
-                  <Typography sx={{ ml: 3 }}>
-                    {course.section.sectionCode}
-                  </Typography>
-                  <Typography sx={{ ml: 3 }}>{course.tutorial}</Typography>
-                </Box>
-              ))}
-            </Collapse>
-          </Box>
-        ))
-      ) : (
-        <Typography>
-          {' '}
-          No generated timetables found! Try generating a new one
+          Generated Timetables
+          <IconButton
+            sx={{
+              ml: 'auto ',
+            }}
+            onClick={() => handleViewChange(null, 'start')}
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
         </Typography>
-      )}
-    </Box>
+        <FadeContent delay={100} transitionDuration={400}>
+          {generatedTimetable ? (
+            generatedTimetable.map((timetable, i) => (
+              <Box key={i}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Button onClick={() => setTimetableIndex(i)}>
+                    <Typography>Timetable {i}</Typography>
+                  </Button>
+                  <Box sx={{ marginLeft: 'auto' }}>
+                    <IconButton
+                      onClick={() => {
+                        handleExpandTimetable(i);
+                      }}
+                    >
+                      {timetableShow.includes(i) ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      )}
+                    </IconButton>
+                    <IconButton onClick={() => handleAddFavourite(timetable)}>
+                      {favTimetable && favTimetable.includes(timetable) ? (
+                        <FavoriteIcon />
+                      ) : (
+                        <FavoriteBorderIcon />
+                      )}
+                    </IconButton>
+                  </Box>
+                </Box>
+                <Collapse in={timetableShow.includes(i)}>
+                  {timetable.map((course) => (
+                    <Box
+                      key={course.courseCode}
+                      sx={{ textAlign: 'start', ml: 1 }}
+                    >
+                      <Typography sx={{ ml: 1 }}>
+                        {course.courseCode}
+                      </Typography>
+                      <Typography sx={{ ml: 3 }}>
+                        {course.section.sectionCode}
+                      </Typography>
+                      <Typography sx={{ ml: 3 }}>{course.tutorial}</Typography>
+                    </Box>
+                  ))}
+                </Collapse>
+              </Box>
+            ))
+          ) : (
+            <Typography sx={{ textAlign: 'start' }}>
+              {' '}
+              No generated timetables found! Try generating a new one
+            </Typography>
+          )}
+        </FadeContent>
+      </Box>
+    </FadeIn>
   );
 };
 

@@ -18,19 +18,19 @@ module.exports = (io) => {
     io.to(socket.userId).emit('get user course', user.courses);
   };
 
-  const lockUserCourse = async function (courseCode) {
-    const socket = this;
-    const user = await User.findById(socket.userId);
-    user.courses.forEach((c) => {
-      if (c.courseCode === courseCode) {
-        c.isLocked = !c.isLocked;
-        if (c.tutorial) c.tutorial.isLocked = true;
-        if (c.section) c.section.isLocked = true;
-      }
-    });
-    await user.save();
-    io.to(socket.userId).emit('get user course', user.courses);
-  };
+  // const lockUserCourse = async function (courseCode) {
+  //   const socket = this;
+  //   const user = await User.findById(socket.userId);
+  //   user.courses.forEach((c) => {
+  //     if (c.courseCode === courseCode) {
+  //       c.isLocked = !c.isLocked;
+  //       if (c.tutorial) c.tutorial.isLocked = true;
+  //       if (c.section) c.section.isLocked = true;
+  //     }
+  //   });
+  //   await user.save();
+  //   io.to(socket.userId).emit('get user course', user.courses);
+  // };
 
   const deleteUserCourse = async function (courseCode) {
     const socket = this;
@@ -42,21 +42,45 @@ module.exports = (io) => {
     io.to(socket.userId).emit('get user course', user.courses);
   };
 
-  const lockCourseSection = async function (courseCode, type) {
+  // const lockCourseSection = async function (courseCode, type) {
+  //   const socket = this;
+  //   const user = await User.findById(socket.userId);
+  //   const course = user.courses.filter((c) => c.courseCode === courseCode)[0];
+  //   if (course.isLocked) {
+  //     return res.send({
+  //       error: 'Cannot lock/unlock section when course is locked!',
+  //     });
+  //   } else if (type === 'section') {
+  //     course.section.isLocked = !course.section.isLocked;
+  //   } else {
+  //     course.tutorial.isLocked = !course.tutorial.isLocked;
+  //   }
+  //   await user.save();
+  //   io.to(socket.userId).emit('get user course', user.courses);
+  // };
+
+  const getFavTimetable = async function () {
     const socket = this;
     const user = await User.findById(socket.userId);
-    const course = user.courses.filter((c) => c.courseCode === courseCode)[0];
-    if (course.isLocked) {
-      return res.send({
-        error: 'Cannot lock/unlock section when course is locked!',
-      });
-    } else if (type === 'section') {
-      course.section.isLocked = !course.section.isLocked;
-    } else {
-      course.tutorial.isLocked = !course.tutorial.isLocked;
-    }
-    await user.save();
-    io.to(socket.userId).emit('get user course', user.courses);
+    io.to(socket.userId).emit('get fav timetable', user.savedTimetables);
+  };
+
+  const addFavTimetable = async function (tb) {
+    const socket = this;
+    const user = await User.findById(socket.userId);
+    user.savedTimetables.push(tb);
+    // console.log(user.savedTimetables)
+    // await user.save()
+    io.to(socket.userId).emit('get fav timetable', user.savedTimetables);
+  };
+
+  const deleteFavTimetable = async function (tb) {
+    const socket = this;
+    const user = await User.findById(socket.userId);
+    user.savedTimetables = user.savedTimetables.filter((t) => t !== tb);
+    console.log(user.savedTimetables);
+    // await user.save()
+    io.to(socket.userId).emit('get fav timetable', user.savedTimetables);
   };
 
   const deleteCourseSection = async function (courseCode, type) {
@@ -308,9 +332,10 @@ module.exports = (io) => {
   return {
     getUserCourse,
     addUserCourse,
-    lockUserCourse,
     deleteUserCourse,
-    lockCourseSection,
+    addFavTimetable,
+    getFavTimetable,
+    deleteFavTimetable,
     deleteCourseSection,
     getGeneratedTimetable,
     updateTimetable,

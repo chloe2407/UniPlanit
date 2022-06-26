@@ -59,3 +59,15 @@ export const updateTimetable = (socket, course, clear) => {
 export const getGenerateTimetable = (socket) => {
   socket.emit('get generated timetable');
 };
+
+export const addFavTimetable = (socket, tb) => {
+  socket.emit('add fav timetable', tb);
+};
+
+export const deleteFavTimetable = (socket, tb) => {
+  socket.emit('delete fav timetable', tb);
+};
+
+export const getFavTimetable = (socket) => {
+  socket.emit('get fav timetable');
+};
