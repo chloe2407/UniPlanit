@@ -16,6 +16,7 @@ export default function SideMenu({
   generatedTimetable,
   view,
   handleViewChange,
+  timetableIndex,
   setTimetableIndex,
 }) {
   const [userCourse, setUserCourse] = useState();
@@ -68,6 +69,7 @@ export default function SideMenu({
           <GenerateScreen
             handleViewChange={handleViewChange}
             generatedTimetable={generatedTimetable}
+            timetableIndex={timetableIndex}
             setTimetableIndex={setTimetableIndex}
           />
         )}

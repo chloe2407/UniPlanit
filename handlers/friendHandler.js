@@ -10,7 +10,7 @@ module.exports = (io) => {
         'You cannot add yourself'
       );
     } else {
-      User.findOne({ email: to }, (err, friend) => {
+      User.findOne({ email: to }, async (err, friend) => {
         if (!friend) {
           io.to(socket.userId).emit('add friend', 'Error', 'Cannot find user!');
         } else if (user.friendRequests.includes(friend.id)) {
@@ -25,7 +25,7 @@ module.exports = (io) => {
           io.to(socket.userId).emit('add friend', 'Error', 'Pending Request!');
         } else {
           friend.friendRequests.push(socket.userId);
-          friend.save();
+          await friend.save();
           io.to(socket.userId).emit('add friend', 'Success', 'Sent Request!');
           io.to(friend.id).emit('received friend request');
         }

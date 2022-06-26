@@ -11,7 +11,7 @@ import { StyledTableCell } from 'calendar/StyledTableCell';
 import {
   useCourseMeetingTimeToEvent,
   useParseEventToTimetableObj,
-} from 'hooks/hook';
+} from 'calendar/hooks';
 import useSocket from 'context/socket';
 import useFeedback from 'context/feedback';
 
@@ -107,7 +107,10 @@ const WeekView = ({ sx, generatedTimetable, timetableIndex }) => {
             {event && (
               <EventCard
                 event={event}
-                sx={{ height: `${event.duration * 4.2}em`, overflowY: 'auto' }}
+                sx={{
+                  height: `${event.duration * 4.2}em`,
+                  overflowY: 'auto',
+                }}
               />
             )}
           </StyledTableCell>
