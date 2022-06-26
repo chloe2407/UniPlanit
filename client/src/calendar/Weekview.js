@@ -8,7 +8,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Container from '@mui/material/Container';
 import { StyledTableCell } from 'calendar/StyledTableCell';
-import { useCourseToEvent } from 'hooks/hook';
+import {
+  useCourseMeetingTimeToEvent,
+  useParseEventToTimetableObj,
+} from 'hooks/hook';
 import useSocket from 'context/socket';
 import useFeedback from 'context/feedback';
 
@@ -17,7 +20,8 @@ const WeekView = ({ sx, generatedTimetable, timetableIndex }) => {
   const times = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-  const [courseToEvent] = useCourseToEvent();
+  const courseMeetingTimeToEvent = useCourseMeetingTimeToEvent();
+  const parseEventToTimetableObj = useParseEventToTimetableObj();
   const [buildTimetable, setBuildTimetable] = useState();
   const [parsedTimetable, setParsedTimetable] = useState(null);
   const { socket } = useSocket();
@@ -44,27 +48,24 @@ const WeekView = ({ sx, generatedTimetable, timetableIndex }) => {
       timetable.map((course) => {
         if (course.section) {
           course.section.meetingTimes.map((meetingTime) => {
-            // need to extract the time
-            // give warning if overlapping is detected
-            const day = meetingTime.day;
-            const start = parseInt(
-              meetingTime.startTime.slice(0, 2)
-            ).toString();
-            const end = parseInt(meetingTime.endTime.slice(0, 2)).toString();
-            const diff = parseInt(end) - parseInt(start);
-            const courseEvent = courseToEvent(course, meetingTime);
-            if (days[day][start]) {
-              setMsg({
-                snackVariant: 'error',
-                msg: `We detected a overlap between ${days[day][start].eventName} and ${courseEvent.eventName}! Timetable may not be accurate`,
-              });
-            }
-            days[day][start] = courseEvent;
-            if (diff > 1) {
-              for (let i = 1; i < diff; i++) {
-                days[day][(parseInt(start) + i).toString()] = 'skip';
-              }
-            }
+            const event = courseMeetingTimeToEvent(
+              course,
+              meetingTime,
+              'Lecture'
+            );
+            const res = parseEventToTimetableObj(days, event);
+            res && setMsg(res);
+          });
+        }
+        if (course.tutorial) {
+          course.tutorial.meetingTimes.map((meetingTime) => {
+            const event = courseMeetingTimeToEvent(
+              course,
+              meetingTime,
+              'Tutorial'
+            );
+            const res = parseEventToTimetableObj(days, event);
+            res && setMsg(res);
           });
         }
       });
@@ -95,15 +96,18 @@ const WeekView = ({ sx, generatedTimetable, timetableIndex }) => {
   };
 
   const TableSlot = ({ event }) => {
-    const dur = event ? parseInt(event.end) - parseInt(event.start) : null;
     return (
       <>
         {event !== 'skip' ? (
-          <StyledTableCell align="center" rowSpan={dur} sx={{ padding: 0 }}>
+          <StyledTableCell
+            align="center"
+            rowSpan={event && event.duration}
+            sx={{ padding: 0 }}
+          >
             {event && (
               <EventCard
                 event={event}
-                sx={{ height: `${dur * 4.2}em`, overflowY: 'auto' }}
+                sx={{ height: `${event.duration * 4.2}em`, overflowY: 'auto' }}
               />
             )}
           </StyledTableCell>

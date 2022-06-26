@@ -29,7 +29,15 @@ const GenerateScreen = ({
 }) => {
   const [timetableShow, setTimetableShow] = useState([]);
   const [favTimetable, setFavTimetable] = useState();
+  const [generateTime, setGenerateTime] = useState(0);
   const { socket } = useSocket();
+
+  useEffect(() => {
+    socket.on('time elpased', (time) => {
+      setGenerateTime(time);
+    });
+    return () => socket.off('time elpased');
+  }, []);
 
   useEffect(() => {
     getGenerateTimetable(socket);
@@ -68,10 +76,7 @@ const GenerateScreen = ({
   return (
     <FadeIn from="right" positionOffset={200} durationInMilliseconds={500}>
       <Box mt={2} sx={{ m: 3 }}>
-        <Typography
-          variant="h5"
-          sx={{ display: 'flex', textAlign: 'start', mb: 1 }}
-        >
+        <Typography variant="h5" sx={{ display: 'flex', textAlign: 'start' }}>
           Generated Timetables
           <IconButton
             sx={{
@@ -83,6 +88,12 @@ const GenerateScreen = ({
           </IconButton>
         </Typography>
         <FadeContent delay={100} transitionDuration={400}>
+          <Typography textAlign={'start'}>
+            {' '}
+            {`Generated ${
+              generatedTimetable && generatedTimetable.length
+            } timetables in ${generateTime} seconds`}
+          </Typography>
           {generatedTimetable ? (
             generatedTimetable.map((timetable, i) => (
               <Box key={i}>

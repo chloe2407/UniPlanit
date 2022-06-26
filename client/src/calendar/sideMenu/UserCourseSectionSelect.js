@@ -16,18 +16,18 @@ import { updateTimetable, getMultipleCourse } from 'calendar/api/sideMenuApi';
 export default function UserCourseSectionSelect({ userCourse }) {
   const [courseCodeShow, setCourseCodeShow] = useState([]);
   const [userCourseObj, setUserCourseObj] = useState();
+  const [isLoading, setIsLoading] = useState();
   const [searchData, setSearchData] = useState();
-  const [loading, setIsLoading] = useState(false);
   const { socket } = useSocket();
 
   // turn user course into objects
 
-  // useEffect(() => {
-  //   socket.on('update timetable', (timetable) => {
-  //     setIsLoading(false);
-  //   });
-  //   return () => socket.off('update timetable');
-  // });
+  useEffect(() => {
+    socket.on('update timetable', () => {
+      setIsLoading(false);
+    });
+    return () => socket.off('update timetable');
+  }, []);
 
   useEffect(() => {
     if (userCourse) {
@@ -79,7 +79,12 @@ export default function UserCourseSectionSelect({ userCourse }) {
       : setCourseCodeShow([...courseCodeShow, courseCode]);
   };
 
-  const SelectLecture = ({ courseCode }) => {
+  const handleClearAllSections = () => {
+    setIsLoading(true);
+    updateTimetable(socket, null, true);
+  };
+
+  const SelectLecture = React.memo(({ courseCode }) => {
     const [lecture, setLecture] = useState(
       userCourseObj && userCourseObj[courseCode]?.section
         ? userCourseObj[courseCode].section.sectionCode
@@ -118,7 +123,7 @@ export default function UserCourseSectionSelect({ userCourse }) {
     ) : (
       <Typography>No Lectures Found For This Course!</Typography>
     );
-  };
+  });
 
   const SelectTutorial = ({ courseCode }) => {
     const [tutorial, setTutorial] = useState(
@@ -184,7 +189,7 @@ export default function UserCourseSectionSelect({ userCourse }) {
             <Collapse in={courseCodeShow.includes(course.courseCode)}>
               <Typography>Lectures</Typography>
               <Box sx={{ m: 1 }}>
-                <SelectLecture courseIndex={i} courseCode={course.courseCode} />
+                <SelectLecture courseCode={course.courseCode} />
               </Box>
               <Typography>Tutorials</Typography>
               <Box sx={{ m: 1 }}>
@@ -200,13 +205,10 @@ export default function UserCourseSectionSelect({ userCourse }) {
         </Typography>
       )}
       <LoadingButton
-        // loading={loading}
+        loading={isLoading}
         variant={'contained'}
         sx={{ textTransform: 'capitalize' }}
-        onClick={() => {
-          setIsLoading(true);
-          updateTimetable(socket, null, true);
-        }}
+        onClick={() => handleClearAllSections()}
       >
         Clear all sections
       </LoadingButton>
