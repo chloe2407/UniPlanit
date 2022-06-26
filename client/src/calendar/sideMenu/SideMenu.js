@@ -45,34 +45,32 @@ export default function SideMenu({
       }}
     >
       <Tabs variant="scrollable" value={tab} onChange={handleTabChange}>
-        <Tab value={0} label={'Select'} />
+        <Tab value={0} label={'Build'} />
         <Tab value={1} label={'Favorites'} />
       </Tabs>
       <TabPanel value={tab} index={0}>
-        <>
-          {view === 'start' ? (
-            <SideMenuStart handleViewChange={handleViewChange} />
-          ) : view === 'select' ? (
-            <CourseSelection
-              userCourse={userCourse}
-              handleTabChange={handleTabChange}
-              handleViewChange={handleViewChange}
-            />
-          ) : view === 'build' ? (
-            <MakeTimetable
-              userCourse={userCourse}
-              buildTimetable={buildTimetable}
-              generatedTimetable={generatedTimetable}
-              handleViewChange={handleViewChange}
-            />
-          ) : (
-            <GenerateScreen
-              handleViewChange={handleViewChange}
-              generatedTimetable={generatedTimetable}
-              setTimetableIndex={setTimetableIndex}
-            />
-          )}
-        </>
+        {view === 'start' ? (
+          <SideMenuStart handleViewChange={handleViewChange} />
+        ) : view === 'select' ? (
+          <CourseSelection
+            userCourse={userCourse}
+            handleTabChange={handleTabChange}
+            handleViewChange={handleViewChange}
+          />
+        ) : view === 'build' ? (
+          <MakeTimetable
+            userCourse={userCourse}
+            buildTimetable={buildTimetable}
+            generatedTimetable={generatedTimetable}
+            handleViewChange={handleViewChange}
+          />
+        ) : (
+          <GenerateScreen
+            handleViewChange={handleViewChange}
+            generatedTimetable={generatedTimetable}
+            setTimetableIndex={setTimetableIndex}
+          />
+        )}
       </TabPanel>
       <TabPanel value={tab} index={1}></TabPanel>
     </Box>

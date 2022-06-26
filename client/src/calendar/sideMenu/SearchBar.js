@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import courseData from '../data/course_and_title.json';
-import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { createFilterOptions } from '@mui/material/Autocomplete';
@@ -11,7 +10,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Radio from '@mui/material/Radio';
-import Divider from '@mui/material/Divider';
+import LoadingButton from '@mui/lab/LoadingButton';
 import RadioGroup from '@mui/material/RadioGroup';
 import useSocket from 'context/socket';
 import {
@@ -20,6 +19,7 @@ import {
   generateTimeTable,
   makeNewTimetable,
 } from 'calendar/api/sideMenuApi';
+import useFeedback from 'context/feedback';
 
 export default function SearchBar({ userCourse }) {
   const [input, setInput] = useState({
@@ -29,10 +29,10 @@ export default function SearchBar({ userCourse }) {
   });
   const [searchData, setSearchData] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  // const [lecture, setLecture] = useState('Choose a Lecture');
-  // const [tutorial, setTutorial] = useState('Choose a Tutorial');
+  const [btnIsLoading, setBtnIsLoading] = useState();
   const { socket } = useSocket();
   const bottomRef = useRef();
+  const { setMsg } = useFeedback();
 
   const filterOptions = createFilterOptions({
     limit: 15,
@@ -54,9 +54,25 @@ export default function SearchBar({ userCourse }) {
         setIsLoading(false);
       });
     }
-    // setLecture('Choose a Lecture');
-    // setTutorial('Choose a Tutorial');
   }, [input]);
+
+  useEffect(() => {
+    socket.on('get user course', () => {
+      setBtnIsLoading(null);
+    });
+    return () => {
+      socket.off('get user course');
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.on('get generated timetable', () => {
+      setBtnIsLoading(null);
+    });
+    return () => {
+      socket.off('get generated course');
+    };
+  }, []);
 
   const handleInputChange = (option, v) => {
     if (option === 'code') {
@@ -77,38 +93,33 @@ export default function SearchBar({ userCourse }) {
     }
   };
 
-  // const handleAddCourseWithSection = (type, section) => {
-  //   // call server make change
-  //   // update current state for new user courses
-  //   // handleAdding
-  //   let course;
-  //   userCourse.map((c) => {
-  //     if (c.courseCode === searchData[0].courseCode) course = c;
-  //   });
-  //   if (!course) {
-  //     course = { ...searchData[0] };
-  //     delete course.tutorials;
-  //     delete course.sections;
-  //   }
-  //   if (type === 'lec') {
-  //     course.section = section;
-  //   } else if (type === 'tut') {
-  //     course.tutorial = section;
-  //   }
-  //   addUserCourse(socket, course);
-  // };
-
   const handleAddCourse = () => {
+    setBtnIsLoading('add');
     addUserCourse(socket, searchData[0]);
   };
 
   const handleGenerate = () => {
-    generateTimeTable(socket, userCourse);
+    setBtnIsLoading('generate');
+    if (userCourse.length > 0) generateTimeTable(socket, userCourse);
+    else {
+      setMsg({
+        snackVariant: 'info',
+        msg: 'Please Choose a Course First!',
+      });
+      setBtnIsLoading(null);
+    }
   };
 
   const handleMake = () => {
-    console.log(userCourse);
-    makeNewTimetable(socket, userCourse);
+    setBtnIsLoading('make');
+    if (userCourse.length > 0) makeNewTimetable(socket, userCourse);
+    else {
+      setMsg({
+        snackVariant: 'info',
+        msg: 'Please Choose a Course First!',
+      });
+      setBtnIsLoading(null);
+    }
   };
 
   return (
@@ -174,13 +185,14 @@ export default function SearchBar({ userCourse }) {
                   <Typography variant="h6">
                     {searchData[0].courseTitle}
                   </Typography>
-                  <Button
+                  <LoadingButton
+                    loading={btnIsLoading === 'add'}
                     variant="contained"
-                    sx={{ ml: 'auto', textTransform: 'capitalize' }}
+                    sx={{ ml: 'auto' }}
                     onClick={() => handleAddCourse()}
                   >
                     Add this course
-                  </Button>
+                  </LoadingButton>
                 </Box>
               </>
             )}
@@ -188,20 +200,23 @@ export default function SearchBar({ userCourse }) {
         )}
         <div ref={bottomRef}></div>
 
-        <Button
-          sx={{ display: 'block', textTransform: 'capitalize', mb: 1 }}
+        <LoadingButton
+          loading={btnIsLoading === 'make'}
+          sx={{ display: 'block', mb: 1 }}
           onClick={() => handleMake()}
           variant={'contained'}
         >
           <Typography>Choose Sections</Typography>
-        </Button>
-        <Button
-          sx={{ textTransform: 'capitalize', ml: 'auto' }}
+        </LoadingButton>
+
+        <LoadingButton
+          loading={btnIsLoading === 'generate'}
+          sx={{ ml: 'auto' }}
           onClick={() => handleGenerate()}
           variant={'contained'}
         >
           <Typography>Generate Timetables</Typography>
-        </Button>
+        </LoadingButton>
       </Container>
     </Box>
   );

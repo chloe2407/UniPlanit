@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -11,16 +11,24 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { updateTimetable, getMultipleCourse } from 'calendar/api/sideMenuApi';
 
 export default function UserCourseSectionSelect({ userCourse }) {
-  const endRef = useRef();
   const [courseCodeShow, setCourseCodeShow] = useState([]);
   const [userCourseObj, setUserCourseObj] = useState();
   const [searchData, setSearchData] = useState();
+  const [loading, setIsLoading] = useState(false);
   const { socket } = useSocket();
 
   // turn user course into objects
+
+  useEffect(() => {
+    socket.on('update timetable', () => {
+      setIsLoading(false);
+    });
+    return () => socket.off('update timetable');
+  });
   useEffect(() => {
     if (userCourse) {
       const temp = {};
@@ -41,10 +49,6 @@ export default function UserCourseSectionSelect({ userCourse }) {
         });
         setSearchData(temp);
       });
-  }, [userCourse]);
-
-  useEffect(() => {
-    scrollToBottom();
   }, [userCourse]);
 
   // add section/tutorials to a course in the current timetable
@@ -69,10 +73,6 @@ export default function UserCourseSectionSelect({ userCourse }) {
     updateTimetable(socket, course);
   };
 
-  const scrollToBottom = () => {
-    endRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  };
-
   const handleCourseCollapse = (courseCode) => {
     courseCodeShow.includes(courseCode)
       ? setCourseCodeShow([...courseCodeShow.filter((c) => c !== courseCode)])
@@ -87,7 +87,7 @@ export default function UserCourseSectionSelect({ userCourse }) {
     );
     return searchData && searchData[courseCode]?.sections?.length > 0 ? (
       <Box sx={{ display: 'flex' }}>
-        <FormControl sx={{ width: 'fit-content' }}>
+        <FormControl sx={{ minWidth: 160, maxWidth: 160 }} size={'small'}>
           <Select
             id="section-select"
             value={lecture}
@@ -128,7 +128,7 @@ export default function UserCourseSectionSelect({ userCourse }) {
     );
     return searchData && searchData[courseCode]?.tutorials?.length > 0 ? (
       <Box sx={{ display: 'flex' }}>
-        <FormControl>
+        <FormControl sx={{ minWidth: 160, maxWidth: 160 }} size={'small'}>
           <Select
             id="tutorial-select"
             value={tutorial}
@@ -199,15 +199,17 @@ export default function UserCourseSectionSelect({ userCourse }) {
           No courses yet. Start by adding a course!
         </Typography>
       )}
-      <div ref={endRef} />
-      <Button
+      <LoadingButton
+        loading={loading}
+        variant={'contained'}
         sx={{ textTransform: 'capitalize' }}
         onClick={() => {
+          setIsLoading(true);
           updateTimetable(socket, null, true);
         }}
       >
         Clear all sections
-      </Button>
+      </LoadingButton>
     </Box>
   );
 }
