@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -14,10 +11,11 @@ import {
   deleteFavTimetable,
   getFavTimetable,
 } from 'calendar/api/sideMenuApi';
-// import Card from '@mui/material/Card';
-// import CardContent from '@mui/material/CardContent';
-// import CardActionArea from '@mui/material/CardActionArea';
-import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardActionArea from '@mui/material/CardActionArea';
+import Stack from '@mui/material/Stack';
+import CardActions from '@mui/material/CardActions';
 import useSocket from 'context/socket';
 import FadeContent from 'react-fade-in';
 import { FadeIn } from 'react-slide-fade-in';
@@ -25,11 +23,11 @@ import { FadeIn } from 'react-slide-fade-in';
 const GenerateScreen = ({
   handleViewChange,
   generatedTimetable,
+  timetableIndex,
   setTimetableIndex,
 }) => {
-  const [timetableShow, setTimetableShow] = useState([]);
   const [favTimetable, setFavTimetable] = useState();
-  const [generateTime, setGenerateTime] = useState(0);
+  const [generateTime, setGenerateTime] = useState();
   const { socket } = useSocket();
 
   useEffect(() => {
@@ -55,14 +53,6 @@ const GenerateScreen = ({
     return () => socket.off('get fav timetable');
   }, []);
 
-  const handleExpandTimetable = (i) => {
-    if (timetableShow.includes(i)) {
-      setTimetableShow(timetableShow.filter((n) => n !== i));
-    } else {
-      setTimetableShow([...timetableShow, i]);
-    }
-  };
-
   const handleAddFavourite = (tb) => {
     console.log(tb);
     // favTimetable && console.log(favTimetable);
@@ -76,7 +66,10 @@ const GenerateScreen = ({
   return (
     <FadeIn from="right" positionOffset={200} durationInMilliseconds={500}>
       <Box mt={2} sx={{ m: 3 }}>
-        <Typography variant="h5" sx={{ display: 'flex', textAlign: 'start' }}>
+        <Typography
+          variant="h5"
+          sx={{ display: 'flex', textAlign: 'start', alignItems: 'center' }}
+        >
           Generated Timetables
           <IconButton
             sx={{
@@ -90,55 +83,63 @@ const GenerateScreen = ({
         <FadeContent delay={100} transitionDuration={400}>
           <Typography textAlign={'start'}>
             {' '}
-            {`Generated ${
-              generatedTimetable && generatedTimetable.length
-            } timetables in ${generateTime} seconds`}
+            {generateTime &&
+              `Generated ${
+                generatedTimetable && generatedTimetable.length
+              } timetables in ${generateTime} seconds`}
           </Typography>
           {generatedTimetable ? (
             generatedTimetable.map((timetable, i) => (
-              <Box key={i}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Button onClick={() => setTimetableIndex(i)}>
-                    <Typography>Timetable {i}</Typography>
-                  </Button>
-                  <Box sx={{ marginLeft: 'auto' }}>
-                    <IconButton
-                      onClick={() => {
-                        handleExpandTimetable(i);
-                      }}
-                    >
-                      {timetableShow.includes(i) ? (
-                        <ExpandLess />
-                      ) : (
-                        <ExpandMore />
-                      )}
-                    </IconButton>
-                    <IconButton onClick={() => handleAddFavourite(timetable)}>
-                      {favTimetable && favTimetable.includes(timetable) ? (
-                        <FavoriteIcon />
-                      ) : (
-                        <FavoriteBorderIcon />
-                      )}
-                    </IconButton>
-                  </Box>
-                </Box>
-                <Collapse in={timetableShow.includes(i)}>
-                  {timetable.map((course) => (
-                    <Box
-                      key={course.courseCode}
-                      sx={{ textAlign: 'start', ml: 1 }}
-                    >
-                      <Typography sx={{ ml: 1 }}>
-                        {course.courseCode}
-                      </Typography>
-                      <Typography sx={{ ml: 3 }}>
-                        {course.section.sectionCode}
-                      </Typography>
-                      <Typography sx={{ ml: 3 }}>{course.tutorial}</Typography>
+              <Card
+                sx={{
+                  my: 2,
+                  border:
+                    timetableIndex === i
+                      ? '2px solid black'
+                      : '2px solid white',
+                  transition: (theme) =>
+                    theme.transitions.create('border', {
+                      easing: theme.transitions.easing.easeInOut,
+                      duration: 200,
+                    }),
+                }}
+                key={i}
+              >
+                <CardActionArea
+                  onClick={() => {
+                    setTimetableIndex(i);
+                  }}
+                >
+                  <CardContent sx={{ pt: 1, pb: 0 }}>
+                    <Box>
+                      {timetable.map((course) => (
+                        <Box
+                          key={course.courseCode}
+                          sx={{ textAlign: 'start' }}
+                        >
+                          <Stack direction={'row'}>
+                            <Typography sx={{}}>{course.courseCode}</Typography>
+                            <Typography sx={{ ml: 'auto' }}>
+                              {course.section.sectionCode}
+                            </Typography>
+                            <Typography>{course.tutorial}</Typography>
+                          </Stack>
+                        </Box>
+                      ))}
                     </Box>
-                  ))}
-                </Collapse>
-              </Box>
+                  </CardContent>
+                </CardActionArea>
+
+                <CardActions sx={{ my: 0, py: 0 }}>
+                  <IconButton onClick={() => handleAddFavourite(timetable)}>
+                    {favTimetable && favTimetable.includes(timetable) ? (
+                      <FavoriteIcon />
+                    ) : (
+                      <FavoriteBorderIcon />
+                    )}
+                  </IconButton>
+                </CardActions>
+              </Card>
             ))
           ) : (
             <Typography sx={{ textAlign: 'start' }}>

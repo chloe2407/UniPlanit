@@ -20,15 +20,12 @@ const Calendar = () => {
   const [view, setView] = useState('start');
   const { setMsg } = useFeedback();
   const { socket } = useSocket();
-
-  // const matchSm = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   const matchMd = useMediaQuery((theme) => theme.breakpoints.down('md'));
 
-  const drawerWidth = matchMd ? 95 : 25;
+  const drawerWidth = matchMd ? 90 : 25;
 
   useEffect(() => {
     socket.on('get generated timetable', (timetable) => {
-      console.log(timetable);
       if (timetable?.length > 0) {
         setGenerateTimetable(timetable);
         setTimetableIndex(0);
@@ -90,19 +87,21 @@ const Calendar = () => {
         />
       </Drawer>
       <OptionTab handleOpenDrawer={handleOpenDrawer} openDrawer={openDrawer} />
-      <WeekView
-        sx={{
-          marginLeft: openDrawer ? `${drawerWidth}vw` : 0,
-          transition: (theme) =>
-            theme.transitions.create('margin', {
-              easing: theme.transitions.easing.easeInOut,
-              duration: 225,
-            }),
-        }}
-        buildTimetable={buildTimetable}
-        generatedTimetable={generatedTimetable}
-        timetableIndex={timetableIndex}
-      />
+      {((matchMd && !openDrawer) || !matchMd) && (
+        <WeekView
+          sx={{
+            marginLeft: openDrawer ? `${drawerWidth}vw` : 0,
+            transition: (theme) =>
+              theme.transitions.create('margin', {
+                easing: theme.transitions.easing.easeInOut,
+                duration: 225,
+              }),
+          }}
+          buildTimetable={buildTimetable}
+          generatedTimetable={generatedTimetable}
+          timetableIndex={timetableIndex}
+        />
+      )}
     </Box>
   );
 };
