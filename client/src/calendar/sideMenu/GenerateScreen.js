@@ -1,116 +1,143 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import Grid from '@mui/material/Grid';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import {
+  getGenerateTimetable,
+  addFavTimetable,
+  deleteFavTimetable,
+  getFavTimetable,
+} from 'calendar/api/sideMenuApi';
+// import Card from '@mui/material/Card';
+// import CardContent from '@mui/material/CardContent';
+// import CardActionArea from '@mui/material/CardActionArea';
+import Button from '@mui/material/Button';
+import useSocket from 'context/socket';
+import FadeContent from 'react-fade-in';
+import { FadeIn } from 'react-slide-fade-in';
 
-const GenerateScreen = ({ handleViewChange }) => {
-  const [demo, setDemo] = useState([
-    {
-      more: false,
-      index: 1,
-      courses: [
-        { index: 1, code: 'csc', lec: '101', tut: '111' },
-        { index: 2, code: 'csc', lec: '101', tut: '111' },
-      ],
-    },
-    {
-      more: false,
-      index: 2,
-      courses: [{ index: 1, code: 'csc', lec: '101', tut: '111' }],
-    },
-    {
-      more: false,
-      index: 3,
-      courses: [{ index: 1, code: 'csc', lec: '101', tut: '111' }],
-    },
-  ]);
-  const handleClick = (index) => {
-    setDemo(
-      demo.map((plan) => {
-        if (index === plan.index) {
-          return { ...plan, more: !plan.more };
-        } else {
-          return plan;
-        }
-      })
-    );
+const GenerateScreen = ({
+  handleViewChange,
+  generatedTimetable,
+  setTimetableIndex,
+}) => {
+  const [timetableShow, setTimetableShow] = useState([]);
+  const [favTimetable, setFavTimetable] = useState();
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    getGenerateTimetable(socket);
+  }, []);
+
+  useEffect(() => {
+    getFavTimetable(socket);
+  }, []);
+
+  useEffect(() => {
+    socket.on('get fav timetable', (tb) => {
+      console.log(tb);
+      setFavTimetable(tb);
+    });
+    return () => socket.off('get fav timetable');
+  }, []);
+
+  const handleExpandTimetable = (i) => {
+    if (timetableShow.includes(i)) {
+      setTimetableShow(timetableShow.filter((n) => n !== i));
+    } else {
+      setTimetableShow([...timetableShow, i]);
+    }
   };
-  const handleFavourite = () => {};
+
+  const handleAddFavourite = (tb) => {
+    console.log(tb);
+    // favTimetable && console.log(favTimetable);
+    // if (favTimetable.includes(tb)) {
+    //   deleteFavTimetable(socket, tb)
+    // } else {
+    //   addFavTimetable(socket, tb);
+    // }
+  };
+
   return (
-    <Box mt={2} sx={{ overflow: 'auto' }}>
-      <Typography
-        variant="h5"
-        sx={{ display: 'flex', justifyContent: 'start', marginLeft: 3 }}
-      >
-        Possible plans
-      </Typography>
-      <List sx={{ maxHeight: '90vh', overflow: 'auto' }}>
-        {demo.map((plan) => (
-          <ListItem key={plan.index}>
-            <Button sx={{ border: 1, width: '20vw' }}>
-              <Grid container>
-                <Grid item xs={12}>
-                  <Typography>Plan number {plan.index}</Typography>
-                  <IconButton
-                    onClick={() => {
-                      handleClick(plan.index);
-                    }}
-                  >
-                    {plan.more ? <ExpandLess /> : <ExpandMore />}
-                  </IconButton>
-                  <Button
-                    onClick={() => {
-                      handleFavourite();
-                    }}
-                    sx={{ border: 1 }}
-                  >
-                    {' '}
-                    Add to favourites
+    <FadeIn from="right" positionOffset={200} durationInMilliseconds={500}>
+      <Box mt={2} sx={{ m: 3 }}>
+        <Typography
+          variant="h5"
+          sx={{ display: 'flex', textAlign: 'start', mb: 1 }}
+        >
+          Generated Timetables
+          <IconButton
+            sx={{
+              ml: 'auto ',
+            }}
+            onClick={() => handleViewChange(null, 'start')}
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
+        </Typography>
+        <FadeContent delay={100} transitionDuration={400}>
+          {generatedTimetable ? (
+            generatedTimetable.map((timetable, i) => (
+              <Box key={i}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Button onClick={() => setTimetableIndex(i)}>
+                    <Typography>Timetable {i}</Typography>
                   </Button>
-                </Grid>
-                <Grid item xs={12}>
-                  <Collapse in={plan.more} timeout="auto" unmountonexit>
-                    <List sx={{ maxHeight: '30vh', overflow: 'auto' }}>
-                      {plan.courses.map((course) => (
-                        <>
-                          <ListItem key={course.index}>
-                            <Typography>{course.code}</Typography>
-                          </ListItem>
-                          <ListItem>
-                            <List>
-                              <ListItem>
-                                <Typography>{course.lec}</Typography>
-                              </ListItem>
-                              <ListItem>
-                                <Typography>{course.tut}</Typography>
-                              </ListItem>
-                            </List>
-                          </ListItem>
-                        </>
-                      ))}
-                    </List>
-                  </Collapse>
-                </Grid>
-              </Grid>
-              {/* <Button onClick={() => {}}>confirm</Button> */}
-            </Button>
-          </ListItem>
-        ))}
-      </List>
-      <Button
-        variant={'contained'}
-        onClick={() => handleViewChange(null, 'select')}
-      >
-        Go Back
-      </Button>
-    </Box>
+                  <Box sx={{ marginLeft: 'auto' }}>
+                    <IconButton
+                      onClick={() => {
+                        handleExpandTimetable(i);
+                      }}
+                    >
+                      {timetableShow.includes(i) ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      )}
+                    </IconButton>
+                    <IconButton onClick={() => handleAddFavourite(timetable)}>
+                      {favTimetable && favTimetable.includes(timetable) ? (
+                        <FavoriteIcon />
+                      ) : (
+                        <FavoriteBorderIcon />
+                      )}
+                    </IconButton>
+                  </Box>
+                </Box>
+                <Collapse in={timetableShow.includes(i)}>
+                  {timetable.map((course) => (
+                    <Box
+                      key={course.courseCode}
+                      sx={{ textAlign: 'start', ml: 1 }}
+                    >
+                      <Typography sx={{ ml: 1 }}>
+                        {course.courseCode}
+                      </Typography>
+                      <Typography sx={{ ml: 3 }}>
+                        {course.section.sectionCode}
+                      </Typography>
+                      <Typography sx={{ ml: 3 }}>{course.tutorial}</Typography>
+                    </Box>
+                  ))}
+                </Collapse>
+              </Box>
+            ))
+          ) : (
+            <Typography sx={{ textAlign: 'start' }}>
+              {' '}
+              No generated timetables found! Try generating a new one
+            </Typography>
+          )}
+        </FadeContent>
+      </Box>
+    </FadeIn>
   );
 };
 

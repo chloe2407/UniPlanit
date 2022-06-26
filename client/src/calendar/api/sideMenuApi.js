@@ -1,4 +1,4 @@
-import { axios } from '../../lib/axios';
+import { axios } from 'lib/axios';
 
 export const getUser = (userId) => {
   return axios.get(`users/${userId}`).then((data) => Promise.resolve(data));
@@ -52,6 +52,22 @@ export const makeNewTimetable = (socket, courses) => {
   socket.emit('build timetable', courses);
 };
 
-export const updateTimetable = (socket, course) => {
-  socket.emit('update timetable', course);
+export const updateTimetable = (socket, course, clear) => {
+  socket.emit('update timetable', course, clear);
+};
+
+export const getGenerateTimetable = (socket) => {
+  socket.emit('get generated timetable');
+};
+
+export const addFavTimetable = (socket, tb) => {
+  socket.emit('add fav timetable', tb);
+};
+
+export const deleteFavTimetable = (socket, tb) => {
+  socket.emit('delete fav timetable', tb);
+};
+
+export const getFavTimetable = (socket) => {
+  socket.emit('get fav timetable');
 };

@@ -16,6 +16,13 @@ const theme = createTheme({
     fontFamily: ['Lato'],
   },
   components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'capitalize',
+        },
+      },
+    },
     MuiButtonBase: {
       defaultProps: {
         disableRipple: true,

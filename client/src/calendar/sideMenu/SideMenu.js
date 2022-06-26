@@ -12,12 +12,11 @@ import GenerateScreen from 'calendar/sideMenu/GenerateScreen';
 
 export default function SideMenu({
   drawerWidth,
-  handleOpenDrawer,
-  openDrawer,
   buildTimetable,
   generatedTimetable,
   view,
   handleViewChange,
+  setTimetableIndex,
 }) {
   const [userCourse, setUserCourse] = useState();
   const [tab, setTab] = useState(0);
@@ -46,34 +45,32 @@ export default function SideMenu({
       }}
     >
       <Tabs variant="scrollable" value={tab} onChange={handleTabChange}>
-        <Tab value={0} label={'Select'} />
+        <Tab value={0} label={'Build'} />
         <Tab value={1} label={'Favorites'} />
       </Tabs>
       <TabPanel value={tab} index={0}>
-        <>
-          {view === 'start' ? (
-            <SideMenuStart handleViewChange={handleViewChange} />
-          ) : view === 'select' ? (
-            <CourseSelection
-              userCourse={userCourse}
-              openDrawer={openDrawer}
-              handleOpenDrawer={handleOpenDrawer}
-              handleTabChange={handleTabChange}
-              handleViewChange={handleViewChange}
-            />
-          ) : view === 'build' ? (
-            <MakeTimetable
-              userCourse={userCourse}
-              openDrawer={openDrawer}
-              buildTimetable={buildTimetable}
-              generatedTimetable={generatedTimetable}
-              handleOpenDrawer={handleOpenDrawer}
-              handleViewChange={handleViewChange}
-            />
-          ) : (
-            <GenerateScreen handleViewChange={handleViewChange} />
-          )}
-        </>
+        {view === 'start' ? (
+          <SideMenuStart handleViewChange={handleViewChange} />
+        ) : view === 'select' ? (
+          <CourseSelection
+            userCourse={userCourse}
+            handleTabChange={handleTabChange}
+            handleViewChange={handleViewChange}
+          />
+        ) : view === 'build' ? (
+          <MakeTimetable
+            userCourse={userCourse}
+            buildTimetable={buildTimetable}
+            generatedTimetable={generatedTimetable}
+            handleViewChange={handleViewChange}
+          />
+        ) : (
+          <GenerateScreen
+            handleViewChange={handleViewChange}
+            generatedTimetable={generatedTimetable}
+            setTimetableIndex={setTimetableIndex}
+          />
+        )}
       </TabPanel>
       <TabPanel value={tab} index={1}></TabPanel>
     </Box>

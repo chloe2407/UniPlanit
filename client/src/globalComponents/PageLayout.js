@@ -4,9 +4,11 @@ import { useState } from 'react';
 import ChatWidget from 'chat/ChatWidget';
 import ErrorFallback from 'globalComponents/error';
 import { ErrorBoundary } from 'react-error-boundary';
+import useFeedback from 'context/feedback';
 
 export default function Layout() {
   const [chats, setChats] = useState([]);
+  const { SnackbarMsg } = useFeedback();
   const handleShowChat = (friend) => {
     if (!chats.includes(friend)) setChats([...chats, friend]);
   };
@@ -26,6 +28,7 @@ export default function Layout() {
           ))
         : null}
       <Outlet />
+      {SnackbarMsg}
     </ErrorBoundary>
   );
 }

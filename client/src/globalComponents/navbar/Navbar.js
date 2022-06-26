@@ -20,6 +20,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import CloseIcon from '@mui/icons-material/Close';
 import useSocket from 'context/socket';
+import useFeedback from 'context/feedback';
 import {
   getFriend,
   getFriendRequest,
@@ -33,11 +34,9 @@ export default function Navbar({ handleShowChat }) {
   const [friendRequest, setFriendRequest] = useState();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const matchMd = useMediaQuery((theme) => theme.breakpoints.up('md'));
-  const [error, setError] = useState();
-  const [success, setSuccess] = useState();
-  const openSuccess = Boolean(success);
-  const openWarning = Boolean(error);
   const { socket } = useSocket();
+  const { setMsg } = useFeedback();
+
   // fake friend data
   // if logged in, request for friend info
   const navigate = useNavigate();
@@ -46,16 +45,6 @@ export default function Navbar({ handleShowChat }) {
     getFriendRequest(socket);
     getFriend(socket);
   }, []);
-
-  // useEffect(() => {
-  //   socket.on('received friend request', () => {
-  //     console.log('Hello from navbar')
-  //     getFriendRequest(socket)
-  //   })
-  //   return () => {
-  //     socket.off('received friend request')
-  //   }
-  // }, [])
 
   useEffect(() => {
     socket.on('get friend request', (friendRequest) => {
@@ -68,7 +57,13 @@ export default function Navbar({ handleShowChat }) {
 
   useEffect(() => {
     socket.on('remove friend', (msg) => {
-      handleSuccessMsg(msg);
+      setMsg({
+        sx: { height: '15vh' },
+        msg: msg,
+        snackVariant: 'success',
+        anchorOrigin: { vertical: 'top', horizontal: 'right' },
+        autoHideDuration: 3000,
+      });
       getFriend(socket);
     });
     return () => {
@@ -78,7 +73,13 @@ export default function Navbar({ handleShowChat }) {
 
   useEffect(() => {
     socket.on('accepted friend', (msg) => {
-      handleSuccessMsg(msg);
+      setMsg({
+        sx: { height: '15vh' },
+        msg: msg,
+        snackVariant: 'success',
+        anchorOrigin: { vertical: 'top', horizontal: 'right' },
+        autoHideDuration: 3000,
+      });
       getFriend(socket);
     });
     return () => {
@@ -109,28 +110,6 @@ export default function Navbar({ handleShowChat }) {
     setAnchorElNav(null);
   };
 
-  const handleSnackbarClose = (e, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setError(null);
-    setSuccess(null);
-  };
-
-  const handleSuccessMsg = (msg) => {
-    setSuccess(msg);
-  };
-
-  const handleErrorMsg = (msg) => {
-    setError(msg);
-  };
-
-  const closeButton = (
-    <IconButton size="small" color="inherit" onClick={handleSnackbarClose}>
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
-
   const NavProfiles = () => {
     if (matchMd) {
       if (user) {
@@ -142,12 +121,7 @@ export default function Navbar({ handleShowChat }) {
               ml: 'auto',
             }}
           >
-            <AddFriend
-              sx={{ p: 1 }}
-              friendRequest={friendRequest}
-              handleErrorMsg={handleErrorMsg}
-              handleSuccessMsg={handleSuccessMsg}
-            />
+            <AddFriend sx={{ p: 1 }} friendRequest={friendRequest} />
             <Divider
               style={{ backgroundColor: 'white' }}
               sx={{ m: 1 }}
@@ -208,7 +182,6 @@ export default function Navbar({ handleShowChat }) {
 
   const NavMenu = () => {
     // NavMenu changes based on auth
-
     const NavItems = user
       ? [
           <StyledMenuItem key="home" onClick={() => handleMenuClick('/')}>
@@ -308,50 +281,6 @@ export default function Navbar({ handleShowChat }) {
           }
         </Toolbar>
       </AppBar>
-      <Snackbar
-        sx={{ height: '15vh' }}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={openWarning}
-        onClose={handleSnackbarClose}
-        action={
-          <>
-            <IconButton
-              size="small"
-              color="inherit"
-              onClick={handleSnackbarClose}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </>
-        }
-        autoHideDuration={2000}
-      >
-        <Alert action={closeButton} severity="error" sx={{ width: '100%' }}>
-          {error}
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        sx={{ height: '15vh' }}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={openSuccess}
-        onClose={handleSnackbarClose}
-        action={
-          <>
-            <IconButton
-              size="small"
-              color="inherit"
-              onClick={handleSnackbarClose}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </>
-        }
-        autoHideDuration={2000}
-      >
-        <Alert action={closeButton} severity="success" sx={{ width: '100%' }}>
-          {success}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }

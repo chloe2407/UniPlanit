@@ -45,15 +45,18 @@ const { sendPrivateMessage } = require('./handlers/messageHandler')(io);
 const {
   getUserCourse,
   addUserCourse,
-  lockUserCourse,
+  // lockUserCourse,
   deleteUserCourse,
-  lockCourseSection,
+  // lockCourseSection,
   deleteCourseSection,
   generateTimetable,
+  getFavTimetable,
+  deleteFavTimetable,
   getBuildTimetable,
   buildTimetable,
   updateTimetable,
   getGeneratedTimetable,
+  addFavTimetable,
 } = require('./handlers/courseHandler')(io);
 
 dayjs.extend(duration);
@@ -253,18 +256,18 @@ io.on('connection', async (socket) => {
   socket.on('get friend request', getFriendRequest);
   socket.on('get user course', getUserCourse);
   socket.on('add user course', addUserCourse);
-  socket.on('lock course', lockUserCourse);
+  // socket.on('lock course', lockUserCourse);
+  // socket.on('lock section', lockCourseSection);
   socket.on('delete course', deleteUserCourse);
-  socket.on('lock section', lockCourseSection);
   socket.on('delete section', deleteCourseSection);
   socket.on('get generated timetable', getGeneratedTimetable);
   socket.on('get build timetable', getBuildTimetable);
   socket.on('build timetable', buildTimetable);
   socket.on('update timetable', updateTimetable);
   socket.on('generate timetable', generateTimetable);
-  socket.on('user status', (msg) => {
-    console.log(msg);
-  });
+  socket.on('add fav timetable', addFavTimetable);
+  socket.on('get fav timetable', getFavTimetable);
+  socket.on('delete fav timetable', deleteFavTimetable);
 });
 
 io.on('disconnect', (socket) => {
