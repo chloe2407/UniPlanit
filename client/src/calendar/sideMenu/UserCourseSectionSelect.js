@@ -10,7 +10,6 @@ import useSocket from 'context/socket';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { updateTimetable, getMultipleCourse } from 'calendar/api/sideMenuApi';
 
@@ -23,12 +22,13 @@ export default function UserCourseSectionSelect({ userCourse }) {
 
   // turn user course into objects
 
-  useEffect(() => {
-    socket.on('update timetable', () => {
-      setIsLoading(false);
-    });
-    return () => socket.off('update timetable');
-  });
+  // useEffect(() => {
+  //   socket.on('update timetable', (timetable) => {
+  //     setIsLoading(false);
+  //   });
+  //   return () => socket.off('update timetable');
+  // });
+
   useEffect(() => {
     if (userCourse) {
       const temp = {};
@@ -200,7 +200,7 @@ export default function UserCourseSectionSelect({ userCourse }) {
         </Typography>
       )}
       <LoadingButton
-        loading={loading}
+        // loading={loading}
         variant={'contained'}
         sx={{ textTransform: 'capitalize' }}
         onClick={() => {

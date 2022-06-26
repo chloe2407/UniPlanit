@@ -103,7 +103,7 @@ module.exports = (io) => {
     socket.emit('get build timetable', user.currentTimetable);
   };
 
-  const buildTimetable = async function (userCourse, reset) {
+  const buildTimetable = async function (userCourse) {
     socket = this;
     const user = await User.findById(socket.userId);
     if (userCourse && userCourse.length > 0) {
