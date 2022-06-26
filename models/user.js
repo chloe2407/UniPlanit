@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     lowercase: true,
     // add more university here
-    enum: ['University of Toronto, St. George'],
+    enum: ['utsg'],
   },
   events: [
     {
