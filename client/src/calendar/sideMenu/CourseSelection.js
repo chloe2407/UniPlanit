@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import SearchBar from 'calendar/sideMenu/SearchBar';
-import UserCourse from 'calendar/sideMenu/UserCourse';
+import SearchBar from 'calendar/sideMenu/components/SearchBar';
+import UserCourse from 'calendar/sideMenu/components/UserCourse';
 import FadeContent from 'react-fade-in';
 import SideMenuTitle from 'calendar/sideMenu/components/SideMenuTitle';
 import { FadeIn } from 'react-slide-fade-in';

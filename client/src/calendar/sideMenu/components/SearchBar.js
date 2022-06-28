@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import courseData from '../data/course_and_title.json';
+import courseData from 'calendar/data/course_and_title.json';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { createFilterOptions } from '@mui/material/Autocomplete';
@@ -12,6 +12,7 @@ import FormGroup from '@mui/material/FormGroup';
 import Radio from '@mui/material/Radio';
 import LoadingButton from '@mui/lab/LoadingButton';
 import RadioGroup from '@mui/material/RadioGroup';
+import ClipLoader from 'react-spinners/ClipLoader';
 import useSocket from 'context/socket';
 import {
   getCourse,
@@ -20,7 +21,6 @@ import {
   makeNewTimetable,
 } from 'calendar/api/sideMenuApi';
 import useFeedback from 'context/feedback';
-import useCalendar from 'context/calendar';
 
 export default function SearchBar({ userCourse }) {
   const [input, setInput] = useState({
@@ -34,7 +34,6 @@ export default function SearchBar({ userCourse }) {
   const { socket } = useSocket();
   const bottomRef = useRef();
   const { setMsg } = useFeedback();
-  const { setView } = useCalendar();
 
   const filterOptions = createFilterOptions({
     limit: 15,
@@ -162,12 +161,7 @@ export default function SearchBar({ userCourse }) {
         isLoading ? (
           <>
             <Container sx={{ transform: 'scale(0.6)' }}>
-              <img
-                alt={'Loading'}
-                className="ld ld-bounce"
-                style={{ animationDuration: '1s' }}
-                src="./calendar-loader.png"
-              />
+              <ClipLoader />
             </Container>
           </>
         ) : null
