@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import useAuth from '../context/Auth';
+import useAuth from 'context/auth';
 import { Navigate, useLocation } from 'react-router-dom';
 
 export default function RequireAuth({ children }) {

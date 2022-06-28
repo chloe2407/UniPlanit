@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
 import { Typography } from '@mui/material';
-import useAuth from '../../context/Auth';
+import useAuth from 'context/auth';
 import InfoBox from './InfoBox/InfoBox';
 import Button from '@mui/material/Button';
 

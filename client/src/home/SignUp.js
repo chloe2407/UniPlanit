@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Autocomplete from '@mui/material/Autocomplete';
-import useAuth from 'context/Auth';
+import useAuth from 'context/auth';
 import { useImg } from 'hooks/api/hooks';
 import Loading from 'globalComponents/Loading';
 

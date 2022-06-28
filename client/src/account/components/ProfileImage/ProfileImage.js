@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Avatar, Typography } from '@mui/material';
 import { orange } from '@mui/material/colors';
 import { height } from '@mui/system';
-import useAuth from '../../../context/Auth';
+import useAuth from 'context/auth';
 import './ProfileImage.css';
 import { Box } from '@mui/system';
 import { Grid } from '@mui/material';
 import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
-import initialToColor from '../../../globalComponents/InitialToColor';
+import initialToColor from 'globalComponents/InitialToColor';
 import FileUpload from './FileUpload';
 
 const ProfileImage = ({ paramUser }) => {

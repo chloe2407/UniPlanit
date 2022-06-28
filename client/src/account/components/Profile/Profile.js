@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import useAuth from '../../../context/Auth';
+import useAuth from 'context/auth';
 
 const Profile = () => {
   const { user } = useAuth();
