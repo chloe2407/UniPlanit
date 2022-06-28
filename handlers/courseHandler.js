@@ -8,6 +8,7 @@ module.exports = (io) => {
       (c) => c.courseCode !== course.courseCode
     );
     user.courses.push(course);
+    console.log(user.courses);
     await user.save();
     io.to(socket.userId).emit('get user course', user.courses);
   };
@@ -38,17 +39,15 @@ module.exports = (io) => {
     const socket = this;
     const user = await User.findById(socket.userId);
     user.savedTimetables.push(tb);
-    // console.log(user.savedTimetables)
-    // await user.save()
+    await user.save();
     io.to(socket.userId).emit('get fav timetable', user.savedTimetables);
   };
 
-  const deleteFavTimetable = async function (tb) {
+  const deleteFavTimetable = async function (favTimetable) {
     const socket = this;
     const user = await User.findById(socket.userId);
-    user.savedTimetables = user.savedTimetables.filter((t) => t !== tb);
-    console.log(user.savedTimetables);
-    // await user.save()
+    user.savedTimetables = favTimetable;
+    await user.save();
     io.to(socket.userId).emit('get fav timetable', user.savedTimetables);
   };
 

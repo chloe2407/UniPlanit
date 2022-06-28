@@ -112,7 +112,6 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
     type: String,
     lowercase: true,
     enum: ['uoft'],
-    required: true,
   },
   term: {
     type: String,
