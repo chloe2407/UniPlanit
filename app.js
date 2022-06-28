@@ -214,15 +214,11 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error.jade', { title: 'your_page_title' });
-  // redirect toerror page in front
-  console.error(err.message);
-  res.status(err.status || 500);
+  // redirect to home page
+  res.redirect('localhost:3000');
 });
 
-// socket io for live messaging
+// socket io
 
 const wrap = (middleware) => (socket, next) =>
   middleware(socket.request, {}, next);
@@ -240,8 +236,8 @@ io.use(async (socket, next) => {
     await session.save();
     next();
   } else {
-    console.log('Not authorized');
-    next(new ExpressError('Not authorized', 401));
+    console.log('Not authenticated');
+    next(new ExpressError('Not authenticated', 401));
   }
 });
 
@@ -256,8 +252,6 @@ io.on('connection', async (socket) => {
   socket.on('get friend request', getFriendRequest);
   socket.on('get user course', getUserCourse);
   socket.on('add user course', addUserCourse);
-  // socket.on('lock course', lockUserCourse);
-  // socket.on('lock section', lockCourseSection);
   socket.on('delete course', deleteUserCourse);
   socket.on('delete section', deleteCourseSection);
   socket.on('get generated timetable', getGeneratedTimetable);

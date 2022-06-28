@@ -3,133 +3,183 @@ const User = require('../models/user');
 module.exports = (io) => {
   const addUserCourse = async function (course) {
     const socket = this;
-    const user = await User.findById(socket.userId);
-    user.courses = user.courses.filter(
-      (c) => c.courseCode !== course.courseCode
-    );
-    user.courses.push(course);
-    await user.save();
-    io.to(socket.userId).emit('get user course', user.courses);
+    try {
+      const user = await User.findById(socket.userId);
+      user.courses = user.courses.filter(
+        (c) => c.courseCode !== course.courseCode
+      );
+      user.courses.push(course);
+      await user.save();
+      io.to(socket.userId).emit('get user course', user.courses);
+    } catch (e) {
+      next(new Error(e.message));
+    }
   };
 
   const getUserCourse = async function () {
     const socket = this;
-    const user = await User.findById(socket.userId);
-    io.to(socket.userId).emit('get user course', user.courses);
+    try {
+      const user = await User.findById(socket.userId);
+      io.to(socket.userId).emit('get user course', user.courses);
+    } catch (e) {
+      next(new Error(e.message));
+    }
   };
 
   const deleteUserCourse = async function (courseCode) {
     const socket = this;
-    const user = await User.findById(socket.userId);
-    user.courses = user.courses.filter(
-      (course) => course.courseCode !== courseCode
-    );
-    await user.save();
-    io.to(socket.userId).emit('get user course', user.courses);
+    try {
+      const user = await User.findById(socket.userId);
+      user.courses = user.courses.filter(
+        (course) => course.courseCode !== courseCode
+      );
+      await user.save();
+      io.to(socket.userId).emit('get user course', user.courses);
+    } catch (e) {
+      next(new Error(e.message));
+    }
   };
 
   const getFavTimetable = async function () {
     const socket = this;
-    const user = await User.findById(socket.userId);
-    io.to(socket.userId).emit('get fav timetable', user.savedTimetables);
+    try {
+      const user = await User.findById(socket.userId);
+      io.to(socket.userId).emit('get fav timetable', user.savedTimetables);
+    } catch (e) {
+      next(new Error(e.message));
+    }
   };
 
   const addFavTimetable = async function (tb) {
     const socket = this;
-    const user = await User.findById(socket.userId);
-    user.savedTimetables.push(tb);
-    await user.save();
-    io.to(socket.userId).emit('get fav timetable', user.savedTimetables);
+    try {
+      const user = await User.findById(socket.userId);
+      user.savedTimetables.push(tb);
+      await user.save();
+      io.to(socket.userId).emit('get fav timetable', user.savedTimetables);
+    } catch (e) {
+      next(new Error(e.message));
+    }
   };
 
   const deleteFavTimetable = async function (favTimetable) {
     const socket = this;
-    const user = await User.findById(socket.userId);
-    user.savedTimetables = favTimetable;
-    await user.save();
-    io.to(socket.userId).emit('get fav timetable', user.savedTimetables);
+    try {
+      const user = await User.findById(socket.userId);
+      user.savedTimetables = favTimetable;
+      await user.save();
+      io.to(socket.userId).emit('get fav timetable', user.savedTimetables);
+    } catch (e) {
+      next(new Error(e.message));
+    }
   };
 
   const deleteCourseSection = async function (courseCode, type) {
     const socket = this;
     const user = await User.findById(socket.userId);
-    const course = user.courses.filter((c) => c.courseCode === courseCode)[0];
-    if (type === 'section') {
-      course.section = undefined;
-    } else {
-      course.tutorial = undefined;
+    try {
+      const course = user.courses.filter((c) => c.courseCode === courseCode)[0];
+      if (type === 'section') {
+        course.section = undefined;
+      } else {
+        course.tutorial = undefined;
+      }
+      await user.save();
+      io.to(socket.userId).emit('get user course', user.courses);
+    } catch (e) {
+      next(new Error(e.message));
     }
-    await user.save();
-    io.to(socket.userId).emit('get user course', user.courses);
   };
 
   const getBuildTimetable = async function () {
     // returns the current work-in-progress timetable
     socket = this;
-    const user = await User.findById(socket.userId);
-    io.to(socket.userId).emit('get build timetable', user.currentTimetable);
+    try {
+      const user = await User.findById(socket.userId);
+      io.to(socket.userId).emit('get build timetable', user.currentTimetable);
+    } catch (e) {
+      next(new Error(e.message));
+    }
   };
 
   const buildTimetable = async function (userCourse) {
     socket = this;
-    const user = await User.findById(socket.userId);
-    if (userCourse && userCourse.length > 0) {
-      user.currentTimetable = userCourse.map((c) => {
-        delete c.tutorials;
-        delete c.lectures;
-        return c;
-      });
-      await user.save();
+    try {
+      const user = await User.findById(socket.userId);
+      if (userCourse && userCourse.length > 0) {
+        user.currentTimetable = userCourse.map((c) => {
+          delete c.tutorials;
+          delete c.lectures;
+          return c;
+        });
+        await user.save();
+      }
+      io.to(socket.userId).emit('get build timetable', user.currentTimetable);
+    } catch (e) {
+      next(new Error(e.message));
     }
-    io.to(socket.userId).emit('get build timetable', user.currentTimetable);
   };
 
   const updateTimetable = async function (course, clear) {
     socket = this;
-    const user = await User.findById(socket.userId);
-    if (clear) {
-      user.currentTimetable = user.currentTimetable.map((c) => {
-        c.section = null;
-        c.tutorial = null;
-        return c;
-      }, user.currentTimetable);
-    } else {
-      let index;
-      for (let i = 0; i <= user.currentTimetable.length; i++) {
-        if (user.currentTimetable[i].courseCode === course.courseCode) {
-          index = i;
-          break;
+    try {
+      const user = await User.findById(socket.userId);
+      if (clear) {
+        user.currentTimetable = user.currentTimetable.map((c) => {
+          c.section = null;
+          c.tutorial = null;
+          return c;
+        }, user.currentTimetable);
+      } else {
+        let index;
+        for (let i = 0; i <= user.currentTimetable.length; i++) {
+          if (user.currentTimetable[i].courseCode === course.courseCode) {
+            index = i;
+            break;
+          }
         }
+        user.currentTimetable[index] = course;
       }
-      user.currentTimetable[index] = course;
+      await user.save();
+      io.to(socket.userId).emit('update timetable', user.currentTimetable);
+    } catch (e) {
+      next(new Error(e.message));
     }
-    await user.save();
-    io.to(socket.userId).emit('update timetable', user.currentTimetable);
   };
 
   const getGeneratedTimetable = async function () {
     const socket = this;
     // limit to 10 time tables to send back at once
-    const user = await User.findById(socket.userId);
-    io.to(socket.userId).emit(
-      'get generated timetable',
-      user.generatedTimetables
-    );
+    try {
+      const user = await User.findById(socket.userId);
+      console.log(user.generatedTimetables);
+      io.to(socket.userId).emit(
+        'get generated timetable',
+        user.generatedTimetables
+      );
+    } catch (e) {
+      next(new Error(e.message));
+    }
   };
 
   const generateTimetable = async function (userCourse) {
     const socket = this;
-    const user = await User.findById(socket.userId);
     const start = Date.now();
-    const validSchedules = getValidSchedules(userCourse, true);
-    const end = Date.now();
-    user.generatedTimetables = validSchedules;
-    await user.save();
-    io.to(socket.userId).emit(
-      'get generated timetable',
-      user.generatedTimetables
-    );
-    io.to(socket.userId).emit('time elpased', (end - start) / 1000);
+    try {
+      const user = await User.findById(socket.userId);
+      const validSchedules = getValidSchedules(userCourse, true);
+      const end = Date.now();
+      user.generatedTimetables = validSchedules;
+      await user.save();
+      console.log(user.generatedTimetables);
+      io.to(socket.userId).emit(
+        'get generated timetable',
+        user.generatedTimetables
+      );
+      io.to(socket.userId).emit('time elpased', (end - start) / 1000);
+    } catch (e) {
+      next(new Error(e.message));
+    }
   };
 
   function getPossibleSchedules(
