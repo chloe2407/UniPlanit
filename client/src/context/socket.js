@@ -1,16 +1,15 @@
 import { io } from 'socket.io-client';
-import { createContext, useContext, useMemo, useEffect } from 'react';
+import { createContext, useContext, useMemo, useEffect, useState } from 'react';
 
 const SocketContext = createContext();
 
 export function SocketProvider({ children }) {
   const socket = io.connect();
+  const [socketError, setSocketError] = useState();
 
   useEffect(() => {
-    socket.on('connection_error', () => {
-      // socket.emit('user status', 'offline');
-      // socket.connect()
-      console.log('disconnecting');
+    socket.on('connection_error', (err) => {
+      setSocketError(err);
       socket.disconnect();
     });
     return () => socket.off('connection_error');
@@ -18,17 +17,24 @@ export function SocketProvider({ children }) {
 
   useEffect(() => {
     socket.on('disconnect', (reason) => {
-      // socket.emit('user status', 'offline');
-      console.log(reason);
-      console.log('disconnecting');
-      socket.disconnect();
-      if (reason === 'io server disconnect') {
+      switch (reason) {
+        case 'io server disconnect':
+          socket.connect();
+          break;
+        case 'transport error':
+          setSocketError('Sorry! Something went wrong with the server');
+          socket.connect();
+          break;
+        case 'transport close':
+          setSocketError('Connection closed');
+          socket.connect();
+          break;
       }
     });
     return () => socket.off('disconnect');
   }, []);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const memo = useMemo(() => ({ socket }), []);
+  const memo = useMemo(() => ({ socketError, socket }), []);
 
   return (
     <SocketContext.Provider value={memo}>{children}</SocketContext.Provider>

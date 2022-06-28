@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import useAuth from 'context/auth';
 import { Outlet } from 'react-router-dom';
+import ErrorFallback from 'globalComponents/error';
+import { ErrorBoundary } from 'react-error-boundary';
 import './App.css';
 
 function App() {
@@ -10,9 +12,11 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div className="App">
-      <Outlet />
-    </div>
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <div className="App">
+        <Outlet />
+      </div>
+    </ErrorBoundary>
   );
 }
 
