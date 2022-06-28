@@ -27,12 +27,13 @@ export default function UserCourseSectionSelect({ userCourse }) {
       setIsLoading(false);
     });
     return () => socket.off('update timetable');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (userCourse) {
       const temp = {};
-      userCourse.map((v) => {
+      userCourse.forEach((v) => {
         temp[v.courseCode] = v;
       });
       setUserCourseObj(temp);
@@ -44,7 +45,7 @@ export default function UserCourseSectionSelect({ userCourse }) {
     userCourse &&
       Promise.all(getMultipleCourse(userCourse)).then((val) => {
         const temp = {};
-        val.map((v) => {
+        val.forEach((v) => {
           temp[v.courseCode] = v;
         });
         setSearchData(temp);
@@ -84,12 +85,13 @@ export default function UserCourseSectionSelect({ userCourse }) {
     updateTimetable(socket, null, true);
   };
 
-  const SelectLecture = React.memo(({ courseCode }) => {
+  const SelectLecture = ({ courseCode }) => {
     const [lecture, setLecture] = useState(
       userCourseObj && userCourseObj[courseCode]?.section
         ? userCourseObj[courseCode].section.sectionCode
         : 'Choose a Lecture'
     );
+
     return searchData && searchData[courseCode]?.sections?.length > 0 ? (
       <Box sx={{ display: 'flex' }}>
         <FormControl sx={{ minWidth: 160, maxWidth: 160 }} size={'small'}>
@@ -123,7 +125,7 @@ export default function UserCourseSectionSelect({ userCourse }) {
     ) : (
       <Typography>No Lectures Found For This Course!</Typography>
     );
-  });
+  };
 
   const SelectTutorial = ({ courseCode }) => {
     const [tutorial, setTutorial] = useState(
@@ -167,9 +169,9 @@ export default function UserCourseSectionSelect({ userCourse }) {
   };
 
   return (
-    <Box sx={{ overflow: 'auto', m: 3, my: 1, textAlign: 'left' }}>
+    <>
       {userCourse && userCourse.length > 0 ? (
-        userCourse.map((course, i) => (
+        userCourse.map((course) => (
           <Box key={course.courseCode}>
             <Typography>{course.courseTitle}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -212,6 +214,6 @@ export default function UserCourseSectionSelect({ userCourse }) {
       >
         Clear all sections
       </LoadingButton>
-    </Box>
+    </>
   );
 }

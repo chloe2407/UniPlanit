@@ -15,7 +15,13 @@ import {
 import useSocket from 'context/socket';
 import useFeedback from 'context/feedback';
 
-const WeekView = ({ sx, generatedTimetable, timetableIndex }) => {
+const WeekView = ({
+  sx,
+  view,
+  generatedTimetable,
+  favTimetable,
+  timetableIndex,
+}) => {
   // const classes = useStyles();
   const times = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -35,19 +41,27 @@ const WeekView = ({ sx, generatedTimetable, timetableIndex }) => {
       setBuildTimetable(timetable);
     });
     return () => socket.off('update timetable');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   // parse the current timetable
   useEffect(() => {
     const days = createDay();
     // get current timetable
-    const timetable = generatedTimetable
-      ? generatedTimetable[timetableIndex]
-      : buildTimetable;
+    let timetable;
+    if (view === 'generated') {
+      timetable = generatedTimetable && generatedTimetable[timetableIndex];
+    } else if (view === 'build') {
+      timetable = buildTimetable && buildTimetable;
+    } else if (view === 'fav') {
+      timetable = favTimetable && favTimetable[timetableIndex];
+    } else {
+      timetable = undefined;
+    }
+
     timetable &&
-      timetable.map((course) => {
+      timetable.forEach((course) => {
         if (course.section) {
-          course.section.meetingTimes.map((meetingTime) => {
+          course.section.meetingTimes.forEach((meetingTime) => {
             const event = courseMeetingTimeToEvent(
               course,
               meetingTime,
@@ -58,7 +72,7 @@ const WeekView = ({ sx, generatedTimetable, timetableIndex }) => {
           });
         }
         if (course.tutorial) {
-          course.tutorial.meetingTimes.map((meetingTime) => {
+          course.tutorial.meetingTimes.forEach((meetingTime) => {
             const event = courseMeetingTimeToEvent(
               course,
               meetingTime,
@@ -70,7 +84,9 @@ const WeekView = ({ sx, generatedTimetable, timetableIndex }) => {
         }
       });
     setParsedTimetable({ ...days });
-  }, [generatedTimetable, buildTimetable, timetableIndex]);
+    console.log(days);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [generatedTimetable, buildTimetable, timetableIndex, favTimetable]);
 
   const createDay = () => {
     return days.reduce((acc, curr) => ((acc[curr] = createTime()), acc), {});

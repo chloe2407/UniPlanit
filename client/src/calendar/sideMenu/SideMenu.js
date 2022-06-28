@@ -9,6 +9,7 @@ import TabPanel from 'calendar/sideMenu/TabPanel';
 import MakeTimetable from 'calendar/sideMenu/MakeTimetable';
 import SideMenuStart from 'calendar/sideMenu/SideMenuStart';
 import GenerateScreen from 'calendar/sideMenu/GenerateScreen';
+import FavTimetable from 'calendar/sideMenu/FavTimetable';
 
 export default function SideMenu({
   drawerWidth,
@@ -18,24 +19,33 @@ export default function SideMenu({
   handleViewChange,
   timetableIndex,
   setTimetableIndex,
+  favTimetable,
 }) {
   const [userCourse, setUserCourse] = useState();
   const [tab, setTab] = useState(0);
   const { socket } = useSocket();
+
   useEffect(() => {
     getUserCourse(socket);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     socket.on('get user course', (userCourse) => {
+      console.log(userCourse);
       setUserCourse(userCourse);
     });
     return () => {
       socket.off('get user course');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const handleTabChange = (e, tab) => {
     setTab(tab);
+    if (tab === 1) {
+      handleViewChange(null, 'fav');
+    }
   };
   return (
     <Box
@@ -50,11 +60,9 @@ export default function SideMenu({
         <Tab value={1} label={'Favorites'} />
       </Tabs>
       <TabPanel value={tab} index={0}>
-        {view === 'start' ? (
-          <SideMenuStart handleViewChange={handleViewChange} />
-        ) : view === 'select' ? (
+        {view === 'select' ? (
           <CourseSelection
-            userCourse={userCourse}
+            // userCourse={userCourse}
             handleTabChange={handleTabChange}
             handleViewChange={handleViewChange}
           />
@@ -65,16 +73,25 @@ export default function SideMenu({
             generatedTimetable={generatedTimetable}
             handleViewChange={handleViewChange}
           />
-        ) : (
+        ) : view === 'generated' ? (
           <GenerateScreen
+            favTimetable={favTimetable}
             handleViewChange={handleViewChange}
             generatedTimetable={generatedTimetable}
             timetableIndex={timetableIndex}
             setTimetableIndex={setTimetableIndex}
           />
+        ) : (
+          <SideMenuStart handleViewChange={handleViewChange} />
         )}
       </TabPanel>
-      <TabPanel value={tab} index={1}></TabPanel>
+      <TabPanel value={tab} index={1}>
+        <FavTimetable
+          favTimetable={favTimetable}
+          timetableIndex={timetableIndex}
+          setTimetableIndex={setTimetableIndex}
+        />
+      </TabPanel>
     </Box>
   );
 }

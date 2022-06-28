@@ -24,7 +24,7 @@ export function SocketProvider({ children }) {
     if (reason === 'io server disconnect') {
     }
   });
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const memo = useMemo(() => ({ socket }), []);
 
   return (

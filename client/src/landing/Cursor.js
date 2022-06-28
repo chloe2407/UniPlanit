@@ -12,6 +12,7 @@ export default function Cursor({ addClass }) {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -20,6 +21,7 @@ export default function Cursor({ addClass }) {
     cursorRef.current.style.top = coords.y - 7 + 'px';
     cursorRef.current.style.left = coords.x - 7 + 'px';
     cursorRef.current.style.display = 'block';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coords]);
   const cursor = <div ref={cursorRef} />;
   return cursor;
