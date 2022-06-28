@@ -1,32 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import {
   getGenerateTimetable,
   addFavTimetable,
   deleteFavTimetable,
   getFavTimetable,
 } from 'calendar/api/sideMenuApi';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActionArea from '@mui/material/CardActionArea';
-import Stack from '@mui/material/Stack';
-import CardActions from '@mui/material/CardActions';
 import useSocket from 'context/socket';
 import FadeContent from 'react-fade-in';
 import { FadeIn } from 'react-slide-fade-in';
+import TimetableCard from 'calendar/sideMenu/components/TimetableCard';
+import SideMenuTitle from 'calendar/sideMenu/components/SideMenuTitle';
 
 const GenerateScreen = ({
   handleViewChange,
   generatedTimetable,
+  favTimetable,
   timetableIndex,
   setTimetableIndex,
 }) => {
-  const [favTimetable, setFavTimetable] = useState();
   const [generateTime, setGenerateTime] = useState();
   const { socket } = useSocket();
 
@@ -35,120 +27,85 @@ const GenerateScreen = ({
       setGenerateTime(time);
     });
     return () => socket.off('time elpased');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     getGenerateTimetable(socket);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     getFavTimetable(socket);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    socket.on('get fav timetable', (tb) => {
-      console.log(tb);
-      setFavTimetable(tb);
-    });
-    return () => socket.off('get fav timetable');
-  }, []);
+  // check tb against timetables in favTimetable and return the match
+  const getMatchTimetable = (tb) => {
+    for (const t of favTimetable) {
+      let allCourseMatch = true;
+      for (let i = 0; i < t.length; i++) {
+        if (
+          !(
+            tb[i].section?.sectionCode === t[i].section?.sectionCode &&
+            tb[i].tutorial?.tutorialCode === t[i].tutorial?.tutorialCode
+          )
+        ) {
+          allCourseMatch = false;
+        }
+      }
+      if (allCourseMatch) {
+        return t;
+      }
+    }
+  };
 
   const handleAddFavourite = (tb) => {
+    // timetable matched
+    const matchTb = getMatchTimetable(tb);
     console.log(tb);
-    // favTimetable && console.log(favTimetable);
-    // if (favTimetable.includes(tb)) {
-    //   deleteFavTimetable(socket, tb)
-    // } else {
-    //   addFavTimetable(socket, tb);
-    // }
+    if (matchTb) {
+      const filtered = favTimetable.filter((t) => t !== matchTb);
+      console.log(filtered);
+      deleteFavTimetable(socket, filtered);
+    } else {
+      addFavTimetable(socket, tb);
+    }
   };
 
   return (
     <FadeIn from="right" positionOffset={200} durationInMilliseconds={500}>
-      <Box mt={2} sx={{ m: 3 }}>
-        <Typography
-          variant="h5"
-          sx={{ display: 'flex', textAlign: 'start', alignItems: 'center' }}
-        >
-          Generated Timetables
-          <IconButton
-            sx={{
-              ml: 'auto ',
-            }}
-            onClick={() => handleViewChange(null, 'start')}
-          >
-            <ArrowBackIosIcon />
-          </IconButton>
+      <SideMenuTitle
+        title={'Generated Timetables'}
+        handleViewChange={handleViewChange}
+      />
+      <FadeContent delay={100} transitionDuration={400}>
+        <Typography textAlign={'start'}>
+          {' '}
+          {generateTime &&
+            `Generated ${
+              generatedTimetable && generatedTimetable.length
+            } timetables in ${generateTime} seconds`}
         </Typography>
-        <FadeContent delay={100} transitionDuration={400}>
-          <Typography textAlign={'start'}>
+        {generatedTimetable ? (
+          generatedTimetable.map((timetable, i) => (
+            <TimetableCard
+              timetable={timetable}
+              timetableIndex={timetableIndex}
+              handleAddFavourite={handleAddFavourite}
+              favTimetable={favTimetable}
+              getMatchTimetable={getMatchTimetable}
+              index={i}
+              setTimetableIndex={setTimetableIndex}
+            />
+          ))
+        ) : (
+          <Typography sx={{ textAlign: 'start' }}>
             {' '}
-            {generateTime &&
-              `Generated ${
-                generatedTimetable && generatedTimetable.length
-              } timetables in ${generateTime} seconds`}
+            No generated timetables found! Try generating a new one
           </Typography>
-          {generatedTimetable ? (
-            generatedTimetable.map((timetable, i) => (
-              <Card
-                sx={{
-                  my: 2,
-                  border:
-                    timetableIndex === i
-                      ? '2px solid black'
-                      : '2px solid white',
-                  transition: (theme) =>
-                    theme.transitions.create('border', {
-                      easing: theme.transitions.easing.easeInOut,
-                      duration: 200,
-                    }),
-                }}
-                key={i}
-              >
-                <CardActionArea
-                  onClick={() => {
-                    setTimetableIndex(i);
-                  }}
-                >
-                  <CardContent sx={{ pt: 1, pb: 0 }}>
-                    <Box>
-                      {timetable.map((course) => (
-                        <Box
-                          key={course.courseCode}
-                          sx={{ textAlign: 'start' }}
-                        >
-                          <Stack direction={'row'}>
-                            <Typography sx={{}}>{course.courseCode}</Typography>
-                            <Typography sx={{ ml: 'auto' }}>
-                              {course.section.sectionCode}
-                            </Typography>
-                            <Typography>{course.tutorial}</Typography>
-                          </Stack>
-                        </Box>
-                      ))}
-                    </Box>
-                  </CardContent>
-                </CardActionArea>
-
-                <CardActions sx={{ my: 0, py: 0 }}>
-                  <IconButton onClick={() => handleAddFavourite(timetable)}>
-                    {favTimetable && favTimetable.includes(timetable) ? (
-                      <FavoriteIcon />
-                    ) : (
-                      <FavoriteBorderIcon />
-                    )}
-                  </IconButton>
-                </CardActions>
-              </Card>
-            ))
-          ) : (
-            <Typography sx={{ textAlign: 'start' }}>
-              {' '}
-              No generated timetables found! Try generating a new one
-            </Typography>
-          )}
-        </FadeContent>
-      </Box>
+        )}
+      </FadeContent>
     </FadeIn>
   );
 };

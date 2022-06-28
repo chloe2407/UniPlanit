@@ -17,6 +17,7 @@ const Calendar = () => {
   // used for seeing the timetable being built
   const [buildTimetable, setBuildTimetable] = useState();
   const [openDrawer, setOpenDrawer] = useState(true);
+  const [favTimetable, setFavTimetable] = useState();
   const [view, setView] = useState('start');
   const { setMsg } = useFeedback();
   const { socket } = useSocket();
@@ -35,23 +36,35 @@ const Calendar = () => {
           snackVariant: 'error',
           msg: "Sorry! We couldn't generate a timetable with the selected courses",
         });
-        setGenerateTimetable(null);
       }
     });
     return () => {
       socket.off('get generated timetable');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     socket.on('get build timetable', (timetable) => {
-      setGenerateTimetable(null);
       setBuildTimetable(timetable);
       handleViewChange(null, 'build');
     });
     return () => {
       socket.off('get build timetable');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    socket.on('get fav timetable', (timetable) => {
+      console.log(timetable);
+      setFavTimetable(timetable);
+      setTimetableIndex(0);
+    });
+    return () => {
+      socket.off('get fav timetable');
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleOpenDrawer = () => {
@@ -84,6 +97,7 @@ const Calendar = () => {
           handleViewChange={handleViewChange}
           timetableIndex={timetableIndex}
           setTimetableIndex={setTimetableIndex}
+          favTimetable={favTimetable}
         />
       </Drawer>
       <OptionTab handleOpenDrawer={handleOpenDrawer} openDrawer={openDrawer} />
@@ -97,6 +111,8 @@ const Calendar = () => {
                 duration: 225,
               }),
           }}
+          favTimetable={favTimetable}
+          view={view}
           buildTimetable={buildTimetable}
           generatedTimetable={generatedTimetable}
           timetableIndex={timetableIndex}
