@@ -11,17 +11,27 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { updateTimetable, getMultipleCourse } from 'calendar/api/sideMenuApi';
+import {
+  updateTimetable,
+  getMultipleCourse,
+  getUserCourse,
+} from 'calendar/api/sideMenuApi';
+import useCalendar from 'context/calendar';
 
-export default function UserCourseSectionSelect({ userCourse }) {
+export default function UserCourseSectionSelect() {
   const [courseCodeShow, setCourseCodeShow] = useState([]);
   const [userCourseObj, setUserCourseObj] = useState();
   const [isLoading, setIsLoading] = useState();
   const [searchData, setSearchData] = useState();
+  const { userCourse } = useCalendar();
   const { socket } = useSocket();
 
-  // turn user course into objects
+  useEffect(() => {
+    getUserCourse(socket);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  // turn user course into objects
   useEffect(() => {
     socket.on('update timetable', () => {
       setIsLoading(false);

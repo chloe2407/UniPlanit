@@ -4,8 +4,10 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Stack from '@mui/material/Stack';
 import { FadeIn } from 'react-slide-fade-in';
 import FadeContent from 'react-fade-in';
+import useCalendar from 'context/calendar';
 
-export default function SideMenuStart({ handleViewChange }) {
+export default function SideMenuStart() {
+  const { setView } = useCalendar();
   const NextButton = ({ onClick, text }) => {
     return (
       <Stack direction={'row'}>
@@ -40,11 +42,11 @@ export default function SideMenuStart({ handleViewChange }) {
       </Typography>
       <FadeContent delay={300}>
         <NextButton
-          onClick={() => handleViewChange(null, 'select')}
+          onClick={() => setView('select')}
           text={'Build a timetable'}
         />
         <NextButton
-          onClick={() => handleViewChange(null, 'generated')}
+          onClick={() => setView('generate')}
           text={'See last generated timetables'}
         />
       </FadeContent>

@@ -13,7 +13,6 @@ import TimetableCard from 'calendar/sideMenu/components/TimetableCard';
 import SideMenuTitle from 'calendar/sideMenu/components/SideMenuTitle';
 
 const GenerateScreen = ({
-  handleViewChange,
   generatedTimetable,
   favTimetable,
   timetableIndex,
@@ -47,8 +46,8 @@ const GenerateScreen = ({
       for (let i = 0; i < t.length; i++) {
         if (
           !(
-            tb[i].section?.sectionCode === t[i].section?.sectionCode &&
-            tb[i].tutorial?.tutorialCode === t[i].tutorial?.tutorialCode
+            tb[i]?.section?.sectionCode === t[i]?.section?.sectionCode &&
+            tb[i]?.tutorial?.tutorialCode === t[i]?.tutorial?.tutorialCode
           )
         ) {
           allCourseMatch = false;
@@ -63,22 +62,16 @@ const GenerateScreen = ({
   const handleAddFavourite = (tb) => {
     // timetable matched
     const matchTb = getMatchTimetable(tb);
-    console.log(tb);
     if (matchTb) {
       const filtered = favTimetable.filter((t) => t !== matchTb);
-      console.log(filtered);
       deleteFavTimetable(socket, filtered);
     } else {
       addFavTimetable(socket, tb);
     }
   };
-
   return (
     <FadeIn from="right" positionOffset={200} durationInMilliseconds={500}>
-      <SideMenuTitle
-        title={'Generated Timetables'}
-        handleViewChange={handleViewChange}
-      />
+      <SideMenuTitle title={'Generated Timetables'} />
       <FadeContent delay={100} transitionDuration={400}>
         <Typography textAlign={'start'}>
           {' '}
@@ -90,6 +83,7 @@ const GenerateScreen = ({
         {generatedTimetable ? (
           generatedTimetable.map((timetable, i) => (
             <TimetableCard
+              key={i}
               timetable={timetable}
               timetableIndex={timetableIndex}
               handleAddFavourite={handleAddFavourite}

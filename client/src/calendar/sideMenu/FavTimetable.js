@@ -26,8 +26,8 @@ const FavTimetable = ({ favTimetable, timetableIndex, setTimetableIndex }) => {
       for (let i = 0; i < t.length; i++) {
         if (
           !(
-            tb[i].section?.sectionCode === t[i].section?.sectionCode &&
-            tb[i].tutorial?.tutorialCode === t[i].tutorial?.tutorialCode
+            tb[i]?.section?.sectionCode === t[i]?.section?.sectionCode &&
+            tb[i]?.tutorial?.tutorialCode === t[i]?.tutorial?.tutorialCode
           )
         ) {
           allCourseMatch = false;
@@ -65,6 +65,7 @@ const FavTimetable = ({ favTimetable, timetableIndex, setTimetableIndex }) => {
           favTimetable.length > 0 ? (
             favTimetable.map((timetable, i) => (
               <TimetableCard
+                key={i}
                 timetableIndex={timetableIndex}
                 timetable={timetable}
                 handleAddFavourite={handleAddFavourite}

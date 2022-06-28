@@ -20,6 +20,7 @@ import {
   makeNewTimetable,
 } from 'calendar/api/sideMenuApi';
 import useFeedback from 'context/feedback';
+import useCalendar from 'context/calendar';
 
 export default function SearchBar({ userCourse }) {
   const [input, setInput] = useState({
@@ -33,6 +34,7 @@ export default function SearchBar({ userCourse }) {
   const { socket } = useSocket();
   const bottomRef = useRef();
   const { setMsg } = useFeedback();
+  const { setView } = useCalendar();
 
   const filterOptions = createFilterOptions({
     limit: 15,
@@ -58,11 +60,15 @@ export default function SearchBar({ userCourse }) {
   }, [input]);
 
   useEffect(() => {
-    socket.on('get user course', () => {
+    setBtnIsLoading(null);
+  }, [userCourse]);
+
+  useEffect(() => {
+    socket.on('get build timetable', () => {
       setBtnIsLoading(null);
     });
     return () => {
-      socket.off('get user course');
+      socket.off('get build course');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -102,22 +108,11 @@ export default function SearchBar({ userCourse }) {
     addUserCourse(socket, searchData[0]);
   };
 
-  const handleGenerate = () => {
-    setBtnIsLoading('generate');
-    if (userCourse.length > 0) generateTimeTable(socket, userCourse);
-    else {
-      setMsg({
-        snackVariant: 'info',
-        msg: 'Please Choose a Course First!',
-      });
-      setBtnIsLoading(null);
-    }
-  };
-
-  const handleMake = () => {
-    setBtnIsLoading('make');
-    if (userCourse.length > 0) makeNewTimetable(socket, userCourse);
-    else {
+  const handleSubmit = (cb, type) => {
+    setBtnIsLoading(type);
+    if (userCourse.length > 0) {
+      cb(socket, userCourse);
+    } else {
       setMsg({
         snackVariant: 'info',
         msg: 'Please Choose a Course First!',
@@ -205,9 +200,9 @@ export default function SearchBar({ userCourse }) {
       <div ref={bottomRef}></div>
 
       <LoadingButton
-        loading={btnIsLoading === 'make'}
+        loading={btnIsLoading === 'build'}
         sx={{ display: 'block', mb: 1 }}
-        onClick={() => handleMake()}
+        onClick={() => handleSubmit(makeNewTimetable, 'build')}
         variant={'contained'}
       >
         <Typography>Choose Sections</Typography>
@@ -216,7 +211,7 @@ export default function SearchBar({ userCourse }) {
       <LoadingButton
         loading={btnIsLoading === 'generate'}
         sx={{ ml: 'auto' }}
-        onClick={() => handleGenerate()}
+        onClick={() => handleSubmit(generateTimeTable, 'generate')}
         variant={'contained'}
       >
         <Typography>Generate Timetables</Typography>

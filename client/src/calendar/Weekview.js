@@ -12,52 +12,25 @@ import {
   useCourseMeetingTimeToEvent,
   useParseEventToTimetableObj,
 } from 'calendar/hooks';
-import useSocket from 'context/socket';
 import useFeedback from 'context/feedback';
+import useCalendar from 'context/calendar';
 
-const WeekView = ({
-  sx,
-  view,
-  generatedTimetable,
-  favTimetable,
-  timetableIndex,
-}) => {
+const WeekView = ({ sx }) => {
   // const classes = useStyles();
   const times = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
   const courseMeetingTimeToEvent = useCourseMeetingTimeToEvent();
   const parseEventToTimetableObj = useParseEventToTimetableObj();
-  const [buildTimetable, setBuildTimetable] = useState();
   const [parsedTimetable, setParsedTimetable] = useState(null);
-  const { socket } = useSocket();
   const { setMsg } = useFeedback();
+  const { timetable } = useCalendar();
 
   // build an object of all the time and courses
   // give warning when overlapping is detected
-
-  useEffect(() => {
-    socket.on('update timetable', (timetable) => {
-      setBuildTimetable(timetable);
-    });
-    return () => socket.off('update timetable');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  // parse the current timetable
   useEffect(() => {
     const days = createDay();
     // get current timetable
-    let timetable;
-    if (view === 'generated') {
-      timetable = generatedTimetable && generatedTimetable[timetableIndex];
-    } else if (view === 'build') {
-      timetable = buildTimetable && buildTimetable;
-    } else if (view === 'fav') {
-      timetable = favTimetable && favTimetable[timetableIndex];
-    } else {
-      timetable = undefined;
-    }
-
     timetable &&
       timetable.forEach((course) => {
         if (course.section) {
@@ -84,9 +57,8 @@ const WeekView = ({
         }
       });
     setParsedTimetable({ ...days });
-    console.log(days);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [generatedTimetable, buildTimetable, timetableIndex, favTimetable]);
+  }, [timetable]);
 
   const createDay = () => {
     return days.reduce((acc, curr) => ((acc[curr] = createTime()), acc), {});

@@ -4,15 +4,12 @@ import FadeContent from 'react-fade-in';
 import { FadeIn } from 'react-slide-fade-in';
 import SideMenuTitle from 'calendar/sideMenu/components/SideMenuTitle';
 
-export default function MakeTimetable({ handleViewChange, buildTimetable }) {
+export default function MakeTimetable() {
   return (
     <FadeIn from={'right'} positionOffset={200} durationInMilliseconds={500}>
-      <SideMenuTitle
-        title={'Timetable Builder'}
-        handleViewChange={handleViewChange}
-      />
+      <SideMenuTitle title={'Timetable Builder'} />
       <FadeContent delay={300}>
-        <UserCourseSectionSelect userCourse={buildTimetable} />
+        <UserCourseSectionSelect />
       </FadeContent>
     </FadeIn>
   );

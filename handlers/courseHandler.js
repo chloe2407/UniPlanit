@@ -8,7 +8,6 @@ module.exports = (io) => {
       (c) => c.courseCode !== course.courseCode
     );
     user.courses.push(course);
-    console.log(user.courses);
     await user.save();
     io.to(socket.userId).emit('get user course', user.courses);
   };

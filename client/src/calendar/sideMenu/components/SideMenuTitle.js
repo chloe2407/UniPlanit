@@ -2,8 +2,10 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import useCalendar from 'context/calendar';
 
-export default function SideMenuTitle({ title, handleViewChange }) {
+export default function SideMenuTitle({ title }) {
+  const { setView } = useCalendar();
   return (
     <Typography
       variant="h5"
@@ -14,7 +16,7 @@ export default function SideMenuTitle({ title, handleViewChange }) {
         sx={{
           ml: 'auto ',
         }}
-        onClick={() => handleViewChange(null, 'start')}
+        onClick={() => setView('start')}
       >
         <ArrowBackIosIcon />
       </IconButton>
