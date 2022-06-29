@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import useAuth from 'context/Auth';
+import useAuth from 'context/auth';
 import { useParams } from 'react-router-dom';
 import { getParamUserData } from 'account/api/getParamUserData';
 import FavoriteIcon from '@mui/icons-material/Favorite';

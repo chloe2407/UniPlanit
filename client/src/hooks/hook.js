@@ -13,18 +13,3 @@ export const useWeekDayToInt = () => {
   };
   return [weekDayToInt];
 };
-
-export const useCourseToEvent = () => {
-  const courseToEvent = (course, meetingTime) => {
-    return {
-      eventName: course.courseCode,
-      location: meetingTime.assignedRoom1,
-      type: 'lecture',
-      course: course,
-      day: meetingTime.day,
-      start: meetingTime.startTime,
-      end: meetingTime.endTime,
-    };
-  };
-  return [courseToEvent];
-};

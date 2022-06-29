@@ -10,29 +10,40 @@ import useSocket from 'context/socket';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { updateTimetable, getMultipleCourse } from 'calendar/api/sideMenuApi';
+import {
+  updateTimetable,
+  getMultipleCourse,
+  getUserCourse,
+} from 'calendar/api/sideMenuApi';
+import useCalendar from 'context/calendar';
 
-export default function UserCourseSectionSelect({ userCourse }) {
+export default function UserCourseSectionSelect() {
   const [courseCodeShow, setCourseCodeShow] = useState([]);
   const [userCourseObj, setUserCourseObj] = useState();
+  const [isLoading, setIsLoading] = useState();
   const [searchData, setSearchData] = useState();
-  const [loading, setIsLoading] = useState(false);
+  const { userCourse } = useCalendar();
   const { socket } = useSocket();
 
-  // turn user course into objects
+  useEffect(() => {
+    getUserCourse(socket);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  // turn user course into objects
   useEffect(() => {
     socket.on('update timetable', () => {
       setIsLoading(false);
     });
     return () => socket.off('update timetable');
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     if (userCourse) {
       const temp = {};
-      userCourse.map((v) => {
+      userCourse.forEach((v) => {
         temp[v.courseCode] = v;
       });
       setUserCourseObj(temp);
@@ -44,7 +55,7 @@ export default function UserCourseSectionSelect({ userCourse }) {
     userCourse &&
       Promise.all(getMultipleCourse(userCourse)).then((val) => {
         const temp = {};
-        val.map((v) => {
+        val.forEach((v) => {
           temp[v.courseCode] = v;
         });
         setSearchData(temp);
@@ -79,12 +90,18 @@ export default function UserCourseSectionSelect({ userCourse }) {
       : setCourseCodeShow([...courseCodeShow, courseCode]);
   };
 
+  const handleClearAllSections = () => {
+    setIsLoading(true);
+    updateTimetable(socket, null, true);
+  };
+
   const SelectLecture = ({ courseCode }) => {
     const [lecture, setLecture] = useState(
       userCourseObj && userCourseObj[courseCode]?.section
         ? userCourseObj[courseCode].section.sectionCode
         : 'Choose a Lecture'
     );
+
     return searchData && searchData[courseCode]?.sections?.length > 0 ? (
       <Box sx={{ display: 'flex' }}>
         <FormControl sx={{ minWidth: 160, maxWidth: 160 }} size={'small'}>
@@ -162,9 +179,9 @@ export default function UserCourseSectionSelect({ userCourse }) {
   };
 
   return (
-    <Box sx={{ overflow: 'auto', m: 3, my: 1, textAlign: 'left' }}>
+    <>
       {userCourse && userCourse.length > 0 ? (
-        userCourse.map((course, i) => (
+        userCourse.map((course) => (
           <Box key={course.courseCode}>
             <Typography>{course.courseTitle}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -184,7 +201,7 @@ export default function UserCourseSectionSelect({ userCourse }) {
             <Collapse in={courseCodeShow.includes(course.courseCode)}>
               <Typography>Lectures</Typography>
               <Box sx={{ m: 1 }}>
-                <SelectLecture courseIndex={i} courseCode={course.courseCode} />
+                <SelectLecture courseCode={course.courseCode} />
               </Box>
               <Typography>Tutorials</Typography>
               <Box sx={{ m: 1 }}>
@@ -200,16 +217,13 @@ export default function UserCourseSectionSelect({ userCourse }) {
         </Typography>
       )}
       <LoadingButton
-        loading={loading}
+        loading={isLoading}
         variant={'contained'}
         sx={{ textTransform: 'capitalize' }}
-        onClick={() => {
-          setIsLoading(true);
-          updateTimetable(socket, null, true);
-        }}
+        onClick={() => handleClearAllSections()}
       >
         Clear all sections
       </LoadingButton>
-    </Box>
+    </>
   );
 }

@@ -41,6 +41,7 @@ export function FeedbackProvider({ children }) {
       setMsg,
       SnackbarMsg,
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [msg]
   );
 

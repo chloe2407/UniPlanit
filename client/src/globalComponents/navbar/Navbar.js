@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -10,15 +10,12 @@ import Divider from '@mui/material/Divider';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Profile from 'globalComponents/navbar/Profile';
 import NavbarButton from 'globalComponents/navbar/NavbarButton';
-import useAuth from 'context/Auth';
+import useAuth from 'context/auth';
 import FriendProfile from 'globalComponents/navbar/FriendProfile';
 import AddFriend from 'globalComponents/navbar/AddFriend';
 import OverflowIcon from 'globalComponents/navbar/OverflowIcon';
 import { StyledMenuItem, NavbarMenu } from 'globalComponents/navbar/NavbarMenu';
 import { Typography } from '@mui/material';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import CloseIcon from '@mui/icons-material/Close';
 import useSocket from 'context/socket';
 import useFeedback from 'context/feedback';
 import {
@@ -44,6 +41,7 @@ export default function Navbar({ handleShowChat }) {
   useEffect(() => {
     getFriendRequest(socket);
     getFriend(socket);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -53,6 +51,7 @@ export default function Navbar({ handleShowChat }) {
     return () => {
       socket.off('get friend request');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -69,6 +68,7 @@ export default function Navbar({ handleShowChat }) {
     return () => {
       socket.off('remove friend');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -85,6 +85,7 @@ export default function Navbar({ handleShowChat }) {
     return () => {
       socket.off('accepted friend');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -94,6 +95,7 @@ export default function Navbar({ handleShowChat }) {
     return () => {
       socket.off('get user friend');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogout = () => {

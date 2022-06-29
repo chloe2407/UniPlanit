@@ -30,6 +30,7 @@ export default function AddFriend({ sx }) {
 
   useEffect(() => {
     getFriendRequest(socket);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -47,6 +48,7 @@ export default function AddFriend({ sx }) {
     return () => {
       socket.off('received friend request');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -56,6 +58,7 @@ export default function AddFriend({ sx }) {
     return () => {
       socket.off('get friend request');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -72,6 +75,7 @@ export default function AddFriend({ sx }) {
     return () => {
       socket.off('reject friend');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -87,6 +91,7 @@ export default function AddFriend({ sx }) {
     return () => {
       socket.off('add friend');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleMenuClose = () => {

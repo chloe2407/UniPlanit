@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
+import { Avatar, Typography } from '@mui/material';
+import { orange } from '@mui/material/colors';
+import { height } from '@mui/system';
+import useAuth from 'context/auth';
 import Button from '@mui/material/Button';
-import useAuth from '../../../context/Auth';
 import './ProfileImage.css';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
-import initialToColor from '../../../globalComponents/InitialToColor';
+import initialToColor from 'globalComponents/InitialToColor';
 import FileUpload from './FileUpload';
 import ImageUpload from './ImageUpload';
 

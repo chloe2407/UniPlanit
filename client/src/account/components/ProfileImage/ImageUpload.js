@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import ImageUploading from 'react-images-uploading';
 import Button from '@mui/material/Button';
 
-import useAuth from 'context/Auth';
+import useAuth from 'context/auth';
 
 function ImageUpload() {
   const [images, setImages] = React.useState(

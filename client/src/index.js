@@ -16,9 +16,10 @@ import About from 'about/About';
 import RequireAuth from 'globalComponents/RequireAuth';
 import LoginWrap from 'globalComponents/LoginWrap';
 import Account from 'account/Account';
-import { AuthProvider } from 'context/Auth';
+import { AuthProvider } from 'context/auth';
 import { FeedbackProvider } from 'context/feedback';
 import { SocketProvider } from 'context/socket';
+import { CalendarProvider } from 'context/calendar';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -52,7 +53,9 @@ root.render(
                     path="calendar"
                     element={
                       <RequireAuth>
-                        <Calendar />
+                        <CalendarProvider>
+                          <Calendar />
+                        </CalendarProvider>
                       </RequireAuth>
                     }
                   />

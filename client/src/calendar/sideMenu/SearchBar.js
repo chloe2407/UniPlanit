@@ -20,6 +20,7 @@ import {
   makeNewTimetable,
 } from 'calendar/api/sideMenuApi';
 import useFeedback from 'context/feedback';
+import useCalendar from 'context/calendar';
 
 export default function SearchBar({ userCourse }) {
   const [input, setInput] = useState({
@@ -33,6 +34,7 @@ export default function SearchBar({ userCourse }) {
   const { socket } = useSocket();
   const bottomRef = useRef();
   const { setMsg } = useFeedback();
+  const { setView } = useCalendar();
 
   const filterOptions = createFilterOptions({
     limit: 15,
@@ -54,15 +56,21 @@ export default function SearchBar({ userCourse }) {
         setIsLoading(false);
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [input]);
 
   useEffect(() => {
-    socket.on('get user course', () => {
+    setBtnIsLoading(null);
+  }, [userCourse]);
+
+  useEffect(() => {
+    socket.on('get build timetable', () => {
       setBtnIsLoading(null);
     });
     return () => {
-      socket.off('get user course');
+      socket.off('get build course');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -72,6 +80,7 @@ export default function SearchBar({ userCourse }) {
     return () => {
       socket.off('get generated course');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleInputChange = (option, v) => {
@@ -95,25 +104,15 @@ export default function SearchBar({ userCourse }) {
 
   const handleAddCourse = () => {
     setBtnIsLoading('add');
+    console.log(searchData[0]);
     addUserCourse(socket, searchData[0]);
   };
 
-  const handleGenerate = () => {
-    setBtnIsLoading('generate');
-    if (userCourse.length > 0) generateTimeTable(socket, userCourse);
-    else {
-      setMsg({
-        snackVariant: 'info',
-        msg: 'Please Choose a Course First!',
-      });
-      setBtnIsLoading(null);
-    }
-  };
-
-  const handleMake = () => {
-    setBtnIsLoading('make');
-    if (userCourse.length > 0) makeNewTimetable(socket, userCourse);
-    else {
+  const handleSubmit = (cb, type) => {
+    setBtnIsLoading(type);
+    if (userCourse.length > 0) {
+      cb(socket, userCourse);
+    } else {
       setMsg({
         snackVariant: 'info',
         msg: 'Please Choose a Course First!',
@@ -123,101 +122,100 @@ export default function SearchBar({ userCourse }) {
   };
 
   return (
-    <Box mb={2} sx={{ textAlign: 'start' }}>
-      <Container>
-        <FormGroup sx={{ mb: 1 }}>
-          <FormLabel id="search-label" sx={{ textAlign: 'left', mb: 2 }}>
-            Search Course
-          </FormLabel>
-          <Autocomplete
-            sx={{ mb: 2 }}
-            disablePortal
-            id="search-course"
-            options={courseData}
-            filterOptions={filterOptions}
-            onChange={(e, v) => handleInputChange('code', v)}
-            renderInput={(params) => (
-              <TextField {...params} label="Search Course" />
-            )}
-          />
-          <FormLabel id="term-label" sx={{ textAlign: 'left' }}>
-            Term
-          </FormLabel>
-          <RadioGroup
-            row
-            sx={{ mx: 1 }}
-            value={input.term}
-            onChange={(e) => handleInputChange('term', e.target.value)}
-          >
-            {terms.map((t) => (
-              <FormControlLabel
-                key={t}
-                value={t}
-                control={<Radio size="small" />}
-                label={t}
+    <>
+      <FormGroup sx={{ mb: 1 }}>
+        <FormLabel id="search-label" sx={{ textAlign: 'left', mb: 2 }}>
+          Search Course
+        </FormLabel>
+        <Autocomplete
+          sx={{ mb: 2 }}
+          disablePortal
+          id="search-course"
+          options={courseData}
+          filterOptions={filterOptions}
+          onChange={(e, v) => handleInputChange('code', v)}
+          renderInput={(params) => (
+            <TextField {...params} label="Search Course" />
+          )}
+        />
+        <FormLabel id="term-label" sx={{ textAlign: 'left' }}>
+          Term
+        </FormLabel>
+        <RadioGroup
+          row
+          sx={{ mx: 1 }}
+          value={input.term}
+          onChange={(e) => handleInputChange('term', e.target.value)}
+        >
+          {terms.map((t) => (
+            <FormControlLabel
+              key={t}
+              value={t}
+              control={<Radio size="small" />}
+              label={t}
+            />
+          ))}
+        </RadioGroup>
+      </FormGroup>
+
+      {searchData === undefined ? (
+        isLoading ? (
+          <>
+            <Container sx={{ transform: 'scale(0.6)' }}>
+              <img
+                alt={'Loading'}
+                className="ld ld-bounce"
+                style={{ animationDuration: '1s' }}
+                src="./calendar-loader.png"
               />
-            ))}
-          </RadioGroup>
-        </FormGroup>
-
-        {searchData === undefined ? (
-          isLoading ? (
+            </Container>
+          </>
+        ) : null
+      ) : (
+        <Box sx={{ overflow: 'auto', mb: 2 }}>
+          {searchData.length === 0 ? (
+            <Typography align="center">
+              No Course With Matching Name And Term
+            </Typography>
+          ) : (
             <>
-              <Container sx={{ transform: 'scale(0.6)' }}>
-                <img
-                  className="ld ld-bounce"
-                  style={{ animationDuration: '1s' }}
-                  src="./calendar-loader.png"
-                />
-              </Container>
+              <Typography>Course</Typography>
+              <Box sx={{ display: 'flex', m: 1 }}>
+                <Typography variant="h6">
+                  {searchData[0].courseTitle}
+                </Typography>
+                <LoadingButton
+                  loading={btnIsLoading === 'add'}
+                  variant="contained"
+                  sx={{ ml: 'auto' }}
+                  onClick={() => handleAddCourse()}
+                >
+                  Add this course
+                </LoadingButton>
+              </Box>
             </>
-          ) : null
-        ) : (
-          <Box sx={{ overflow: 'auto', mb: 2 }}>
-            {searchData.length === 0 ? (
-              <Typography align="center">
-                No Course With Matching Name And Term
-              </Typography>
-            ) : (
-              <>
-                <Typography>Course</Typography>
-                <Box sx={{ display: 'flex', m: 1 }}>
-                  <Typography variant="h6">
-                    {searchData[0].courseTitle}
-                  </Typography>
-                  <LoadingButton
-                    loading={btnIsLoading === 'add'}
-                    variant="contained"
-                    sx={{ ml: 'auto' }}
-                    onClick={() => handleAddCourse()}
-                  >
-                    Add this course
-                  </LoadingButton>
-                </Box>
-              </>
-            )}
-          </Box>
-        )}
-        <div ref={bottomRef}></div>
+          )}
+        </Box>
+      )}
+      <div ref={bottomRef}></div>
 
-        <LoadingButton
-          loading={btnIsLoading === 'make'}
-          sx={{ display: 'block', mb: 1 }}
-          onClick={() => handleMake()}
-          variant={'contained'}
-        >
-          <Typography>Choose Sections</Typography>
-        </LoadingButton>
+      <LoadingButton
+        loading={btnIsLoading === 'build'}
+        sx={{ display: 'block', mb: 1 }}
+        onClick={() => handleSubmit(makeNewTimetable, 'build')}
+        variant={'contained'}
+      >
+        <Typography>Choose Sections</Typography>
+      </LoadingButton>
 
-        <LoadingButton
-          loading={btnIsLoading === 'generate'}
-          sx={{ ml: 'auto' }}
-          onClick={() => handleGenerate()}
-          variant={'contained'}
-        >
-          <Typography>Generate Timetables</Typography>
-        </LoadingButton>
-      </Container>
-    </Box>
+      <LoadingButton
+        loading={btnIsLoading === 'generate'}
+        sx={{ ml: 'auto' }}
+        onClick={() => handleSubmit(generateTimeTable, 'generate')}
+        variant={'contained'}
+      >
+        <Typography>Generate Timetables</Typography>
+      </LoadingButton>
+    </>
   );
 }

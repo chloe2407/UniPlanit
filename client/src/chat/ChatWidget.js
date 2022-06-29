@@ -10,7 +10,7 @@ import Avatar from '@mui/material/Avatar';
 import MinimizeIcon from '@mui/icons-material/Minimize';
 import IconButton from '@mui/material/IconButton';
 import useSocket from 'context/socket';
-import useAuth from 'context/Auth';
+import useAuth from 'context/auth';
 import initialToColor from 'globalComponents/InitialToColor';
 import { getConversation } from 'chat/api/chatApi';
 
@@ -23,7 +23,7 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
 
   useEffect(() => {
     getConversation(friendInfo._id).then((data) => setConversation(data));
-  }, [socket]);
+  }, [friendInfo._id]);
 
   useEffect(() => {
     socket.on('private message', (msg) => {
@@ -34,6 +34,7 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
     return () => {
       socket.off('privat message');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

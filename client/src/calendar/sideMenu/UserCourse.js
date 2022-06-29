@@ -16,7 +16,7 @@ export default function UserCourses({ userCourse }) {
   };
 
   return (
-    <Box sx={{ overflow: 'hidden', m: 3, my: 1, textAlign: 'left' }}>
+    <>
       {userCourse && userCourse.length > 0 ? (
         <FadeContent>
           {userCourse.map((course) => (
@@ -39,10 +39,8 @@ export default function UserCourses({ userCourse }) {
           ))}
         </FadeContent>
       ) : (
-        <Typography variant="h6">
-          No courses yet. Start by adding a course!
-        </Typography>
+        <Typography>No courses yet. Start by adding a course!</Typography>
       )}
-    </Box>
+    </>
   );
 }

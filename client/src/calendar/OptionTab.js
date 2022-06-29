@@ -1,13 +1,7 @@
-import React, { useState } from 'react';
-import { Typography, Button, IconButton } from '@mui/material';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
-import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+import React from 'react';
+import { Typography, Button } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 
 const OptionsTab = ({ handleOpenDrawer, openDrawer }) => {

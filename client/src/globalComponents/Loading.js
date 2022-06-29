@@ -15,6 +15,7 @@ const Loading = () => {
       >
         <Container sx={{ transform: 'scale(0.6)' }}>
           <img
+            alt={'loading'}
             className="ld ld-bounce"
             style={{ animationDuration: '1s' }}
             src="./calendar-loader.png"

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { Typography, Box } from '@mui/material';
-import useAuth from '../../context/Auth';
+import { Typography } from '@mui/material';
+import useAuth from 'context/auth';
 import InfoBox from './InfoBox/InfoBox';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
 const AccountInfo = ({ paramUser }) => {

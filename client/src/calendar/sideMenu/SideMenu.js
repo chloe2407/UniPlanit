@@ -1,41 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-import useSocket from 'context/socket';
-import { getUserCourse } from 'calendar/api/sideMenuApi';
 import CourseSelection from 'calendar/sideMenu/CourseSelection';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import TabPanel from 'calendar/sideMenu/TabPanel';
-import MakeTimetable from 'calendar/sideMenu/MakeTimetable';
+import BuildTimetable from 'calendar/sideMenu/BuildTimetable';
 import SideMenuStart from 'calendar/sideMenu/SideMenuStart';
 import GenerateScreen from 'calendar/sideMenu/GenerateScreen';
+import FavTimetable from 'calendar/sideMenu/FavTimetable';
+import useCalendar from 'context/calendar';
 
-export default function SideMenu({
-  drawerWidth,
-  buildTimetable,
-  generatedTimetable,
-  view,
-  handleViewChange,
-  setTimetableIndex,
-}) {
-  const [userCourse, setUserCourse] = useState();
+export default function SideMenu({ drawerWidth }) {
   const [tab, setTab] = useState(0);
-  const { socket } = useSocket();
-  useEffect(() => {
-    getUserCourse(socket);
-  }, []);
+  const {
+    view,
+    setView,
+    generatedTimetable,
+    timetableIndex,
+    favTimetable,
+    setTimetableIndex,
+  } = useCalendar();
 
-  useEffect(() => {
-    socket.on('get user course', (userCourse) => {
-      setUserCourse(userCourse);
-    });
-    return () => {
-      socket.off('get user course');
-    };
-  }, []);
   const handleTabChange = (e, tab) => {
     setTab(tab);
+    if (tab === 1) setView('fav');
   };
+
   return (
     <Box
       sx={{
@@ -44,35 +34,38 @@ export default function SideMenu({
         p: 2,
       }}
     >
-      <Tabs variant="scrollable" value={tab} onChange={handleTabChange}>
+      <Tabs
+        sx={{ ml: 3 }}
+        variant="scrollable"
+        value={tab}
+        onChange={handleTabChange}
+      >
         <Tab value={0} label={'Build'} />
         <Tab value={1} label={'Favorites'} />
       </Tabs>
       <TabPanel value={tab} index={0}>
-        {view === 'start' ? (
-          <SideMenuStart handleViewChange={handleViewChange} />
-        ) : view === 'select' ? (
-          <CourseSelection
-            userCourse={userCourse}
-            handleTabChange={handleTabChange}
-            handleViewChange={handleViewChange}
-          />
+        {view === 'select' ? (
+          <CourseSelection />
         ) : view === 'build' ? (
-          <MakeTimetable
-            userCourse={userCourse}
-            buildTimetable={buildTimetable}
-            generatedTimetable={generatedTimetable}
-            handleViewChange={handleViewChange}
-          />
-        ) : (
+          <BuildTimetable />
+        ) : view === 'generate' ? (
           <GenerateScreen
-            handleViewChange={handleViewChange}
+            favTimetable={favTimetable}
             generatedTimetable={generatedTimetable}
+            timetableIndex={timetableIndex}
             setTimetableIndex={setTimetableIndex}
           />
+        ) : (
+          <SideMenuStart />
         )}
       </TabPanel>
-      <TabPanel value={tab} index={1}></TabPanel>
+      <TabPanel value={tab} index={1}>
+        <FavTimetable
+          favTimetable={favTimetable}
+          timetableIndex={timetableIndex}
+          setTimetableIndex={setTimetableIndex}
+        />
+      </TabPanel>
     </Box>
   );
 }
