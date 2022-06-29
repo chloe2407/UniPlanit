@@ -8,23 +8,19 @@ import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 
 const InfoBox = ({ isEditing, property, value, onChange }) => {
+  const property_value = property.toString();
   return (
-    <div>
-      <FormControl fullWidth variant="outlined">
-        <OutlinedInput
-          disabled={!isEditing}
-          id="outlined-adornment-weight"
-          value={value}
-          onChange={onChange}
-          // InputProps={{
-          //     readOnly: isEditing
-          // }}
-        />
-        <FormHelperText id="outlined-weight-helper-text">
-          {property}
-        </FormHelperText>
-      </FormControl>
-    </div>
+    <TextField
+      id="outlined-read-only-input"
+      fullWidth
+      label={property}
+      defaultValue={value}
+      onChange={onChange}
+      InputProps={{
+        readOnly: !isEditing,
+      }}
+      disabled={!isEditing}
+    />
   );
 };
 

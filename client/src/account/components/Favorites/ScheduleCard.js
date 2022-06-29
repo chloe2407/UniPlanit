@@ -73,7 +73,7 @@ const ScheduleCard = ({ name, filters, courses }) => {
               </Typography>
               <Grid container direction="row" spacing={1}>
                 {filters.map((filter) => (
-                  <Grid item>
+                  <Grid item key={filter}>
                     <Chip
                       sx={{ width: '100%', margin: '0.5px' }}
                       key={filter}

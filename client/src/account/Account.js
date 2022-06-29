@@ -52,20 +52,10 @@ const Account = () => {
         <Grid item xs={12} md={5}>
           {paramUser && <ProfileImage paramUser={paramUser} />}
         </Grid>
-        <Grid
-          item
-          xs={12}
-          md={6}
-          display="flex"
-          direction="row"
-          justifyContent="center"
-          p="0px"
-        >
-          {/* {paramUser && <AccountInfo paramUser={paramUser} />} */}
+        <Grid item xs={12} md={6} p="0px">
           {paramUser && <ProfileTabs paramUser={paramUser} />}
         </Grid>
       </Grid>
-      {/* {paramUser && <Favorites paramUser={paramUser} />} */}
     </>
   );
 };

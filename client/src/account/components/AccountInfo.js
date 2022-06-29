@@ -32,7 +32,7 @@ const AccountInfo = ({ paramUser }) => {
               property="First name"
               value={first}
               onChange={(e) => setFirst(e.target.value)}
-            ></InfoBox>
+            />
           </Grid>
           <Grid item display="inline" id="last" md={6} xs={12}>
             <InfoBox
@@ -40,7 +40,7 @@ const AccountInfo = ({ paramUser }) => {
               property="Last name"
               value={last}
               onChange={(e) => setLast(e.target.value)}
-            ></InfoBox>
+            />
           </Grid>
           <Grid item display="inline" id="email" xs={12}>
             <InfoBox
@@ -48,7 +48,7 @@ const AccountInfo = ({ paramUser }) => {
               property="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-            ></InfoBox>
+            />
           </Grid>
           <Grid item display="inline" id="university" xs={12}>
             <InfoBox

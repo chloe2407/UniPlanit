@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { Avatar, Typography, Button } from '@mui/material';
-import { orange } from '@mui/material/colors';
-import { height } from '@mui/system';
+import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import useAuth from '../../../context/Auth';
 import './ProfileImage.css';
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
 import initialToColor from '../../../globalComponents/InitialToColor';
 import FileUpload from './FileUpload';
+import ImageUpload from './ImageUpload';
 
 const ProfileImage = ({ paramUser }) => {
   const [updateImage, setUpdateImage] = useState(false);
@@ -40,18 +41,26 @@ const ProfileImage = ({ paramUser }) => {
         alignItems="center"
         textAlign="center"
       >
-        <Avatar
-          src={paramUser.profileImg}
-          sx={{
-            bgcolor: initialToColor(
-              `${paramUser.first[0]}${paramUser.last[0]}`
-            ),
-            height: '15rem',
-            width: '15rem',
-          }}
-        >
-          <Typography variant="h3">{`${paramUser.first[0]}${paramUser.last[0]}`}</Typography>
-        </Avatar>
+        {user.profileImg ? (
+          <div>{user.profileImg}</div>
+        ) : (
+          <Avatar
+            src={paramUser.profileImg}
+            sx={{
+              bgcolor: initialToColor(
+                `${paramUser.first[0]}${paramUser.last[0]}`
+              ),
+              height: '15rem',
+              width: '15rem',
+            }}
+          >
+            <Typography variant="h3">{`${paramUser.first[0]}${paramUser.last[0]}`}</Typography>
+          </Avatar>
+        )}
+
+        {/* {user._id === paramUser._id ? (
+          <ImageUpload />
+        ) : null} */}
         <Typography variant="h4" pt="10px" fontWeight="bold">
           {user.first} {user.last}
         </Typography>
@@ -70,24 +79,11 @@ const ProfileImage = ({ paramUser }) => {
           disabled={user._id === paramUser._id ? null : 'true'}
           defaultValue="Say something!"
         />
-
-        {user._id === paramUser._id ? (
-          <Button
-            variant="contained"
-            sx={{
-              color: '#0583D2',
-              backgroundColor: 'white',
-              mt: '10px',
-              ':hover': {
-                backgroundColor: 'white',
-              },
-            }}
-          >
-            Edit Profile Photo
-            {/* <FileUpload handleFileUpload={handleFileUpload} /> */}
-          </Button>
-        ) : null}
       </Grid>
+      <Button variant="contained" component="label">
+        Upload File
+        <input type="file" hidden />
+      </Button>
     </div>
   );
 };
