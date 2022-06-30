@@ -45,9 +45,7 @@ const { sendPrivateMessage } = require('./handlers/messageHandler')(io);
 const {
   getUserCourse,
   addUserCourse,
-  // lockUserCourse,
   deleteUserCourse,
-  // lockCourseSection,
   deleteCourseSection,
   generateTimetable,
   getFavTimetable,
