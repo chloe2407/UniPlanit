@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js",
-    "heroku-postbuild": "cd client && npm install && npm install --legacy-peer-deps && npm run build",
+    "start": "node ./app.js",
+    "heroku-postbuild": "cd client && npm install --legacy-peer-deps && npm run build",
     "prepare": "husky install"
   },
   "engines": {

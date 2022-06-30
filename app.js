@@ -112,7 +112,7 @@ const swaggerSpec = swaggerJSDoc({
 });
 
 if (app.get('env') === 'production') {
-  app.set('trsut proxy', 1);
+  app.set('trust proxy', 1);
   sessionOptions.cookie.secure = true;
 }
 
@@ -125,15 +125,11 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser()); //session encoding
 passport.deserializeUser(User.deserializeUser()); //session decoding
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/users', usersRouter);
 app.use('/courses', courseRouter);
@@ -195,22 +191,6 @@ app.get('/photo', async (req, res, next) => {
     res.json(lastSavedBackground.imgUrl);
   }
 });
-
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(new ExpressError('Page not found', 404));
-});
-
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // redirect to home page
-  res.redirect('localhost:3000');
-});
-
 // socket io
 
 const wrap = (middleware) => (socket, next) =>
@@ -265,12 +245,27 @@ io.on('disconnect', (socket) => {
 
 app.use(express.static(path.join(__dirname, '/client/build')));
 
-app.get('*', (req, res) => {
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, '/client/build/index.html'));
 });
 
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  next(new ExpressError('Page not found', 404));
+});
+
+// error handler
+app.use(function (err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // redirect to home page
+  res.redirect('localhost:3000');
+});
+
 httpServer.listen(port, () => {
-  console.log('listening on 3000');
+  console.log('listening on ' + port);
 });
 
 module.exports = app;
