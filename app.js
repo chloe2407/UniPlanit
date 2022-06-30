@@ -25,12 +25,7 @@ const { createServer } = require('http');
 const app = express();
 const httpServer = createServer(app);
 
-const io = require('socket.io')(httpServer, {
-  cors: {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-  },
-});
+const io = require('socket.io')(httpServer);
 const {
   addFriend,
   acceptFriendRequest,
@@ -134,7 +129,7 @@ app.use(cookieParser());
 app.use('/users', usersRouter);
 app.use('/courses', courseRouter);
 
-app.use(cors());
+app.use(cors({}));
 
 app.get('/photo', async (req, res, next) => {
   // Return a background picture for login and sign up

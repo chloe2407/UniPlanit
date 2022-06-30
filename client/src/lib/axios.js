@@ -5,7 +5,7 @@ export const axios = Axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  baseURL: BASE_URL,
+  // baseURL: BASE_URL,
 });
 
 axios.interceptors.response.use(
