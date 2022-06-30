@@ -129,7 +129,7 @@ const FeedbackForm = () => {
       >
         <Form>
           <Grid container sx={{ MaxWidth: '100%' }}>
-            <Grid item xl={6}>
+            <Grid item xs={6}>
               <Box
                 sx={{
                   borderRight: 1,
@@ -177,7 +177,7 @@ const FeedbackForm = () => {
                   </MyCheckbox> */}
             </Grid>
             {/* <Divider orientation='vertical' variant='middle'/> */}
-            <Grid item xl={6}>
+            <Grid item xs={6}>
               <Box sx={{ paddingLeft: '5px' }}>
                 <MyTextArea
                   label="Message"
