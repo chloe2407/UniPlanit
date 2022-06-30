@@ -66,7 +66,6 @@ export function CalendarProvider({ children }) {
 
   useEffect(() => {
     socket.on('get build timetable', (timetable) => {
-      console.log(timetable);
       setView('build');
       setBuildTimetable(timetable);
     });
@@ -102,7 +101,6 @@ export function CalendarProvider({ children }) {
         generatedTimetable && generatedTimetable[timetableIndex].timetable
       );
     } else if (view === 'build') {
-      console.log(buildTimetable);
       setTimetable(buildTimetable && buildTimetable.timetable);
     } else if (view === 'fav') {
       console.log(favTimetable);

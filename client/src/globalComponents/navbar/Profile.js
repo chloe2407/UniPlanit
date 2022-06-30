@@ -16,50 +16,55 @@ export default function Profile({ sx, userInfo }) {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  console.log(userInfo);
   return (
     <>
-      <IconButton
-        size="large"
-        aria-controls="menu-account"
-        aria-haspopup="true"
-        onClick={(e) => setAnchorEl(e.currentTarget)}
-        color="inherit"
-        sx={sx}
-      >
-        <Avatar
-          sx={{
-            width: 30,
-            height: 30,
-            backgroundColor: initialToColor(
-              `${userInfo.first[0]}${userInfo.last[0]}`
-            ),
-          }}
-          src={userInfo.profileImg}
-        >
-          <Typography>{`${userInfo.first[0]}${userInfo.last[0]}`}</Typography>
-        </Avatar>
-      </IconButton>
-      <NavbarMenu
-        id="menu-account"
-        anchorElNav={anchorEl}
-        handleMenuClose={handleMenuClose}
-      >
-        <StyledMenuItem disabled style={{ opacity: 1, paddingBottom: 5 }}>
-          {`${userInfo.first} ${userInfo.last}`}
-        </StyledMenuItem>
-        <Divider
-          flexItem
-          sx={{ mx: 2 }}
-          style={{ marginTop: 0, backgroundColor: 'white' }}
-        />
-        <StyledMenuItem
-          style={{ marginBottom: 0 }}
-          onClick={() => navigate(`../account/${userInfo._id}`)}
-        >
-          My Account
-        </StyledMenuItem>
-        <StyledMenuItem onClick={logout}>Logout</StyledMenuItem>
-      </NavbarMenu>
+      {userInfo && (
+        <>
+          <IconButton
+            size="large"
+            aria-controls="menu-account"
+            aria-haspopup="true"
+            onClick={(e) => setAnchorEl(e.currentTarget)}
+            color="inherit"
+            sx={sx}
+          >
+            <Avatar
+              sx={{
+                width: 30,
+                height: 30,
+                backgroundColor: initialToColor(
+                  `${userInfo.first[0]}${userInfo.last[0]}`
+                ),
+              }}
+              src={userInfo.profileImg}
+            >
+              <Typography>{`${userInfo.first[0]}${userInfo.last[0]}`}</Typography>
+            </Avatar>
+          </IconButton>
+          <NavbarMenu
+            id="menu-account"
+            anchorElNav={anchorEl}
+            handleMenuClose={handleMenuClose}
+          >
+            <StyledMenuItem disabled style={{ opacity: 1, paddingBottom: 5 }}>
+              {`${userInfo.first} ${userInfo.last}`}
+            </StyledMenuItem>
+            <Divider
+              flexItem
+              sx={{ mx: 2 }}
+              style={{ marginTop: 0, backgroundColor: 'white' }}
+            />
+            <StyledMenuItem
+              style={{ marginBottom: 0 }}
+              onClick={() => navigate(`../account/${userInfo._id}`)}
+            >
+              My Account
+            </StyledMenuItem>
+            <StyledMenuItem onClick={logout}>Logout</StyledMenuItem>
+          </NavbarMenu>
+        </>
+      )}
     </>
   );
 }

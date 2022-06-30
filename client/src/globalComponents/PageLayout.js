@@ -7,6 +7,7 @@ import useFeedback from 'context/feedback';
 export default function Layout() {
   const [chats, setChats] = useState([]);
   const { SnackbarMsg } = useFeedback();
+
   const handleShowChat = (friend) => {
     if (!chats.includes(friend)) setChats([...chats, friend]);
   };

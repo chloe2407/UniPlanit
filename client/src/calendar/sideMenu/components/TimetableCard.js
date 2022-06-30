@@ -12,6 +12,7 @@ import CardActions from '@mui/material/CardActions';
 import theme from 'theme/theme';
 import useCalendar from 'context/calendar';
 import CompareIcon from '@mui/icons-material/Compare';
+import TextField from '@mui/material/TextField';
 import { StyledPopover } from 'globalComponents/navbar/NavbarMenu';
 
 export default function TimetableCard({
@@ -27,6 +28,11 @@ export default function TimetableCard({
   const { setCurrentTimetableCompare, userFriend } = useCalendar();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  const termToString = {
+    F: 'Fall',
+    S: 'Winter',
+  };
 
   return (
     <Box
@@ -45,6 +51,7 @@ export default function TimetableCard({
         sx={{
           pb: !favTimetable && 2,
           my: 2,
+          py: 1,
           color: 'white',
           backgroundColor: theme.palette.primary.main,
           // border:
@@ -58,6 +65,19 @@ export default function TimetableCard({
         }}
         key={index}
       >
+        <Box>
+          <TextField
+            placeholder="Name this timetable"
+            sx={{
+              '& .MuiOutlinedInput-input': {
+                color: 'white',
+              },
+            }}
+          ></TextField>
+          <Typography sx={{ textAlign: 'end', mr: 2 }}>
+            {termToString[tb.term]}
+          </Typography>
+        </Box>
         <CardActionArea
           onClick={() => {
             setTimetableIndex(index);

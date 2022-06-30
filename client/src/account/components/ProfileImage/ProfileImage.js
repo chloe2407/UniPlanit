@@ -11,7 +11,7 @@ import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
 import initialToColor from 'globalComponents/InitialToColor';
 import FileUpload from './FileUpload';
-import ImageUpload from './ImageUpload';
+// import ImageUpload from './ImageUpload';
 
 const ProfileImage = ({ paramUser }) => {
   const [updateImage, setUpdateImage] = useState(false);
