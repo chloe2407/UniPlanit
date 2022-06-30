@@ -10,21 +10,21 @@ const Favorites = ({ paramUser }) => {
   const favSchedules = [
     {
       id: 0,
-      name: 'Schedule A',
+      name: 'Best Schedule',
       filters: ['After 9AM', 'Before 7PM'],
-      snapshot: '',
+      courses: ['CSC111', 'MAT136', 'MAT223', 'SLA100'],
     },
     {
       id: 1,
       name: 'Schedule A',
       filters: ['12-2PM break'],
-      snapshot: '',
+      courses: ['CSC111', 'MAT136', 'MAT223', 'SLA100', 'CSC258'],
     },
     {
       id: 2,
       name: 'Schedule 3-1',
       filters: ['Before 3PM', 'Less Walking', 'Morning classes'],
-      snapshot: '',
+      courses: ['CSC111', 'MAT136', 'MAT223', 'SLA100', 'EAS100', 'RSM250'],
     },
     {
       id: 3,
@@ -35,45 +35,18 @@ const Favorites = ({ paramUser }) => {
         'Morning classes',
         '12-4PM Break',
       ],
-      snapshot: '',
-    },
-    {
-      id: 4,
-      name: 'Best Schedule',
-      filters: ['Before 3PM', 'Less Walking', 'Morning classes'],
-      snapshot: '',
-    },
-    {
-      id: 5,
-      name: 'Schedule 33',
-      filters: ['12-2PM break'],
-      snapshot: '',
-    },
-    ,
-    {
-      id: 6,
-      name: 'Schedule A',
-      filters: ['12-2PM break'],
-      snapshot: '',
+      courses: ['CSC111', 'MAT136', 'MAT223', 'SLA100'],
     },
   ];
   return (
-    <div style={{ padding: '4rem' }}>
-      {/* <FavoriteIcon sx={{ paddingRight: "5px", paddingTop: '2px', height: '18px' }} /> */}
-      <Typography variant="h4">My favorite schedules</Typography>
-      <Grid
-        container
-        display="flex"
-        spacing={1}
-        justifyContent="flex-start"
-        padding="3em"
-      >
+    <div>
+      <Grid container display="flex" spacing={1} justifyContent="flex-start">
         {favSchedules.map((schedule) => (
           <ScheduleCard
             key={schedule.id}
             name={schedule.name}
             filters={schedule.filters}
-            snapshot={schedule.snapshot}
+            courses={schedule.courses}
           />
         ))}
       </Grid>

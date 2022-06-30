@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Typography, Box } from '@mui/material';
-import theme from '../../theme/theme';
-import { padding } from '@mui/system';
+import theme from 'theme/theme';
+import FadeIn from 'react-fade-in/lib/FadeIn';
 
 const TeamMember = () => {
   const styles = [
@@ -55,35 +55,44 @@ const TeamMember = () => {
       <Typography variant="h4" paddingBottom="40px">
         Meet the Team
       </Typography>
-      {teamMembers.map((member) => (
-        <Grid key={member.id} container className="teamMembers" marginY="20px">
-          <Grid item md={5}>
-            {member.headshot}
-          </Grid>
-          <Grid item md={6}>
+      <FadeIn>
+        {teamMembers.map((member) => (
+          <Box>
             <Grid
+              key={member.id}
               container
-              direction="column"
-              justifyContent="flex-start"
-              alignItems="flex-start"
+              className="teamMembers"
+              marginY="20px"
             >
-              <Grid item xs={12}>
-                <Typography variant="h6">{member.name}</Typography>
+              <Grid item md={5}>
+                {member.headshot}
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sx={{
-                  textAlign: 'left',
-                  paddingTop: '10px',
-                }}
-              >
-                <Typography>{member.description}</Typography>
+              <Grid item md={6}>
+                <Grid
+                  container
+                  direction="column"
+                  justifyContent="flex-start"
+                  alignItems="flex-start"
+                >
+                  <Grid item xs={12}>
+                    <Typography variant="h6">{member.name}</Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{
+                      textAlign: 'left',
+                      paddingTop: '10px',
+                    }}
+                  >
+                    <Typography>{member.description}</Typography>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </Grid>
-      ))}
+          </Box>
+        ))}
+      </FadeIn>
     </Box>
   );
 };

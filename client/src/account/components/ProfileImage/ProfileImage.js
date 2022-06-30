@@ -3,13 +3,15 @@ import { Avatar, Typography } from '@mui/material';
 import { orange } from '@mui/material/colors';
 import { height } from '@mui/system';
 import useAuth from 'context/auth';
+import Button from '@mui/material/Button';
 import './ProfileImage.css';
-import { Box } from '@mui/system';
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
 import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
 import initialToColor from 'globalComponents/InitialToColor';
 import FileUpload from './FileUpload';
+import ImageUpload from './ImageUpload';
 
 const ProfileImage = ({ paramUser }) => {
   const [updateImage, setUpdateImage] = useState(false);
@@ -40,23 +42,49 @@ const ProfileImage = ({ paramUser }) => {
         alignItems="center"
         textAlign="center"
       >
-        <Avatar
-          src={paramUser.profileImg}
-          sx={{
-            bgcolor: initialToColor(
-              `${paramUser.first[0]}${paramUser.last[0]}`
-            ),
-            height: '10rem',
-            width: '10rem',
-            fontSize: '2rem',
-          }}
-        >
-          <Typography variant="h3">{`${paramUser.first[0]}${paramUser.last[0]}`}</Typography>
-        </Avatar>
-        {user._id === paramUser._id ? (
-          <FileUpload handleFileUpload={handleFileUpload} />
-        ) : null}
+        {user.profileImg ? (
+          <div>{user.profileImg}</div>
+        ) : (
+          <Avatar
+            src={paramUser.profileImg}
+            sx={{
+              bgcolor: initialToColor(
+                `${paramUser.first[0]}${paramUser.last[0]}`
+              ),
+              height: '15rem',
+              width: '15rem',
+            }}
+          >
+            <Typography variant="h3">{`${paramUser.first[0]}${paramUser.last[0]}`}</Typography>
+          </Avatar>
+        )}
+
+        {/* {user._id === paramUser._id ? (
+          <ImageUpload />
+        ) : null} */}
+        <Typography variant="h4" pt="10px" fontWeight="bold">
+          {user.first} {user.last}
+        </Typography>
+        <Typography variant="h7" pb="10px">
+          {user.email}
+        </Typography>
+        <Typography variant="h7" pb="10px">
+          {user.university}
+        </Typography>
+        <TextField
+          id="outlined-multiline-static"
+          label="Bio"
+          multiline
+          rows={4}
+          // color="gray"
+          disabled={user._id === paramUser._id ? null : 'true'}
+          defaultValue="Say something!"
+        />
       </Grid>
+      <Button variant="contained" component="label">
+        Upload File
+        <input type="file" hidden />
+      </Button>
     </div>
   );
 };

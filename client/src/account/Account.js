@@ -7,6 +7,11 @@ import Favorites from './components/Favorites/Favorites';
 import { useImg } from 'hooks/api/hooks';
 import { useParams } from 'react-router-dom';
 import { getParamUserData } from 'account/api/getParamUserData';
+import PropTypes from 'prop-types';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import ProfileTabs from './components/ProfileTabs/ProfileTabs';
+import FadeIn from 'react-fade-in';
 
 const Account = () => {
   const [imgUrl, loadImg] = useImg();
@@ -42,31 +47,15 @@ const Account = () => {
       >
         <Typography variant="h3">Account Information</Typography>
       </div>
-      <div>
-        <Grid
-          container
-          direction="row"
-          justifyContent="center"
-          alignItems="flex-start"
-          paddingTop="70px"
-        >
-          <Grid item xs={12} md={4} xl={5}>
-            {paramUser && <ProfileImage paramUser={paramUser} />}
-          </Grid>
-          <Grid
-            item
-            paddingLeft="40px"
-            paddingRight="40px"
-            xs={12}
-            md={7}
-            xl={6}
-          >
-            {paramUser && <AccountInfo paramUser={paramUser} />}
-          </Grid>
+
+      <Grid container direction="row" justifyContent="center" paddingTop="70px">
+        <Grid item xs={12} md={5}>
+          {paramUser && <ProfileImage paramUser={paramUser} />}
         </Grid>
-        {paramUser && <Favorites paramUser={paramUser} />}
-        {/* <Profile /> */}
-      </div>
+        <Grid item xs={12} md={6} p="0px">
+          {paramUser && <ProfileTabs paramUser={paramUser} />}
+        </Grid>
+      </Grid>
     </>
   );
 };

@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid';
 import { Typography } from '@mui/material';
 import useAuth from 'context/auth';
 import InfoBox from './InfoBox/InfoBox';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
 const AccountInfo = ({ paramUser }) => {
@@ -25,17 +26,6 @@ const AccountInfo = ({ paramUser }) => {
         alignItems="flex-start"
         textAlign="left"
       >
-        <Typography variant="h4">{`${first} ${last}`}</Typography>
-        {user._id === paramUser._id ? (
-          <Button
-            sx={{ color: '#0583D2', fontWeight: 'bold' }}
-            onClick={handleChange}
-          >
-            Edit Profile
-          </Button>
-        ) : null}
-
-        <hr></hr>
         <Grid container direction="row" sx={{ paddingTop: '15px' }} spacing={1}>
           <Grid item display="inline" id="first" md={6} xs={12}>
             <InfoBox
@@ -43,7 +33,7 @@ const AccountInfo = ({ paramUser }) => {
               property="First name"
               value={first}
               onChange={(e) => setFirst(e.target.value)}
-            ></InfoBox>
+            />
           </Grid>
           <Grid item display="inline" id="last" md={6} xs={12}>
             <InfoBox
@@ -51,7 +41,7 @@ const AccountInfo = ({ paramUser }) => {
               property="Last name"
               value={last}
               onChange={(e) => setLast(e.target.value)}
-            ></InfoBox>
+            />
           </Grid>
           <Grid item display="inline" id="email" xs={12}>
             <InfoBox
@@ -59,7 +49,7 @@ const AccountInfo = ({ paramUser }) => {
               property="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-            ></InfoBox>
+            />
           </Grid>
           <Grid item display="inline" id="university" xs={12}>
             <InfoBox
@@ -67,18 +57,45 @@ const AccountInfo = ({ paramUser }) => {
               property="Institution"
               value={university}
               onChange={(e) => setUniversity(e.target.value)}
-            ></InfoBox>
+            />
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              {user._id === paramUser._id && !isEditing ? (
+                <Button
+                  variant="contained"
+                  sx={{
+                    color: '#0583D2',
+                    mt: '10px',
+                    width: '180px',
+                    background: 'white',
+                    ':hover': {
+                      backgroundColor: 'white',
+                    },
+                  }}
+                  onClick={handleChange}
+                >
+                  Edit Profile
+                </Button>
+              ) : null}
+              {isEditing ? (
+                <Button
+                  type="submit"
+                  variant="contained"
+                  onClick={handleChange}
+                  sx={{
+                    color: '#0583D2',
+                    mt: '10px',
+                    width: '180px',
+                    background: 'white',
+                    ':hover': {
+                      backgroundColor: 'white',
+                    },
+                  }}
+                >
+                  Done
+                </Button>
+              ) : null}
+            </Box>
           </Grid>
-          {isEditing ? (
-            <Button
-              type="submit"
-              variant="outlined"
-              onClick={handleChange}
-              sx={{ color: '#0583D2', justifyContent: 'flex-end' }}
-            >
-              Done
-            </Button>
-          ) : null}
         </Grid>
       </Grid>
     </div>

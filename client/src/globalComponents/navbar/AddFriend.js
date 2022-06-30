@@ -8,6 +8,7 @@ import Input from '@mui/material/Input';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import Box from '@mui/material/Box';
+import Badge from '@mui/material/Badge';
 import Typography from '@mui/material/Typography';
 import NavbarTooltip from 'globalComponents/navbar/NavbarTooltip';
 import useSocket from 'context/socket';
@@ -124,15 +125,17 @@ export default function AddFriend({ sx }) {
           onClick={(e) => setAnchorEl(e.currentTarget)}
           sx={sx}
         >
-          <Avatar
-            sx={{
-              backgroundColor: 'black',
-              width: 30,
-              height: 30,
-            }}
-          >
-            <PersonAddIcon />
-          </Avatar>
+          <Badge badgeContent={223} color="success">
+            <Avatar
+              sx={{
+                backgroundColor: 'black',
+                width: 30,
+                height: 30,
+              }}
+            >
+              <PersonAddIcon />
+            </Avatar>
+          </Badge>
         </IconButton>
       </NavbarTooltip>
       <NavbarMenu

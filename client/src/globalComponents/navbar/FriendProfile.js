@@ -8,6 +8,7 @@ import Divider from '@mui/material/Divider';
 import NavbarTooltip from 'globalComponents/navbar/NavbarTooltip';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import ChatIcon from '@mui/icons-material/Chat';
+import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -99,18 +100,20 @@ export default function FriendProfile({ sx, friendInfo, handleShowChat }) {
           onClick={(e) => setAnchorEl(e.currentTarget)}
           sx={sx}
         >
-          <Avatar
-            sx={{
-              width: 30,
-              height: 30,
-              backgroundColor: initialToColor(
-                `${friendInfo.first[0]}${friendInfo.last[0]}`
-              ),
-            }}
-            src={friendInfo.profileImg}
-          >
-            <Typography>{`${friendInfo.first[0]}${friendInfo.last[0]}`}</Typography>
-          </Avatar>
+          <Badge badgeContent={2} color="warning">
+            <Avatar
+              sx={{
+                width: 30,
+                height: 30,
+                backgroundColor: initialToColor(
+                  `${friendInfo.first[0]}${friendInfo.last[0]}`
+                ),
+              }}
+              src={friendInfo.profileImg}
+            >
+              <Typography>{`${friendInfo.first[0]}${friendInfo.last[0]}`}</Typography>
+            </Avatar>
+          </Badge>
         </IconButton>
       </NavbarTooltip>
       <NavbarMenu
@@ -130,7 +133,16 @@ export default function FriendProfile({ sx, friendInfo, handleShowChat }) {
           style={{ marginTop: 0, backgroundColor: 'white' }}
         />
         <StyledMenuItem onClick={() => handleShowChat(friendInfo)}>
-          <ChatIcon sx={{ mr: 2 }} />
+          <Badge
+            color="warning"
+            variant="dot"
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            <ChatIcon sx={{ pr: 2 }} />
+          </Badge>
           Chat
         </StyledMenuItem>
         <StyledMenuItem onClick={() => setShowDeletePrompt(true)}>
