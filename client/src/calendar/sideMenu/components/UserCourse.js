@@ -8,12 +8,8 @@ import useSocket from 'context/socket';
 import FadeContent from 'react-fade-in';
 import { deleteCourse } from 'calendar/api/sideMenuApi';
 
-export default function UserCourses({ userCourse }) {
+export default function UserCourses({ userCourse, term }) {
   const { socket } = useSocket();
-
-  const handleApiCall = (cb, courseCode, type) => {
-    cb(socket, courseCode, type);
-  };
 
   return (
     <>
@@ -27,7 +23,7 @@ export default function UserCourses({ userCourse }) {
                 <Box sx={{ ml: 'auto' }}>
                   <IconButton
                     onClick={() =>
-                      handleApiCall(deleteCourse, course.courseCode)
+                      deleteCourse(socket, course.courseCode, course.term, term)
                     }
                   >
                     <DeleteOutlineIcon />

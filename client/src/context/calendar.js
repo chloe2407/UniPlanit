@@ -8,6 +8,7 @@ import React, {
 
 import useSocket from 'context/socket';
 import useFeedback from 'context/feedback';
+import { getUserFriend } from 'calendar/api/sideMenuApi';
 
 const CalendarContext = createContext();
 
@@ -18,10 +19,11 @@ export function CalendarProvider({ children }) {
   const [favTimetable, setFavTimetable] = useState();
   const [buildTimetable, setBuildTimetable] = useState();
   const [timetableIndex, setTimetableIndex] = useState(0);
+  const [currentTimetableCompare, setCurrentTimetableCompare] = useState();
   const [userCourse, setUserCourse] = useState();
-
+  const [userFriend, setUserFriend] = useState();
+  const [currentFriend, setCurrentFriend] = useState();
   const { socket } = useSocket();
-  //   const { socket } = useSocket();
   const { setMsg } = useFeedback();
 
   const notifyUser = () => {
@@ -32,7 +34,12 @@ export function CalendarProvider({ children }) {
   };
 
   useEffect(() => {
+    getUserFriend(socket);
+  }, []);
+
+  useEffect(() => {
     socket.on('get user course', (userCourse) => {
+      // console.log(userCourse)
       setUserCourse(userCourse);
     });
     return () => {
@@ -59,6 +66,7 @@ export function CalendarProvider({ children }) {
 
   useEffect(() => {
     socket.on('get build timetable', (timetable) => {
+      console.log(timetable);
       setView('build');
       setBuildTimetable(timetable);
     });
@@ -81,6 +89,7 @@ export function CalendarProvider({ children }) {
 
   useEffect(() => {
     socket.on('update timetable', (timetable) => {
+      console.log(timetable);
       setBuildTimetable(timetable);
     });
     return () => socket.off('update timetable');
@@ -89,16 +98,36 @@ export function CalendarProvider({ children }) {
 
   useEffect(() => {
     if (view === 'generate') {
-      setTimetable(generatedTimetable && generatedTimetable[timetableIndex]);
+      setTimetable(
+        generatedTimetable && generatedTimetable[timetableIndex].timetable
+      );
     } else if (view === 'build') {
-      setTimetable(buildTimetable && buildTimetable);
+      console.log(buildTimetable);
+      setTimetable(buildTimetable && buildTimetable.timetable);
     } else if (view === 'fav') {
       console.log(favTimetable);
-      setTimetable(favTimetable && favTimetable[timetableIndex]);
+      setTimetable(
+        favTimetable &&
+          favTimetable.length > 0 &&
+          favTimetable[timetableIndex].timetable
+      );
+    } else if (view === 'friend fav') {
+      setTimetable(
+        currentFriend.favoritedTimetables &&
+          currentFriend.favoritedTimetables.length > 0 &&
+          currentFriend.favoritedTimetables[timetableIndex].timetable
+      );
     } else {
       setTimetable(undefined);
     }
   }, [view, buildTimetable, generatedTimetable, favTimetable, timetableIndex]);
+
+  useEffect(() => {
+    socket.on('get user friend', (userFriend) => {
+      setUserFriend(userFriend);
+    });
+    return () => socket.off('get user friend');
+  }, []);
 
   const memo = useMemo(
     () => ({
@@ -109,6 +138,11 @@ export function CalendarProvider({ children }) {
       setTimetableIndex,
       generatedTimetable,
       buildTimetable,
+      userFriend,
+      currentFriend,
+      setCurrentFriend,
+      currentTimetableCompare,
+      setCurrentTimetableCompare,
       favTimetable,
       timetable,
     }),
@@ -116,6 +150,8 @@ export function CalendarProvider({ children }) {
       view,
       userCourse,
       generatedTimetable,
+      currentFriend,
+      currentTimetableCompare,
       buildTimetable,
       favTimetable,
       timetableIndex,

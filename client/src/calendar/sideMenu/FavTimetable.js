@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 import {
   deleteFavTimetable,
   addFavTimetable,
@@ -23,11 +23,13 @@ const FavTimetable = ({ favTimetable, timetableIndex, setTimetableIndex }) => {
   const getMatchTimetable = (tb) => {
     for (const t of favTimetable) {
       let allCourseMatch = true;
-      for (let i = 0; i < t.length; i++) {
+      for (let i = 0; i < t.timetable.length; i++) {
         if (
           !(
-            tb[i]?.section?.sectionCode === t[i]?.section?.sectionCode &&
-            tb[i]?.tutorial?.tutorialCode === t[i]?.tutorial?.tutorialCode
+            tb[i]?.section?.sectionCode ===
+              t.timetable[i]?.section?.sectionCode &&
+            tb[i]?.tutorial?.tutorialCode ===
+              t.timetable[i]?.tutorial?.tutorialCode
           )
         ) {
           allCourseMatch = false;
@@ -41,11 +43,9 @@ const FavTimetable = ({ favTimetable, timetableIndex, setTimetableIndex }) => {
 
   const handleAddFavourite = (tb) => {
     // timetable matched
-    const matchTb = getMatchTimetable(tb);
-    console.log(tb);
+    const matchTb = getMatchTimetable(tb.timetable);
     if (matchTb) {
       const filtered = favTimetable.filter((t) => t !== matchTb);
-      console.log(filtered);
       deleteFavTimetable(socket, filtered);
     } else {
       addFavTimetable(socket, tb);
@@ -63,11 +63,11 @@ const FavTimetable = ({ favTimetable, timetableIndex, setTimetableIndex }) => {
       <FadeContent delay={100} transitionDuration={400}>
         {favTimetable ? (
           favTimetable.length > 0 ? (
-            favTimetable.map((timetable, i) => (
+            favTimetable.map((tb, i) => (
               <TimetableCard
                 key={i}
+                tb={tb}
                 timetableIndex={timetableIndex}
-                timetable={timetable}
                 handleAddFavourite={handleAddFavourite}
                 favTimetable={favTimetable}
                 getMatchTimetable={getMatchTimetable}
@@ -82,9 +82,9 @@ const FavTimetable = ({ favTimetable, timetableIndex, setTimetableIndex }) => {
             </Typography>
           )
         ) : (
-          <Box sx={{ mt: '5rem' }}>
+          <Container sx={{ transform: 'scale(0.6)' }}>
             <ClipLoader />
-          </Box>
+          </Container>
         )}
       </FadeContent>
     </FadeIn>

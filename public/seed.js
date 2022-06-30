@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const fs = require('fs/promises');
-const Course = require('../models/course');
+const { Course } = require('../models/course');
 const User = require('../models/user');
 const Message = require('../models/message');
 
@@ -14,7 +14,7 @@ mongoose
   .catch((err) => console.error(err));
 
 const deleteAll = async () => {
-  await Message.deleteMany();
+  await Course.deleteMany();
 };
 
 const seed = () => {
@@ -28,23 +28,16 @@ const seed = () => {
           university: 'uoft',
           term: value.term,
         });
-        value.sections.forEach((section) => {
-          section.meetingTimes.forEach((meetingTime) => {
-            if (meetingTime.startTime === null) {
-              meetingTime.startTime = 'N/A';
-              meetingTime.endTime = 'N/A';
-            }
-          });
-          section.online === 'In Person' ? false : true;
-        });
-        value.tutorials.forEach((tutorial) => {
-          tutorial.meetingTimes.forEach((meetingTime) => {
-            if (meetingTime.startTime === null) {
-              meetingTime.startTime = 'N/A';
-              meetingTime.endTime = 'N/A';
-            }
-          });
-          tutorial.online === 'In Person' ? false : true;
+        value.sections = value.sections.filter(
+          (section) =>
+            !section.meetingTimes.some(
+              (meetingTime) => meetingTime.startTime === null
+            )
+        );
+        value.tutorials = value.tutorials.filter((tutorial) => {
+          !tutorial.meetingTimes.some(
+            (meetingTime) => meetingTime.startTime === null
+          );
         });
         course.sections = value.sections;
         course.tutorials = value.tutorials;
