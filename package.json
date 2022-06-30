@@ -3,8 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node app.js",
+    "heroku-postbuild": "cd client && npm install && npm install --legacy-peer-deps && npm run build",
     "prepare": "husky install"
+  },
+  "engines": {
+    "node": "v16.13.1"
   },
   "dependencies": {
     "body-parser": "^1.20.0",

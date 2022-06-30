@@ -128,11 +128,6 @@ passport.deserializeUser(User.deserializeUser()); //session decoding
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
-app.get('/', (req, res) => {
-  res.render('index.jade', { title: 'work goddamit' });
-});
-
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(logger('dev'));
 app.use(express.json());
@@ -266,6 +261,12 @@ io.on('disconnect', (socket) => {
   socket.on('disconnect', (reason) => {
     console.log(reason);
   });
+});
+
+app.use(express.static(path.join(__dirname, '/client/build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '/client/build/index.html'));
 });
 
 httpServer.listen(port, () => {
