@@ -7,7 +7,7 @@ import FadeContent from 'react-fade-in';
 import useCalendar from 'context/calendar';
 import SideMenuTitle from 'calendar/sideMenu/components/SideMenuTitle';
 
-export default function SideMenuStart() {
+export default function TermSelection({ setTerm }) {
   const { setView } = useCalendar();
   const NextButton = ({ onClick, text }) => {
     return (
@@ -37,16 +37,25 @@ export default function SideMenuStart() {
   };
 
   return (
-    <FadeIn from="left" positionOffset={200} durationInMilliseconds={500}>
-      <SideMenuTitle title={'Choose an Option to Start'} backTo={null} />
+    <FadeIn from="right" positionOffset={200} durationInMilliseconds={500}>
+      <SideMenuTitle title={'Choose a term'} backTo={'start'} />
+      <Typography>
+        You will be able to choose Y courses in both terms
+      </Typography>
       <FadeContent delay={300}>
         <NextButton
-          onClick={() => setView('term')}
-          text={'Build a timetable'}
+          onClick={() => {
+            setTerm('F');
+            setView('select');
+          }}
+          text={'Fall'}
         />
         <NextButton
-          onClick={() => setView('generate')}
-          text={'See last generated timetables'}
+          onClick={() => {
+            setTerm('S');
+            setView('select');
+          }}
+          text={'Winter'}
         />
       </FadeContent>
     </FadeIn>

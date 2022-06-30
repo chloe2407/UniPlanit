@@ -2,8 +2,6 @@ import Navbar from 'globalComponents/navbar/Navbar';
 import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
 import ChatWidget from 'chat/ChatWidget';
-import ErrorFallback from 'globalComponents/error';
-import { ErrorBoundary } from 'react-error-boundary';
 import useFeedback from 'context/feedback';
 
 export default function Layout() {
@@ -16,7 +14,7 @@ export default function Layout() {
     setChats(chats.filter((chat) => chat != friend));
   };
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
+    <>
       <Navbar handleShowChat={handleShowChat} />
       {chats
         ? chats.map((chat) => (
@@ -29,6 +27,6 @@ export default function Layout() {
         : null}
       <Outlet />
       {SnackbarMsg}
-    </ErrorBoundary>
+    </>
   );
 }

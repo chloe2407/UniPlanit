@@ -3,6 +3,11 @@ import { Formik, Form, useField } from 'formik';
 import * as Yup from 'yup';
 import styled from '@emotion/styled';
 import { Grid } from '@mui/material';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 
 const MyTextInput = ({ label, ...props }) => {
   const [field, meta] = useField(props);
@@ -22,6 +27,7 @@ const MyTextArea = ({ label, ...props }) => {
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
+      <br></br>
       <textarea className="text-area" {...field} {...props} />
       {meta.touched && meta.error ? (
         <div className="error">{meta.error}</div>
@@ -97,7 +103,7 @@ const FeedbackForm = () => {
             .max(25, 'Must be 25 characters or less')
             .required('Required'),
           email: Yup.string()
-            .email('Invalid email addresss`')
+            .email('Invalid email addresss')
             .required('Required'),
           // acceptedTerms: Yup.boolean()
           //     .required("Required")
@@ -121,52 +127,71 @@ const FeedbackForm = () => {
           }, 400);
         }}
       >
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Form>
-            <Grid item xs={12}>
-              <MyTextInput
-                label="Name"
-                name="firstName"
-                type="text"
-                placeholder="Jane Doe"
-              />
+        <Form>
+          <Grid container sx={{ width: '100%' }}>
+            <Grid item xl={6}>
+              <Box
+                sx={{
+                  borderRight: 1,
+                  height: '20vh',
+                  justifyContent: 'center',
+                  borderColor: 'grey.600',
+                }}
+              >
+                <List>
+                  <ListItem>
+                    <Typography>
+                      <MyTextInput
+                        label="Name  "
+                        name="firstName"
+                        type="text"
+                        placeholder="Jane Doe"
+                      />
+                    </Typography>
+                  </ListItem>
+                  <ListItem>
+                    <Typography>
+                      <MyTextInput
+                        label="Email Address  "
+                        name="email"
+                        type="email"
+                        placeholder="jane@mycalendar.com"
+                      />
+                    </Typography>
+                  </ListItem>
+                  <ListItem>
+                    <Typography>
+                      <MySelect label="Message Type  " name="messaveType">
+                        <option value="">Select a message type</option>
+                        <option value="question">Question</option>
+                        <option value="feedback">Feedback</option>
+                        <option value="Collaboration">Collaboration</option>
+                        <option value="other">Other</option>
+                      </MySelect>
+                    </Typography>
+                  </ListItem>
+                </List>
+              </Box>
+              {/* <MyCheckbox name="acceptedTerms">
+                      I accept the terms and conditions
+                  </MyCheckbox> */}
             </Grid>
-            <Grid item xs={12}>
-              <MyTextInput
-                label="Email Address"
-                name="email"
-                type="email"
-                placeholder="jane@mycalendar.com"
-              />
+            {/* <Divider orientation='vertical' variant='middle'/> */}
+            <Grid item xl={6}>
+              <Box>
+                <MyTextArea
+                  label="Message"
+                  name="message"
+                  rows="9"
+                  cols="38"
+                  placeholder="Enter your message here."
+                />
+              </Box>
             </Grid>
-            <Grid item xs={12}>
-              <MySelect label="Message Type" name="messaveType">
-                <option value="">Select a message type</option>
-                <option value="question">Question</option>
-                <option value="feedback">Feedback</option>
-                <option value="Collaboration">Collaboration</option>
-                <option value="other">Other</option>
-              </MySelect>
-            </Grid>
-            {/* <MyCheckbox name="acceptedTerms">
-                        I accept the terms and conditions
-                    </MyCheckbox> */}
-            <Grid item xs={12}>
-              <MyTextArea
-                label="Message"
-                name="message"
-                rows="6"
-                placeholder="Enter your message here."
-              />
-            </Grid>
-            <button type="submit">Submit</button>
-          </Form>
-        </Grid>
+          </Grid>
+          <br></br>
+          <button type="submit">Submit</button>
+        </Form>
       </Formik>
     </>
   );

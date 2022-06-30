@@ -10,7 +10,7 @@ module.exports.getCourse = async (req, res, next) => {
     university,
     term,
   } = req.body;
-  const foundCourses = await Course.find({
+  const foundCourses = await Course.findOne({
     $and: [
       {
         courseCode: {
@@ -28,12 +28,10 @@ module.exports.getCourse = async (req, res, next) => {
         },
       },
       {
-        term: {
-          $eq: term,
-        },
+        $or: [{ term: 'Y' }, { term: term }],
       },
     ],
-  }).limit(5);
+  });
   res.json(foundCourses);
 };
 
