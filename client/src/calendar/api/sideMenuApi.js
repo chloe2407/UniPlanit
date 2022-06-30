@@ -14,46 +14,42 @@ export const getMultipleCourse = (courses) => {
   const promises = courses.map(
     (c) =>
       new Promise((res, rej) =>
-        res(axios.post('courses', c).then((data) => data[0]))
+        res(axios.post('courses', c).then((data) => data))
       )
   );
   return promises;
 };
 
-export const getUserCourse = (socket) => {
-  socket.emit('get user course');
+export const getUserCourse = (socket, term) => {
+  socket.emit('get user course', term);
 };
 
-export const lockCourse = (socket, courseCode) => {
-  socket.emit('lock course', courseCode);
+export const deleteCourse = (socket, courseCode, courseTerm, term) => {
+  socket.emit('delete course', courseCode, courseTerm, term);
 };
 
-export const deleteCourse = (socket, courseCode) => {
-  socket.emit('delete course', courseCode);
+export const deleteCourseSection = (socket, courseCode, type, term) => {
+  socket.emit('delete section', courseCode, type, term);
 };
 
-export const lockCourseSection = (socket, courseCode, type) => {
-  socket.emit('lock section', courseCode, type);
+export const addUserCourse = (socket, course, term) => {
+  socket.emit('add user course', course, term);
 };
 
-export const deleteCourseSection = (socket, courseCode, type) => {
-  socket.emit('delete section', courseCode, type);
+export const getBuildTimetable = (socket) => {
+  socket.emit('get build timetable');
 };
 
-export const addUserCourse = (socket, course) => {
-  socket.emit('add user course', course);
+export const generateTimeTable = (socket, term) => {
+  socket.emit('generate timetable', term);
 };
 
-export const generateTimeTable = (socket, courses) => {
-  socket.emit('generate timetable', courses);
+export const buildTimetable = (socket, term) => {
+  socket.emit('build timetable', term);
 };
 
-export const makeNewTimetable = (socket, courses) => {
-  socket.emit('build timetable', courses);
-};
-
-export const updateTimetable = (socket, course, clear) => {
-  socket.emit('update timetable', course, clear);
+export const updateTimetable = (socket, buildTimetable, clear) => {
+  socket.emit('update timetable', buildTimetable, clear);
 };
 
 export const getGenerateTimetable = (socket) => {
@@ -70,4 +66,8 @@ export const deleteFavTimetable = (socket, tb) => {
 
 export const getFavTimetable = (socket) => {
   socket.emit('get fav timetable');
+};
+
+export const getUserFriend = (socket) => {
+  socket.emit('get friend');
 };
