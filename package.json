@@ -4,8 +4,11 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build",
+    "heroku-postbuild": "cd client && npm install --legacy-peer-deps && npm run build",
     "prepare": "husky install"
+  },
+  "engines": {
+    "node": "v16.13.1"
   },
   "dependencies": {
     "body-parser": "^1.20.0",
