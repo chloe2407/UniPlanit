@@ -125,7 +125,10 @@ export default function AddFriend({ sx }) {
           onClick={(e) => setAnchorEl(e.currentTarget)}
           sx={sx}
         >
-          <Badge badgeContent={223} color="success">
+          <Badge
+            badgeContent={friendRequest && friendRequest.length}
+            color="success"
+          >
             <Avatar
               sx={{
                 backgroundColor: 'black',

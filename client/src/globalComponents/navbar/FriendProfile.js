@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import { StyledMenuItem, NavbarMenu } from 'globalComponents/navbar/NavbarMenu';
 import Avatar from '@mui/material/Avatar';
@@ -16,11 +16,13 @@ import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import { useNavigate } from 'react-router-dom';
 import { removeFriend } from 'globalComponents/navbar/api/navbarApi';
+import { getConversation } from 'chat/api/chatApi';
 import useSocket from 'context/socket';
 
 export default function FriendProfile({ sx, friendInfo, handleShowChat }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [showDeletePrompt, setShowDeletePrompt] = useState(false);
+  const [messageNum, setMessageNum] = useState(0);
   const { socket } = useSocket();
   const navigate = useNavigate();
 
@@ -31,6 +33,11 @@ export default function FriendProfile({ sx, friendInfo, handleShowChat }) {
   const handleDialogClose = () => {
     setShowDeletePrompt(false);
   };
+
+  useEffect(() => {
+    // need to get unread messages
+    getConversation(friendInfo._id).then((data) => setMessageNum(data.length));
+  }, []);
 
   const RemoveFriendPrompt = () => {
     return (
@@ -100,7 +107,7 @@ export default function FriendProfile({ sx, friendInfo, handleShowChat }) {
           onClick={(e) => setAnchorEl(e.currentTarget)}
           sx={sx}
         >
-          <Badge badgeContent={2} color="warning">
+          <Badge badgeContent={messageNum} color="warning">
             <Avatar
               sx={{
                 width: 30,

@@ -39,9 +39,6 @@ export default function TermSelection({ setTerm }) {
   return (
     <FadeIn from="right" positionOffset={200} durationInMilliseconds={500}>
       <SideMenuTitle title={'Choose a term'} backTo={'start'} />
-      <Typography>
-        You will be able to choose Y courses in both terms
-      </Typography>
       <FadeContent delay={300}>
         <NextButton
           onClick={() => {
@@ -57,6 +54,9 @@ export default function TermSelection({ setTerm }) {
           }}
           text={'Winter'}
         />
+        <Typography sx={{ ml: 1 }}>
+          You will be able to choose Y courses in both terms
+        </Typography>
       </FadeContent>
     </FadeIn>
   );
