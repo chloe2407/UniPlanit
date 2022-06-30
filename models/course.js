@@ -30,8 +30,6 @@ const courseSchema = new mongoose.Schema({
         required: true,
       },
       instructors: [],
-      // will only have enough information to
-      // construct an event
       meetingTimes: [
         {
           day: {
@@ -69,6 +67,7 @@ const courseSchema = new mongoose.Schema({
         enum: ['F', 'S', 'Y'],
         required: true,
       },
+      instructors: [],
       meetingTimes: [
         {
           day: {
@@ -136,7 +135,7 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
         required: true,
       },
       instructors: {
-        type: [String],
+        type: [],
         default: undefined,
       },
       meetingTimes: {
@@ -189,7 +188,7 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
         required: true,
       },
       instructors: {
-        type: [String],
+        type: [],
         default: undefined,
       },
       meetingTimes: {
