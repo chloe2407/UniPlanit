@@ -8,21 +8,23 @@ import { getUserCourse } from 'calendar/api/sideMenuApi';
 import useSocket from 'context/socket';
 import useCalendar from 'context/calendar';
 
-export default function CourseSelection() {
+export default function CourseSelection({ term }) {
   const { socket } = useSocket();
   const { userCourse } = useCalendar();
-
+  // console.log(userCourse)
+  // console.log(term)
   useEffect(() => {
-    getUserCourse(socket);
+    // console.log('Getting user courses')
+    getUserCourse(socket, term);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <FadeIn from={'right'} positionOffset={200} durationInMilliseconds={500}>
-      <SideMenuTitle title={'Course Selection'} />
+      <SideMenuTitle title={`Course Selection - ${term}`} backTo={'term'} />
       <FadeContent delay={300}>
-        <UserCourse userCourse={userCourse} />
-        <SearchBar userCourse={userCourse} />
+        <UserCourse term={term} userCourse={userCourse} />
+        <SearchBar term={term} userCourse={userCourse} />
       </FadeContent>
     </FadeIn>
   );

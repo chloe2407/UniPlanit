@@ -13,75 +13,74 @@ import MenuItem from '@mui/material/MenuItem';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
   updateTimetable,
-  getMultipleCourse,
+  getBuildTimetable,
   getUserCourse,
 } from 'calendar/api/sideMenuApi';
 import useCalendar from 'context/calendar';
 
-export default function UserCourseSectionSelect() {
+export default function UserCourseSectionSelect({ term }) {
   const [courseCodeShow, setCourseCodeShow] = useState([]);
   const [userCourseObj, setUserCourseObj] = useState();
   const [isLoading, setIsLoading] = useState();
-  const [searchData, setSearchData] = useState();
-  const { userCourse } = useCalendar();
+  const { userCourse, buildTimetable } = useCalendar();
   const { socket } = useSocket();
 
   useEffect(() => {
-    getUserCourse(socket);
+    getUserCourse(socket, term);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [term]);
+
+  useEffect(() => {
+    getBuildTimetable(socket);
   }, []);
 
   // turn user course into objects
-  useEffect(() => {
-    socket.on('update timetable', () => {
-      setIsLoading(false);
-    });
-    return () => socket.off('update timetable');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // for some reason only one of the socket events is firing
+
+  // useEffect(() => {
+  //   socket.on('update timetable', () => {
+  //     setIsLoading(false);
+  //   });
+  //   return () => socket.off('update timetable');
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+  // console.log(buildTimetable);
 
   useEffect(() => {
     if (userCourse) {
-      const temp = {};
-      userCourse.forEach((v) => {
-        temp[v.courseCode] = v;
-      });
-      setUserCourseObj(temp);
+      const userCourseObj = userCourse.reduce((acc, curr) => {
+        acc[curr.courseCode] = curr;
+        return acc;
+      }, {});
+      setUserCourseObj(userCourseObj);
     }
   }, [userCourse]);
 
-  // for currently selected courses, fetch their data from course collection
-  useEffect(() => {
-    userCourse &&
-      Promise.all(getMultipleCourse(userCourse)).then((val) => {
-        const temp = {};
-        val.forEach((v) => {
-          temp[v.courseCode] = v;
-        });
-        setSearchData(temp);
-      });
-  }, [userCourse]);
-
+  // console.log(userCourseObj);
+  // console.log(buildTimetable);
   // add section/tutorials to a course in the current timetable
   const handleAddCourseWithSection = (courseCode, type, sectionCode) => {
-    const course = userCourseObj[courseCode];
-    const targetCourse = JSON.parse(
-      JSON.stringify({ ...searchData[courseCode] })
-    );
-    if (sectionCode === 'Choose a Lecture') {
-      delete course.section;
-    } else if (sectionCode === ' Choose a Tutorial') {
-      delete course.tutorial;
-    } else if (type === 'lec') {
-      for (const s of targetCourse['sections']) {
-        if (s.sectionCode === sectionCode) course.section = s;
+    buildTimetable.timetable.forEach((course) => {
+      if (course.courseCode === courseCode) {
+        if (type === 'lec') {
+          userCourseObj[courseCode].sections.forEach((section) => {
+            if (section.sectionCode === sectionCode) {
+              course.section = section;
+            }
+          });
+          console.log(course);
+        } else if (type === 'tut') {
+          userCourseObj[courseCode].tutorials.forEach((tutorial) => {
+            if (tutorial.tutorialCode === sectionCode) {
+              course.tutorial = tutorial;
+            }
+          });
+        }
       }
-    } else {
-      for (const s of targetCourse['tutorials']) {
-        if (s.tutorialCode === sectionCode) course.tutorial = s;
-      }
-    }
-    updateTimetable(socket, course);
+    });
+    console.log('updating timetable');
+    console.log(buildTimetable);
+    updateTimetable(socket, buildTimetable);
   };
 
   const handleCourseCollapse = (courseCode) => {
@@ -95,14 +94,27 @@ export default function UserCourseSectionSelect() {
     updateTimetable(socket, null, true);
   };
 
+  const getCurrentLecture = (courseCode) => {
+    const currentLecture = buildTimetable.timetable.find((course) => {
+      return course.courseCode === courseCode;
+    }).section?.sectionCode;
+    return currentLecture;
+  };
+
+  const getCurrentTutorial = (courseCode) => {
+    const currentTutorial = buildTimetable.timetable.find((course) => {
+      return course.courseCode === courseCode;
+    }).tutorial?.tutorialCode;
+    return currentTutorial;
+  };
+
   const SelectLecture = ({ courseCode }) => {
+    const currentLecture = getCurrentLecture(courseCode);
     const [lecture, setLecture] = useState(
-      userCourseObj && userCourseObj[courseCode]?.section
-        ? userCourseObj[courseCode].section.sectionCode
-        : 'Choose a Lecture'
+      currentLecture ? currentLecture : 'Choose a Lecture'
     );
 
-    return searchData && searchData[courseCode]?.sections?.length > 0 ? (
+    return userCourseObj && userCourseObj[courseCode]?.sections?.length > 0 ? (
       <Box sx={{ display: 'flex' }}>
         <FormControl sx={{ minWidth: 160, maxWidth: 160 }} size={'small'}>
           <Select
@@ -116,7 +128,7 @@ export default function UserCourseSectionSelect() {
             <MenuItem value={'Choose a Lecture'}>
               <Typography>Choose a Lecture</Typography>
             </MenuItem>
-            {searchData[courseCode].sections.map((lecture, i) => (
+            {userCourseObj[courseCode].sections.map((lecture, i) => (
               <MenuItem
                 key={lecture._id}
                 value={lecture.sectionCode}
@@ -138,12 +150,11 @@ export default function UserCourseSectionSelect() {
   };
 
   const SelectTutorial = ({ courseCode }) => {
+    const currentTutorial = getCurrentTutorial(courseCode);
     const [tutorial, setTutorial] = useState(
-      userCourseObj && userCourseObj[courseCode]?.tutorial
-        ? userCourseObj[courseCode].tutorial.tutorialCode
-        : 'Choose a Tutorial'
+      currentTutorial ? currentTutorial : 'Choose a Tutorial'
     );
-    return searchData && searchData[courseCode]?.tutorials?.length > 0 ? (
+    return userCourseObj && userCourseObj[courseCode]?.tutorials?.length > 0 ? (
       <Box sx={{ display: 'flex' }}>
         <FormControl sx={{ minWidth: 160, maxWidth: 160 }} size={'small'}>
           <Select
@@ -157,7 +168,7 @@ export default function UserCourseSectionSelect() {
             <MenuItem value={'Choose a Tutorial'}>
               <Typography>Choose a Tutorial</Typography>
             </MenuItem>
-            {searchData[courseCode].tutorials.map((tutorial) => (
+            {userCourseObj[courseCode].tutorials.map((tutorial) => (
               <MenuItem
                 key={tutorial._id}
                 sx={{
@@ -217,7 +228,8 @@ export default function UserCourseSectionSelect() {
         </Typography>
       )}
       <LoadingButton
-        loading={isLoading}
+        // loading={isLoading}
+        loading={false}
         variant={'contained'}
         sx={{ textTransform: 'capitalize' }}
         onClick={() => handleClearAllSections()}
