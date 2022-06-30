@@ -12,7 +12,7 @@ const Contact = () => (
       alignItems="center"
       spacing={2}
     >
-      <Grid item sx={{ width: '40vw' }}>
+      <Grid item sx={{ MaxWidth: '40vw' }}>
         <ForumIcon sx={{ paddingTop: '50px' }} />
         <Box sx={{ paddingTop: '30px' }}>
           <Typography variant="h4">
@@ -20,7 +20,7 @@ const Contact = () => (
           </Typography>
           <Typography variant="h4">Reach Us Here!</Typography>
         </Box>
-        <Box sx={{ paddingY: '30px' }}>
+        <Box sx={{ paddingY: '30px', overflow: 'auto' }}>
           <FeedbackForm />
         </Box>
       </Grid>

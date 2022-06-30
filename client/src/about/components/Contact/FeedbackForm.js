@@ -128,7 +128,7 @@ const FeedbackForm = () => {
         }}
       >
         <Form>
-          <Grid container sx={{ width: '100%' }}>
+          <Grid container sx={{ MaxWidth: '100%' }}>
             <Grid item xl={6}>
               <Box
                 sx={{
@@ -178,7 +178,7 @@ const FeedbackForm = () => {
             </Grid>
             {/* <Divider orientation='vertical' variant='middle'/> */}
             <Grid item xl={6}>
-              <Box>
+              <Box sx={{ paddingLeft: '5px' }}>
                 <MyTextArea
                   label="Message"
                   name="message"
