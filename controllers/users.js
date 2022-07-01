@@ -63,6 +63,7 @@ module.exports.register = async (req, res, next) => {
 };
 
 module.exports.getLoggedIn = async (req, res, next) => {
+  console.log(req.isAuthenticated());
   if (req.isAuthenticated()) {
     const user = await User.findById(req.user.id);
     await user.populate('friends');

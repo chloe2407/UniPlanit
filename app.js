@@ -26,7 +26,11 @@ const sslRedirect = require('heroku-ssl-redirect').default;
 const app = express();
 const httpServer = createServer(app);
 
-const io = require('socket.io')(httpServer);
+const io = require('socket.io')(httpServer, {
+  cors: {
+    origin: ['https://www.uniplanit.com', 'localhost:3000'],
+  },
+});
 const {
   addFriend,
   acceptFriendRequest,
@@ -133,7 +137,7 @@ app.use('/courses', courseRouter);
 
 app.use(
   cors({
-    origin: 'https://www.uniplanit.com',
+    origin: ['https://www.uniplanit.com', 'localhost:3000'],
   })
 );
 
