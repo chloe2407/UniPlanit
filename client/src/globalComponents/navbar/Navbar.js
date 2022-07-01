@@ -278,7 +278,7 @@ export default function Navbar({ handleShowChat }) {
                   underline="none"
                   sx={{ ml: 'auto' }}
                 >
-                  MyCalendar
+                  UniPlanit
                 </Link>
                 <NavProfiles />
               </>
