@@ -22,6 +22,7 @@ import {
   getFriend,
   getFriendRequest,
 } from 'globalComponents/navbar/api/navbarApi';
+import { fontSize } from '@mui/system';
 
 // figure out user not updated when login
 
@@ -161,14 +162,14 @@ export default function Navbar({ handleShowChat }) {
         );
       } else {
         return (
-          <>
+          <div>
             <NavbarButton onClick={() => navigate('/login')}>
               <Typography>Login</Typography>
             </NavbarButton>
             <NavbarButton onClick={() => navigate('/signup')}>
               <Typography>Sign Up</Typography>
             </NavbarButton>
-          </>
+          </div>
         );
       }
     } else {
@@ -242,7 +243,9 @@ export default function Navbar({ handleShowChat }) {
                   underline="none"
                   sx={{ mx: 2 }}
                 >
-                  MyCalendar
+                  UniPlanit
+                  {/* <b>Uni</b>Planit
+                  Uni<b>Planit</b> */}
                 </Link>
                 <NavbarButton onClick={() => navigate('/calendar')}>
                   <Typography>Calendar</Typography>

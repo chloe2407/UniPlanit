@@ -42,7 +42,7 @@ TabPanel.propTypes = {
 //     };
 // }
 
-export default function ProfileTabs({ paramUser }) {
+export default function ProfileTabs({ paramUser, isEditing, handleChange }) {
   const { user } = useAuth();
   const [value, setValue] = React.useState(0);
 
@@ -56,7 +56,7 @@ export default function ProfileTabs({ paramUser }) {
   //     });
   // }, [params.id]);
 
-  const handleChange = (event, newValue) => {
+  const handleSwitch = (event, newValue) => {
     setValue(newValue);
   };
 
@@ -65,7 +65,7 @@ export default function ProfileTabs({ paramUser }) {
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={value}
-          onChange={handleChange}
+          onChange={handleSwitch}
           aria-label="icon label tabs example"
         >
           {user._id === paramUser._id ? (
@@ -81,7 +81,11 @@ export default function ProfileTabs({ paramUser }) {
       </Box>
       {user._id === paramUser._id ? (
         <TabPanel value={value} index={0}>
-          <AccountInfo paramUser={paramUser} />
+          <AccountInfo
+            paramUser={paramUser}
+            isEditing={isEditing}
+            handleChange={handleChange}
+          />
         </TabPanel>
       ) : null}
       <TabPanel value={value} index={1}>

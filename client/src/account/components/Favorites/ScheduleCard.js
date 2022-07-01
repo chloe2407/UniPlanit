@@ -14,6 +14,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 const ScheduleCard = ({ name, filters, courses }) => {
   return (
     <Grid
+      key={name}
       item
       xs={12}
       sm={12}
