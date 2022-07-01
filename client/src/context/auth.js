@@ -13,7 +13,7 @@ export function AuthProvider({ children }) {
 
   const authenticate = (type, values) => {
     axios
-      .post(`users/${type}`, values)
+      .post(`../../users/${type}`, values)
       .then((data) => {
         console.log('authenticating');
         if (socket) {
@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    axios.post('users/logout').then(() => {
+    axios.post('../../users/logout').then(() => {
       setUser(null);
       navigate('/');
       window.location.reload();
@@ -45,7 +45,7 @@ export function AuthProvider({ children }) {
   const checkLoggedIn = () => {
     console.log('Checking logged in');
     axios
-      .post('users/getLoggedIn')
+      .post('../../users/getLoggedIn')
       .then((data) => {
         if (!data.err) {
           setUser(data);

@@ -28,7 +28,8 @@ const httpServer = createServer(app);
 
 const io = require('socket.io')(httpServer, {
   cors: {
-    origin: ['https://www.uniplanit.com', 'localhost:3000'],
+    origin: ['https://www.uniplanit.com', 'http://localhost:3000'],
+    methods: ['GET', 'POST'],
   },
 });
 const {
@@ -137,7 +138,7 @@ app.use('/courses', courseRouter);
 
 app.use(
   cors({
-    origin: ['https://www.uniplanit.com', 'localhost:3000'],
+    origin: ['https://www.uniplanit.com', 'http://localhost:3000'],
   })
 );
 

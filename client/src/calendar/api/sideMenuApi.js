@@ -1,12 +1,12 @@
 import { axios } from 'lib/axios';
 
 export const getUser = (userId) => {
-  return axios.get(`users/${userId}`).then((data) => Promise.resolve(data));
+  return axios.get(`../users/${userId}`).then((data) => Promise.resolve(data));
 };
 
 export const getCourse = (courseBody) => {
   return axios
-    .post('courses', courseBody)
+    .post('../courses', courseBody)
     .then((data) => Promise.resolve(data));
 };
 
@@ -14,7 +14,7 @@ export const getMultipleCourse = (courses) => {
   const promises = courses.map(
     (c) =>
       new Promise((res, rej) =>
-        res(axios.post('courses', c).then((data) => data))
+        res(axios.post('../courses', c).then((data) => data))
       )
   );
   return promises;
