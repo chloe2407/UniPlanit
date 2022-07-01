@@ -8,20 +8,17 @@ import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import Profile from 'globalComponents/navbar/Profile';
-import NavbarButton from 'globalComponents/navbar/NavbarButton';
+import Profile from 'navbar/Profile';
+import NavbarButton from 'navbar/NavbarButton';
 import useAuth from 'context/auth';
-import FriendProfile from 'globalComponents/navbar/FriendProfile';
-import AddFriend from 'globalComponents/navbar/AddFriend';
-import OverflowIcon from 'globalComponents/navbar/OverflowIcon';
-import { StyledMenuItem, NavbarMenu } from 'globalComponents/navbar/NavbarMenu';
+import FriendProfile from 'navbar/FriendProfile';
+import AddFriend from 'navbar/AddFriend';
+import OverflowIcon from 'navbar/OverflowIcon';
+import { StyledMenuItem, NavbarMenu } from 'navbar/NavbarMenu';
 import { Typography } from '@mui/material';
 import useSocket from 'context/socket';
 import useFeedback from 'context/feedback';
-import {
-  getFriend,
-  getFriendRequest,
-} from 'globalComponents/navbar/api/navbarApi';
+import { getFriend, getFriendRequest } from 'navbar/api/navbarApi';
 import { fontSize } from '@mui/system';
 
 // figure out user not updated when login

@@ -11,7 +11,7 @@ import MinimizeIcon from '@mui/icons-material/Minimize';
 import IconButton from '@mui/material/IconButton';
 import useSocket from 'context/socket';
 import useAuth from 'context/auth';
-import initialToColor from 'globalComponents/InitialToColor';
+import initialToColor from 'components/InitialToColor';
 import { getConversation } from 'chat/api/chatApi';
 
 export default function ChatWidget({ friendInfo, handleCloseChat }) {

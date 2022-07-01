@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import useAuth from 'context/auth';
 import { useImg } from 'hooks/api/hooks';
-import Loading from 'globalComponents/Loading';
+import Loading from 'components/Loading';
 
 const loginSchema = yup.object().shape({
   username: yup.string().email().required(),

@@ -5,7 +5,7 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'context/auth';
-import initialToColor from 'globalComponents/InitialToColor';
+import initialToColor from 'components/InitialToColor';
 import Divider from '@mui/material/Divider';
 
 export default function Profile({ sx, userInfo }) {
@@ -16,7 +16,7 @@ export default function Profile({ sx, userInfo }) {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  console.log(userInfo);
+
   return (
     <>
       {userInfo && (

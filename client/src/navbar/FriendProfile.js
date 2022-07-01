@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
-import { StyledMenuItem, NavbarMenu } from 'globalComponents/navbar/NavbarMenu';
+import { StyledMenuItem, NavbarMenu } from 'navbar/NavbarMenu';
 import Avatar from '@mui/material/Avatar';
-import initialToColor from 'globalComponents/InitialToColor';
+import initialToColor from 'components/InitialToColor';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import NavbarTooltip from 'globalComponents/navbar/NavbarTooltip';
+import NavbarTooltip from 'navbar/NavbarTooltip';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import ChatIcon from '@mui/icons-material/Chat';
 import Badge from '@mui/material/Badge';
@@ -15,7 +15,7 @@ import Dialog from '@mui/material/Dialog';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import { useNavigate } from 'react-router-dom';
-import { removeFriend } from 'globalComponents/navbar/api/navbarApi';
+import { removeFriend } from 'navbar/api/navbarApi';
 import { getConversation } from 'chat/api/chatApi';
 import useSocket from 'context/socket';
 

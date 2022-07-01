@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
-import initialToColor from 'globalComponents/InitialToColor';
+import initialToColor from 'components/InitialToColor';
 import FileUpload from './FileUpload';
 // import ImageUpload from './ImageUpload';
 

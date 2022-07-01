@@ -1,4 +1,4 @@
-import Navbar from 'globalComponents/navbar/Navbar';
+import Navbar from 'navbar/Navbar';
 import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
 import ChatWidget from 'chat/ChatWidget';
