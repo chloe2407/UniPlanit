@@ -101,7 +101,7 @@ module.exports = (io) => {
       await friend.save();
       io.to(socket.userId).emit(
         'accepted friend',
-        `Successfully added ${friend.first} ${friend.last}`
+        `Successfully added ${user.first} ${user.last}`
       );
       io.to(to).emit(
         'accepted friend',
