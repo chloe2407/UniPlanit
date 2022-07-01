@@ -71,3 +71,11 @@ export const getFavTimetable = (socket) => {
 export const getUserFriend = (socket) => {
   socket.emit('get friend');
 };
+
+export const updateFavTimetable = (socket, timetable) => {
+  socket.emit('update fav timetable', timetable);
+};
+
+export const updateSelectedTimetable = (socket, timetable) => {
+  socket.emit('update selected timetable', timetable);
+};

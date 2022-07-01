@@ -12,7 +12,12 @@ import { FadeIn } from 'react-slide-fade-in';
 import ClipLoader from 'react-spinners/ClipLoader';
 import TimetableCard from 'calendar/sideMenu/components/TimetableCard';
 
-const FavTimetable = ({ favTimetable, timetableIndex, setTimetableIndex }) => {
+const FavTimetable = ({
+  favTimetable,
+  timetableIndex,
+  setTimetableIndex,
+  setTab,
+}) => {
   const { socket } = useSocket();
 
   useEffect(() => {
@@ -67,6 +72,8 @@ const FavTimetable = ({ favTimetable, timetableIndex, setTimetableIndex }) => {
               <TimetableCard
                 key={i}
                 tb={tb}
+                isSaved={true}
+                setTab={setTab}
                 timetableIndex={timetableIndex}
                 handleAddFavourite={handleAddFavourite}
                 favTimetable={favTimetable}
