@@ -68,7 +68,7 @@ module.exports.getLoggedIn = async (req, res, next) => {
     await user.populate('friends');
     res.status(200).send(user);
   } else {
-    res.status(200).send({ message: 'No valid session' });
+    res.status(200).send({ err: 'No valid session' });
   }
 };
 

@@ -19,11 +19,15 @@ export function AuthProvider({ children }) {
         if (socket) {
           socket.disconnect();
           socket.connect();
+          if (!data.err) {
+            setUser(data);
+            navigate(
+              (location.state && location.state.from.pathname) || '../calendar'
+            );
+          } else {
+            setErr(data.err);
+          }
         }
-        setUser(data);
-        navigate(
-          (location.state && location.state.from.pathname) || '../calendar'
-        );
       })
       .catch((err) => {
         setErr(err.message);
@@ -43,7 +47,7 @@ export function AuthProvider({ children }) {
     axios
       .post('users/getLoggedIn')
       .then((data) => {
-        if (!data.message) {
+        if (!data.err) {
           setUser(data);
         }
       })
