@@ -6,7 +6,7 @@
 - [Status](#status)
 - [Technologies](#technologies)
 - [Visit our website](#visit-our-website)
-- [Additional Resources](#Additional Resources)
+- [Additional Resources](#additional-resources)
 
 ## About The App
 
