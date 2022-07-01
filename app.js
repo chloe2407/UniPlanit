@@ -21,6 +21,7 @@ const dayjs = require('dayjs');
 const { Background } = require('./models/background');
 const duration = require('dayjs/plugin/duration');
 const { createServer } = require('http');
+const sslRedirect = require('heroku-ssl-redirect').default;
 
 const app = express();
 const httpServer = createServer(app);
@@ -125,6 +126,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(sslRedirect());
 
 app.use('/users', usersRouter);
 app.use('/courses', courseRouter);
