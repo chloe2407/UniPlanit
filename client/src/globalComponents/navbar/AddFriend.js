@@ -12,6 +12,7 @@ import Badge from '@mui/material/Badge';
 import Typography from '@mui/material/Typography';
 import NavbarTooltip from 'globalComponents/navbar/NavbarTooltip';
 import useSocket from 'context/socket';
+import theme from 'theme/theme';
 import {
   addFriend,
   getFriendRequest,
@@ -131,7 +132,7 @@ export default function AddFriend({ sx }) {
           >
             <Avatar
               sx={{
-                backgroundColor: 'black',
+                backgroundColor: theme.palette.primary.main,
                 width: 30,
                 height: 30,
               }}
