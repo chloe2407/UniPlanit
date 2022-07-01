@@ -69,6 +69,7 @@ module.exports = (io) => {
     try {
       const user = await User.findById(socket.userId);
       // console.log(tb);
+      tb.isSaved = true;
       user.favoritedTimetables.push(tb);
       await user.save();
       io.to(socket.userId).emit('get fav timetable', user.favoritedTimetables);
@@ -82,6 +83,23 @@ module.exports = (io) => {
     try {
       const user = await User.findById(socket.userId);
       user.favoritedTimetables = favTimetable;
+      await user.save();
+      io.to(socket.userId).emit('get fav timetable', user.favoritedTimetables);
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  };
+
+  const updateFavTimetable = async function (timetable) {
+    const socket = this;
+    try {
+      const user = await User.findById(socket.userId);
+      for (let i = 0; i < user.favoritedTimetables.length; i++) {
+        if (user.favoritedTimetables[i]._id == timetable._id) {
+          user.favoritedTimetables[i] = timetable;
+          break;
+        }
+      }
       await user.save();
       io.to(socket.userId).emit('get fav timetable', user.favoritedTimetables);
     } catch (e) {
@@ -117,7 +135,7 @@ module.exports = (io) => {
     }
   };
 
-  const buildTimetable = async function (term) {
+  const buildTimetableFromCourse = async function (term) {
     // builds a new timetable with empty sections based on the current courses
     socket = this;
     try {
@@ -140,6 +158,7 @@ module.exports = (io) => {
     }
   };
 
+  // refractor this function
   const updateTimetable = async function (buildTimetable, clear) {
     socket = this;
     try {
@@ -158,6 +177,32 @@ module.exports = (io) => {
       }
       await user.save();
       io.to(socket.userId).emit('get build timetable', user.selectedTimetable);
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  };
+
+  const updateSelectedTimetable = async function (timetable, clear) {
+    socket = this;
+    try {
+      const user = await User.findById(socket.userId);
+      if (clear) {
+        // clear the timetable
+        user.selectedTimetable.timetable = user.selectedTimetable.timetable.map(
+          (c) => {
+            c.section = null;
+            c.tutorial = null;
+            return c;
+          }
+        );
+      } else {
+        user.selectedTimetable = timetable;
+      }
+      await user.save();
+      io.to(socket.userId).emit(
+        'update selected timetable',
+        user.selectedTimetable
+      );
     } catch (e) {
       throw new Error(e.message);
     }
@@ -191,6 +236,7 @@ module.exports = (io) => {
           timetable: timetable,
         };
       });
+      console.log(user.lastGeneratedTimetables[0].timetable);
       await user.save();
       io.to(socket.userId).emit(
         'get generated timetable',
@@ -213,9 +259,11 @@ module.exports = (io) => {
     deleteCourseSection,
     getGeneratedTimetable,
     updateTimetable,
-    buildTimetable,
+    updateSelectedTimetable,
+    buildTimetableFromCourse,
     getBuildTimetable,
     generateTimetable,
+    updateFavTimetable,
   };
 };
 
@@ -259,7 +307,7 @@ function getPossibleSchedules(
   // if want to generate courses with only one lecture
   if (onlyLectures) {
     const courseCombo = listOfCourses.map(
-      ({ courseCode, courseTitle, term, sections }) => {
+      ({ courseCode, courseTitle, term, sections, university }) => {
         return sections.map((lec) => {
           cloneLec = JSON.parse(JSON.stringify(lec));
           cloneLec['isLocked'] = false;
@@ -267,6 +315,7 @@ function getPossibleSchedules(
             [courseCode]: {
               courseCode: courseCode,
               courseTitle: courseTitle,
+              university: university,
               term: term,
               isLocked: false,
               section: cloneLec,

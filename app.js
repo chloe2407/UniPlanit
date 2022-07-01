@@ -52,10 +52,12 @@ const {
   getFavTimetable,
   deleteFavTimetable,
   getBuildTimetable,
-  buildTimetable,
+  buildTimetableFromCourse,
   updateTimetable,
   getGeneratedTimetable,
   addFavTimetable,
+  updateFavTimetable,
+  updateSelectedTimetable,
 } = require('./handlers/courseHandler')(io);
 
 dayjs.extend(duration);
@@ -235,12 +237,14 @@ io.on('connection', async (socket) => {
   socket.on('delete section', deleteCourseSection);
   socket.on('get generated timetable', getGeneratedTimetable);
   socket.on('get build timetable', getBuildTimetable);
-  socket.on('build timetable', buildTimetable);
+  socket.on('build timetable', buildTimetableFromCourse);
   socket.on('update timetable', updateTimetable);
   socket.on('generate timetable', generateTimetable);
   socket.on('add fav timetable', addFavTimetable);
   socket.on('get fav timetable', getFavTimetable);
   socket.on('delete fav timetable', deleteFavTimetable);
+  socket.on('update fav timetable', updateFavTimetable);
+  socket.on('update selected timetable', updateSelectedTimetable);
 });
 
 io.on('disconnect', (socket) => {
