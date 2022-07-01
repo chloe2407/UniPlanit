@@ -29,7 +29,11 @@ const {
 const { isLoggedIn, isAuthorizedFriend } = require('../controllers/middleware');
 const passport = require('passport');
 
-router.use(cors());
+router.use(
+  cors({
+    origin: 'https://www.uniplanit.com',
+  })
+);
 
 router.get('/', catchAsync(getUser));
 
