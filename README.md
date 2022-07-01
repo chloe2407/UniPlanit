@@ -17,7 +17,7 @@ The project is currently under development
 
 ## Technologies
 
-The app uses MERN stack, React, MUI, and course data copied from uoft's artsci course calendar.
+The app uses MERN stack, React, MangoDB, MUI, and course data copied from uoft's artsci course calendar.
 
 ## Visit our website
 
