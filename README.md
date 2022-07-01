@@ -22,7 +22,7 @@ The app uses the MERN stack.
 
 ## Additional Resources
 
-The app utilizes MUI, and course data copied from uoft's artsci course calendar.
+The app utilizes course data copied from uoft's artsci course calendar (with permission). The app uses several packages including MUI, Socket, and Formik.
 
 ## Visit our website
 
