@@ -6,18 +6,14 @@ import InfoBox from './InfoBox/InfoBox';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
-const AccountInfo = ({ paramUser }) => {
+const AccountInfo = ({ paramUser, isEditing, handleChange }) => {
   const [first, setFirst] = useState(paramUser.first);
   const [last, setLast] = useState(paramUser.last);
   const [email, setEmail] = useState(paramUser.email);
-  const [isEditing, setIsEditing] = useState(false);
+
   const [university, setUniversity] = useState(paramUser.university);
 
   const { user } = useAuth();
-
-  const handleChange = () => {
-    setIsEditing(!isEditing);
-  };
 
   return (
     <div>
@@ -58,14 +54,14 @@ const AccountInfo = ({ paramUser }) => {
               value={university}
               onChange={(e) => setUniversity(e.target.value)}
             />
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'right' }}>
               {user._id === paramUser._id && !isEditing ? (
                 <Button
                   variant="contained"
                   sx={{
                     color: '#0583D2',
                     mt: '10px',
-                    width: '180px',
+                    width: '140px',
                     background: 'white',
                     ':hover': {
                       backgroundColor: 'white',
@@ -84,7 +80,7 @@ const AccountInfo = ({ paramUser }) => {
                   sx={{
                     color: '#0583D2',
                     mt: '10px',
-                    width: '180px',
+                    width: '140px',
                     background: 'white',
                     ':hover': {
                       backgroundColor: 'white',

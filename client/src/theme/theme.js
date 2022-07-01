@@ -5,7 +5,7 @@ const theme = createTheme({
   // test
   palette: {
     primary: {
-      main: 'rgba(0, 0, 0, 1)',
+      main: '#052439',
     },
     secondary: {
       main: 'rgba(255, 255, 255, 1)',

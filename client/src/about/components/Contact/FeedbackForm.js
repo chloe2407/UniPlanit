@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import TextField from '@mui/material/TextField';
 
 const MyTextInput = ({ label, ...props }) => {
   const [field, meta] = useField(props);
@@ -112,7 +113,7 @@ const FeedbackForm = () => {
             // specify the set of valid values for job type
             // @see http://bit.ly/yup-mixed-oneOf
             .oneOf(
-              ['designer', 'development', 'product', 'other'],
+              ['Question', 'Feedback', 'Collaboration', 'Other'],
               'Invalid Job Type'
             )
             .required('Required'),
@@ -141,6 +142,14 @@ const FeedbackForm = () => {
                 <List>
                   <ListItem>
                     <Typography>
+                      {/* <TextField
+
+                        required
+                        id="filled-required"
+                        label="Required"
+                        defaultValue="Hello World"
+                        variant="filled"
+                      /> */}
                       <MyTextInput
                         label="Name  "
                         name="firstName"
@@ -172,12 +181,9 @@ const FeedbackForm = () => {
                   </ListItem>
                 </List>
               </Box>
-              {/* <MyCheckbox name="acceptedTerms">
-                      I accept the terms and conditions
-                  </MyCheckbox> */}
             </Grid>
-            {/* <Divider orientation='vertical' variant='middle'/> */}
-            <Grid item xs={6}>
+
+            <Grid item xl={6}>
               <Box sx={{ paddingLeft: '5px' }}>
                 <MyTextArea
                   label="Message"

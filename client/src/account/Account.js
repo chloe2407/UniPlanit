@@ -18,6 +18,12 @@ const Account = () => {
   const [paramUser, setParamUser] = useState();
   const params = useParams();
 
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleChange = () => {
+    setIsEditing(!isEditing);
+  };
+
   useEffect(() => {
     loadImg();
   }, []);
@@ -50,10 +56,22 @@ const Account = () => {
 
       <Grid container direction="row" justifyContent="center" paddingTop="70px">
         <Grid item xs={12} md={5}>
-          {paramUser && <ProfileImage paramUser={paramUser} />}
+          {paramUser && (
+            <ProfileImage
+              paramUser={paramUser}
+              isEditing={isEditing}
+              handleChange={handleChange}
+            />
+          )}
         </Grid>
         <Grid item xs={12} md={6} p="0px">
-          {paramUser && <ProfileTabs paramUser={paramUser} />}
+          {paramUser && (
+            <ProfileTabs
+              paramUser={paramUser}
+              isEditing={isEditing}
+              handleChange={handleChange}
+            />
+          )}
         </Grid>
       </Grid>
     </>

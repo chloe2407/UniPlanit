@@ -82,9 +82,9 @@ export default function Scene({ width, height }) {
         // },
         render: {
           sprite: {
-            texture: './MyCalendar.png',
-            // xScale: 0.3,
-            // yScale: 0.3
+            texture: './landingSlogan3.png',
+            xScale: 0.3,
+            yScale: 0.3,
           },
         },
         collisionFilter: {
