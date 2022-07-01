@@ -26,7 +26,7 @@ const {
   deleteSection,
   readMessages,
 } = require('../controllers/users');
-const { isLoggedIn } = require('../controllers/middleware');
+const { isLoggedIn, isAuthorizedFriend } = require('../controllers/middleware');
 const passport = require('passport');
 
 router.use(cors());
@@ -172,10 +172,11 @@ router.post('/courses/sections/lock', isLoggedIn, catchAsync(lockSection));
 router.post('/courses/sections/delete', isLoggedIn, catchAsync(deleteSection));
 
 // get users courses
-router.get('/courses', isLoggedIn, catchAsync(getUserCourse));
+router.get('/courses', catchAsync(getUserCourse));
 
+// only has access if user is one of the message recipients
 router.get('/messages/:id', isLoggedIn, catchAsync(readMessages));
 
-router.get('/:id', catchAsync(getUser));
+router.get('/:id', isLoggedIn, isAuthorizedFriend, catchAsync(getUser));
 
 module.exports = router;

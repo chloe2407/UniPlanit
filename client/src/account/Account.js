@@ -12,10 +12,12 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import ProfileTabs from './components/ProfileTabs/ProfileTabs';
 import FadeIn from 'react-fade-in';
+import { useNavigate } from 'react-router-dom';
 
 const Account = () => {
   const [imgUrl, loadImg] = useImg();
   const [paramUser, setParamUser] = useState();
+  const navigate = useNavigate();
   const params = useParams();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -34,9 +36,14 @@ const Account = () => {
 
   useEffect(() => {
     getParamUserData(params.id).then((data) => {
+      if (data.err) {
+        navigate('/');
+      }
       setParamUser(data);
     });
   }, [params.id]);
+
+  console.log(paramUser);
 
   return (
     <>
