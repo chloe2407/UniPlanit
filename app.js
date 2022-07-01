@@ -131,7 +131,11 @@ app.use(sslRedirect());
 app.use('/users', usersRouter);
 app.use('/courses', courseRouter);
 
-app.use(cors({}));
+app.use(
+  cors({
+    origin: 'https://www.uniplanit.com',
+  })
+);
 
 app.get('/photo', async (req, res, next) => {
   // Return a background picture for login and sign up
