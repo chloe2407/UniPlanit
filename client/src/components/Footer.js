@@ -11,7 +11,6 @@ export default function Footer() {
     <Box
       textAlign={'start'}
       sx={{
-        mt: 5,
         p: 2,
         backgroundColor: theme.palette.primary.main,
         color: theme.palette.secondary.main,
