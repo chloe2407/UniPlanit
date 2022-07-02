@@ -129,7 +129,7 @@ export default function FriendProfile({ sx, friendInfo, handleShowChat }) {
         handleMenuClose={handleMenuClose}
       >
         <StyledMenuItem
-          onClick={() => navigate(`../account/${friendInfo._id}`)}
+          // onClick={() => navigate(`../account/${friendInfo._id}`)}
           style={{ opacity: 1, paddingBottom: 5 }}
         >
           {`${friendInfo.first} ${friendInfo.last}`}

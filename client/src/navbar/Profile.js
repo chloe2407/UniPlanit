@@ -55,12 +55,12 @@ export default function Profile({ sx, userInfo }) {
               sx={{ mx: 2 }}
               style={{ marginTop: 0, backgroundColor: 'white' }}
             />
-            <StyledMenuItem
+            {/* <StyledMenuItem
               style={{ marginBottom: 0 }}
               onClick={() => navigate(`../account/${userInfo._id}`)}
             >
               My Account
-            </StyledMenuItem>
+            </StyledMenuItem> */}
             <StyledMenuItem onClick={logout}>Logout</StyledMenuItem>
           </NavbarMenu>
         </>
