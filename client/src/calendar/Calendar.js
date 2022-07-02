@@ -10,7 +10,7 @@ const Calendar = () => {
   const [openDrawer, setOpenDrawer] = useState(true);
   const matchMd = useMediaQuery((theme) => theme.breakpoints.down('md'));
 
-  const drawerWidth = matchMd ? 90 : 25;
+  const drawerWidth = matchMd ? 95 : 25;
 
   const handleOpenDrawer = () => {
     setOpenDrawer(!openDrawer);
@@ -24,8 +24,8 @@ const Calendar = () => {
         sx={{
           '.MuiDrawer-paperAnchorLeft': {
             position: 'absolute',
-            top: '6.4em',
-            height: '59rem',
+            top: '6.2em',
+            height: '65rem',
           },
         }}
       >

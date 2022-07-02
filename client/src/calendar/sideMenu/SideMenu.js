@@ -37,7 +37,7 @@ export default function SideMenu({ drawerWidth }) {
     <Box
       sx={{
         width: `${drawerWidth}vw`,
-        height: '100vh',
+        height: '100rem',
         p: 2,
       }}
     >

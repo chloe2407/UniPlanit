@@ -8,6 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Container from '@mui/material/Container';
 import { StyledTableCell } from 'calendar/StyledTableCell';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import {
   useCourseMeetingTimeToEvent,
   useParseEventToTimetableObj,
@@ -19,12 +20,19 @@ const WeekView = ({ sx }) => {
   // const classes = useStyles();
   const times = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  // const times = [7, 8];
 
   const courseMeetingTimeToEvent = useCourseMeetingTimeToEvent();
   const parseEventToTimetableObj = useParseEventToTimetableObj();
   const [parsedTimetable, setParsedTimetable] = useState(null);
   const { setMsg } = useFeedback();
   const { timetable } = useCalendar();
+  const matchSM = useMediaQuery((theme) => theme.breakpoints.down('md'));
+  const matchXS = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+  // just switch to "View on a desktop for the best experience"
+  console.log(matchXS);
+  const WIDTH = matchSM ? '7rem' : '10vw';
+  const HEIGHT = '4rem';
 
   // build an object of all the time and courses
   // give warning when overlapping is detected
@@ -59,6 +67,7 @@ const WeekView = ({ sx }) => {
     setParsedTimetable({ ...days });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timetable]);
+  console.log(parsedTimetable);
 
   const createDay = () => {
     return days.reduce((acc, curr) => ((acc[curr] = createTime()), acc), {});
@@ -70,56 +79,67 @@ const WeekView = ({ sx }) => {
 
   const DayHeader = () => {
     return (
-      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-        <StyledTableCell sx={{ width: 'auto' }} align="center">
-          Time
-        </StyledTableCell>
+      <Box
+        sx={{
+          height: 'fit-content',
+          width: 'fit-content',
+          my: 2,
+          borderBottom: '1px',
+        }}
+      >
+        <Box
+          // align="center"
+          sx={{
+            display: 'inline-block',
+            width: '5rem',
+          }}
+        >
+          <Typography>Time</Typography>
+        </Box>
         {days.map((day) => (
-          <StyledTableCell key={day} align="center">
+          <Typography sx={{ display: 'inline-block', width: WIDTH }}>
             {day}
-          </StyledTableCell>
+          </Typography>
         ))}
-      </TableRow>
+      </Box>
     );
   };
 
   const TableSlot = ({ event }) => {
     return (
-      <>
-        {event !== 'skip' ? (
-          <StyledTableCell
-            align="center"
-            rowSpan={event && event.duration}
-            sx={{ padding: 0 }}
-          >
-            {event && (
-              <EventCard
-                event={event}
-                sx={{
-                  height: `${event.duration * 4.2}em`,
-                  overflowY: 'auto',
-                }}
-              />
-            )}
-          </StyledTableCell>
-        ) : null}
-      </>
+      <Box
+        display={'inline-block'}
+        sx={{
+          borderTop: '1px solid rgba(224, 224, 224, 1)',
+          width: WIDTH,
+          height: HEIGHT,
+        }}
+      >
+        {event && (
+          <EventCard
+            event={event}
+            sx={{
+              width: WIDTH,
+              height: `${4 * event.duration}rem`,
+              overflowY: 'auto',
+            }}
+          />
+        )}
+      </Box>
     );
   };
 
-  const TableSlots = ({ parsedTimetable }) => {
-    // do not render a cell if an event spans over it
+  const TableRow = ({ parsedTimetable }) => {
     return [
       times.map((time) => (
-        <TableRow key={time} sx={{ height: '2rem' }}>
-          <StyledTableCell
-            align="center"
-            sx={{ borderTop: '0', borderBottom: '0' }}
-          >
-            <Typography
-              sx={{ position: 'relative', top: '-1.7em' }}
-            >{`${time}:00`}</Typography>
-          </StyledTableCell>
+        <Box key={time} sx={{ height: HEIGHT, width: 'fit-content' }}>
+          <Typography
+            sx={{
+              display: 'inline-block',
+              width: '5rem',
+              verticalAlign: 'top',
+            }}
+          >{`${time}:00`}</Typography>
           {parsedTimetable &&
             days.map((day) => {
               return (
@@ -129,22 +149,16 @@ const WeekView = ({ sx }) => {
                 />
               );
             })}
-        </TableRow>
+        </Box>
       )),
     ];
   };
 
   return (
     <Box sx={sx}>
-      <Container>
-        <Table>
-          <TableHead>
-            <DayHeader />
-          </TableHead>
-          <TableBody>
-            <TableSlots parsedTimetable={parsedTimetable} />
-          </TableBody>
-        </Table>
+      <Container style={{ maxWidth: 'fit-content' }}>
+        <DayHeader />
+        <TableRow parsedTimetable={parsedTimetable} />
       </Container>
     </Box>
   );
