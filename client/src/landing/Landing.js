@@ -1,33 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import Cursor from './Cursor';
-import Scene from './Scene';
-import './Cursor.css';
-import Loading from 'globalComponents/Loading';
+import { Link } from 'react-router-dom';
+import { Box, Grid, CssBaseline } from '@material-ui/core';
+import Mainframe from './components/Mainframe';
+import Features from './components/Features';
 
-const Landing = () => {
-  const [addClass, setAddClass] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
-  const handleMouseEnter = () => {
-    setAddClass(true);
-  };
-  const handleMouseLeave = () => {
-    setAddClass(false);
-  };
-  return isLoading ? (
-    <Loading />
-  ) : (
-    <div
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      style={{ backgroundColor: '#22333b', cursor: 'none' }}
-    >
-      <Cursor addClass={addClass} />
-      <Scene width={window.innerWidth} height={window.innerHeight} />
-    </div>
+function Landing() {
+  return (
+    <Box overflow="auto" flex={1} flexDirection="column" display="flex">
+      <Mainframe />
+      <Features />
+    </Box>
   );
-};
+}
 
 export default Landing;
