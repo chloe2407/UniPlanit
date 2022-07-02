@@ -1,11 +1,11 @@
 import Axios from 'axios';
-import { BASE_URL } from 'configure/index';
+import BASE_URL from 'configure/index';
 
 export const axios = Axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  baseURL: BASE_URL,
+  // baseURL: BASE_URL.BASE_URL,
 });
 
 axios.interceptors.response.use(

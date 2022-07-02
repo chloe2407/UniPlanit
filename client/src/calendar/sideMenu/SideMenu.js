@@ -12,6 +12,7 @@ import useCalendar from 'context/calendar';
 import FriendSelect from 'calendar/sideMenu/FriendSelect';
 import FriendFav from 'calendar/sideMenu/FriendFav';
 import TermSelection from 'calendar/sideMenu/TermSelection';
+import EditExistingTimetable from 'calendar/sideMenu/EditExistingTimetable';
 
 export default function SideMenu({ drawerWidth }) {
   const [tab, setTab] = useState(0);
@@ -60,11 +61,15 @@ export default function SideMenu({ drawerWidth }) {
             generatedTimetable={generatedTimetable}
             timetableIndex={timetableIndex}
             setTimetableIndex={setTimetableIndex}
+            setTab={(v) => setTab(v)}
           />
+        ) : view === 'edit' ? (
+          <EditExistingTimetable />
         ) : null}
       </TabPanel>
       <TabPanel value={tab} index={1}>
         <FavTimetable
+          setTab={(v) => setTab(v)}
           favTimetable={favTimetable}
           timetableIndex={timetableIndex}
           setTimetableIndex={setTimetableIndex}

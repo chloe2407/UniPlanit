@@ -19,7 +19,8 @@ export function CalendarProvider({ children }) {
   const [favTimetable, setFavTimetable] = useState();
   const [buildTimetable, setBuildTimetable] = useState();
   const [timetableIndex, setTimetableIndex] = useState(0);
-  const [currentTimetableCompare, setCurrentTimetableCompare] = useState();
+  const [currentSelectedTimetable, setCurrentSelectedTimetable] = useState();
+  const [timetablesCompare, setTimetablesCompare] = useState([]);
   const [userCourse, setUserCourse] = useState();
   const [userFriend, setUserFriend] = useState();
   const [currentFriend, setCurrentFriend] = useState();
@@ -96,6 +97,35 @@ export function CalendarProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    socket.on('update selected timetable', (timetable) => {
+      setCurrentSelectedTimetable(timetable);
+    });
+    return () => socket.off('update selected timetable');
+  }, []);
+
+  useEffect(() => {
+    currentSelectedTimetable &&
+      setTimetablesCompare([
+        ...timetablesCompare,
+        {
+          owner: 'me',
+          timetable: currentSelectedTimetable.timetable,
+        },
+      ]);
+  }, [currentSelectedTimetable]);
+
+  useEffect(() => {
+    console.log(timetablesCompare);
+    const timetable = timetablesCompare.map((timetable) =>
+      timetable.timetable.map((course) => ({
+        ...course,
+        owner: timetable.owner,
+      }))
+    );
+    // setTimetable(timetable)
+  }, [timetablesCompare]);
+
+  useEffect(() => {
     if (view === 'generate') {
       setTimetable(
         generatedTimetable && generatedTimetable[timetableIndex].timetable
@@ -115,10 +145,21 @@ export function CalendarProvider({ children }) {
           currentFriend.favoritedTimetables.length > 0 &&
           currentFriend.favoritedTimetables[timetableIndex].timetable
       );
+    } else if (view === 'edit') {
+      setTimetable(
+        currentSelectedTimetable && currentSelectedTimetable.timetable
+      );
     } else {
       setTimetable(undefined);
     }
-  }, [view, buildTimetable, generatedTimetable, favTimetable, timetableIndex]);
+  }, [
+    view,
+    buildTimetable,
+    generatedTimetable,
+    favTimetable,
+    timetableIndex,
+    currentSelectedTimetable,
+  ]);
 
   useEffect(() => {
     socket.on('get user friend', (userFriend) => {
@@ -135,12 +176,14 @@ export function CalendarProvider({ children }) {
       timetableIndex,
       setTimetableIndex,
       generatedTimetable,
+      timetablesCompare,
+      setTimetablesCompare,
       buildTimetable,
       userFriend,
       currentFriend,
       setCurrentFriend,
-      currentTimetableCompare,
-      setCurrentTimetableCompare,
+      currentSelectedTimetable,
+      setCurrentSelectedTimetable,
       favTimetable,
       timetable,
     }),
@@ -149,11 +192,13 @@ export function CalendarProvider({ children }) {
       userCourse,
       generatedTimetable,
       currentFriend,
-      currentTimetableCompare,
+      currentSelectedTimetable,
       buildTimetable,
       favTimetable,
       timetableIndex,
       timetable,
+      ,
+      timetablesCompare,
     ]
   );
   return (

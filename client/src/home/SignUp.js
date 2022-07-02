@@ -10,7 +10,7 @@ import Grid from '@mui/material/Grid';
 import Autocomplete from '@mui/material/Autocomplete';
 import useAuth from 'context/auth';
 import { useImg } from 'hooks/api/hooks';
-import Loading from 'globalComponents/Loading';
+import Loading from 'components/Loading';
 
 const signupSchema = yup.object().shape({
   email: yup.string().email().required(),

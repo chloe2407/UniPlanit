@@ -19,7 +19,7 @@ export default function FriendFav() {
         />
         {
           // display user friend's favorite timetables, if not , display no favorite timetables
-          currentFriend.favoritedTimetables?.length > 0 ? (
+          currentFriend?.favoritedTimetables?.length > 0 ? (
             currentFriend.favoritedTimetables.map((tb, index) => (
               <TimetableCard
                 sx={{ p: 2 }}

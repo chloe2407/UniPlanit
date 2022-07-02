@@ -63,12 +63,13 @@ module.exports.register = async (req, res, next) => {
 };
 
 module.exports.getLoggedIn = async (req, res, next) => {
+  console.log(req.isAuthenticated());
   if (req.isAuthenticated()) {
     const user = await User.findById(req.user.id);
     await user.populate('friends');
     res.status(200).send(user);
   } else {
-    res.status(200).send({ message: 'No valid session' });
+    res.status(200).send({ err: 'No valid session' });
   }
 };
 

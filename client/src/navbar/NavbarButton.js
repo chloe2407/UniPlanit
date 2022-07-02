@@ -16,11 +16,11 @@ const StyledButton = styled(Button)(({ theme }) => ({
 export default function NavbarButton({ children, sx, href, onClick }) {
   return (
     <StyledButton
+      style={{ boxShadow: 'none' }}
       size="small"
       variant="contained"
       sx={{ ...sx, mt: 0.5 }}
       href={href}
-      color="inherit"
       onClick={onClick}
     >
       {children}

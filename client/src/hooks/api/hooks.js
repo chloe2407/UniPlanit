@@ -6,7 +6,7 @@ export function useImg() {
 
   const loadImg = () => {
     return axios
-      .get('photo')
+      .get('../../photo')
       .then((data) => {
         setImgUrl(data);
         Promise.resolve(data);

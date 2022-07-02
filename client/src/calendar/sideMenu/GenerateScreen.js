@@ -19,6 +19,7 @@ const GenerateScreen = ({
   favTimetable,
   timetableIndex,
   setTimetableIndex,
+  setTab,
 }) => {
   const [generateTime, setGenerateTime] = useState();
   const [pageCount, setPageCount] = useState(1);
@@ -91,6 +92,7 @@ const GenerateScreen = ({
               <TimetableCard
                 key={i}
                 tb={tb}
+                setTab={setTab}
                 timetableIndex={timetableIndex}
                 handleAddFavourite={handleAddFavourite}
                 favTimetable={favTimetable}
