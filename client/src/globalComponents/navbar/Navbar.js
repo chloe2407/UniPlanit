@@ -243,9 +243,7 @@ export default function Navbar({ handleShowChat }) {
                   underline="none"
                   sx={{ mx: 2 }}
                 >
-                  UniPlanit
-                  {/* <b>Uni</b>Planit
-                  Uni<b>Planit</b> */}
+                  Uni<b>Planit</b>
                 </Link>
                 <NavbarButton onClick={() => navigate('/calendar')}>
                   <Typography>Calendar</Typography>
@@ -278,7 +276,7 @@ export default function Navbar({ handleShowChat }) {
                   underline="none"
                   sx={{ ml: 'auto' }}
                 >
-                  MyCalendar
+                  UniPlanit
                 </Link>
                 <NavProfiles />
               </>

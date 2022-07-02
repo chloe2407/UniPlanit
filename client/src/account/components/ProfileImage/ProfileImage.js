@@ -69,11 +69,8 @@ const ProfileImage = ({ paramUser, isEditing, handleChange }) => {
         <Typography variant="h4" pt="10px" fontWeight="bold">
           {user.first} {user.last}
         </Typography>
-        <Typography variant="h7" pb="10px">
-          {user.email}
-        </Typography>
-        <Typography variant="h7" pb="10px">
-          {user.university}
+        <Typography variant="subtitle1">
+          {user.email + ' | ' + user.university}
         </Typography>
         {user._id === paramUser._id ? (
           <TextField

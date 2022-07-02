@@ -25,9 +25,7 @@ const Contact = () => (
           </Typography>
           <Typography variant="h4">Reach Us Here!</Typography>
         </Box>
-        <Box sx={{ paddingY: '30px' }}>
-          <FeedbackForm />
-        </Box>
+        <Box sx={{ paddingY: '30px' }}>{/* <FeedbackForm /> */}</Box>
       </Grid>
     </Grid>
   </div>
