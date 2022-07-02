@@ -22,8 +22,8 @@ export default function Footer() {
           This website is not affiliated with the University of Toronto
         </Typography>
         <Typography>
-          The times may not be accurate, visit
-          https://timetable.iit.artsci.utoronto.ca/ for accurate times
+          Data from https://timetable.iit.artsci.utoronto.ca/ has precedence
+          over information presented here.
         </Typography>
       </Container>
     </Box>
