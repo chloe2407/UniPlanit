@@ -12,7 +12,7 @@ const EventCard = ({ style, event, sx }) => {
   const open = Boolean(anchorEl);
 
   return (
-    <Card sx={{ borderRadius: 0 }} style={style}>
+    <Card style={{ position: 'absolute' }} sx={{ borderRadius: 0 }}>
       <CardActionArea sx={sx} onClick={(e) => setAnchorEl(e.currentTarget)}>
         <CardContent sx={{ textAlign: 'center', p: 0 }}>
           <Typography>
@@ -41,6 +41,7 @@ const EventCard = ({ style, event, sx }) => {
             <Typography>Day: {event.day}</Typography>
             <Typography>Starts: {event.startTime}</Typography>
             <Typography>Ends: {event.endTime}</Typography>
+            <Typography>Owner/s: {event.owner}</Typography>
           </Paper>
         </Popover>
       </Box>
