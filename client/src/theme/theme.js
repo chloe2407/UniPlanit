@@ -1,19 +1,26 @@
 import { createTheme } from '@mui/material/styles';
-import '@fontsource/lato/400.css';
+import '@fontsource/josefin-sans/100.css';
+import '@fontsource/josefin-sans/200.css';
+import '@fontsource/josefin-sans/300.css';
+import '@fontsource/josefin-sans/400.css';
+import '@fontsource/josefin-sans/500.css';
+import '@fontsource/josefin-sans/600.css';
+import '@fontsource/josefin-sans/700.css';
+import '@fontsource/spectral';
 
 const theme = createTheme({
   // test
   palette: {
     primary: {
-      main: 'rgba(0, 0, 0, 1)',
+      main: '#052439',
     },
     secondary: {
-      main: 'rgba(255, 255, 255, 1)',
+      main: '#FFECD1',
       contrastText: 'rgba(255, 255, 255, 1)',
     },
   },
   typography: {
-    fontFamily: ['Lato'],
+    fontFamily: ['Spectral'],
   },
   components: {
     MuiButton: {

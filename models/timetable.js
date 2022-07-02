@@ -13,12 +13,17 @@ const timetableSchema = new mongoose.Schema({
   },
   name: {
     type: String,
+    default: 'Untitled',
   },
   description: {
     type: String,
   },
   tags: {
     type: String,
+  },
+  isSaved: {
+    type: Boolean,
+    default: false,
   },
 });
 

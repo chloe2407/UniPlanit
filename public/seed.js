@@ -34,11 +34,12 @@ const seed = () => {
               (meetingTime) => meetingTime.startTime === null
             )
         );
-        value.tutorials = value.tutorials.filter((tutorial) => {
-          !tutorial.meetingTimes.some(
-            (meetingTime) => meetingTime.startTime === null
-          );
-        });
+        value.tutorials = value.tutorials.filter(
+          (tutorial) =>
+            !tutorial.meetingTimes.some(
+              (meetingTime) => meetingTime.startTime === null
+            )
+        );
         course.sections = value.sections;
         course.tutorials = value.tutorials;
         course.save();

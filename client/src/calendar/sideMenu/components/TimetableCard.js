@@ -12,7 +12,15 @@ import CardActions from '@mui/material/CardActions';
 import theme from 'theme/theme';
 import useCalendar from 'context/calendar';
 import CompareIcon from '@mui/icons-material/Compare';
-import { StyledPopover } from 'globalComponents/navbar/NavbarMenu';
+import TextField from '@mui/material/TextField';
+import CheckIcon from '@mui/icons-material/Check';
+import { StyledPopover } from 'navbar/NavbarMenu';
+import EditIcon from '@mui/icons-material/Edit';
+import useSocket from 'context/socket';
+import { updateFavTimetable } from 'calendar/api/sideMenuApi';
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import NavbarTooltip from 'navbar/NavbarTooltip';
+import Button from '@mui/material/Button';
 
 export default function TimetableCard({
   timetableIndex,
@@ -22,11 +30,36 @@ export default function TimetableCard({
   getMatchTimetable = null,
   setTimetableIndex,
   index,
+  isSaved = false,
   isAuthor = true,
+  setTab = null,
 }) {
-  const { setCurrentTimetableCompare, userFriend } = useCalendar();
+  const {
+    setCurrentSelectedTimetable,
+    userFriend,
+    setView,
+    timetablesCompare,
+    setTimetablesCompare,
+  } = useCalendar();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElB, setAnchorElB] = useState(null);
+  const [currentFriend, setCurrentFriend] = useState();
+  const { socket } = useSocket();
+  const [isEditing, setIsEditing] = useState(false);
+  const [nameValue, setNameValue] = useState(tb.name || 'Name this timetable');
   const open = Boolean(anchorEl);
+  const openB = Boolean(anchorElB);
+
+  const termToString = {
+    F: 'Fall',
+    S: 'Winter',
+  };
+
+  const handleSaveName = () => {
+    tb.name = nameValue;
+    updateFavTimetable(socket, tb);
+    setIsEditing(false);
+  };
 
   return (
     <Box
@@ -45,6 +78,7 @@ export default function TimetableCard({
         sx={{
           pb: !favTimetable && 2,
           my: 2,
+          py: 1,
           color: 'white',
           backgroundColor: theme.palette.primary.main,
           // border:
@@ -58,6 +92,47 @@ export default function TimetableCard({
         }}
         key={index}
       >
+        <Stack direction={'row'} justifyContent={'space-between'}>
+          {isAuthor && isSaved && (
+            <>
+              <TextField
+                disabled={!isEditing}
+                placeholder="Name this timetable"
+                onChange={(e) => setNameValue(e.target.value)}
+                value={nameValue}
+                sx={{
+                  ml: 0.5,
+                  '& .MuiOutlinedInput-input': {
+                    color: 'white !important',
+                  },
+                  '& .Mui-disabled': {
+                    WebkitTextFillColor: 'white !important',
+                    opacity: 1,
+                  },
+                }}
+              />
+              {isEditing ? (
+                <IconButton onClick={() => handleSaveName()}>
+                  <CheckIcon sx={{ color: 'white' }} />
+                </IconButton>
+              ) : (
+                <IconButton onClick={() => setIsEditing(!isEditing)}>
+                  <EditIcon sx={{ color: 'white' }} />
+                </IconButton>
+              )}
+            </>
+          )}
+          <Typography
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              ml: 'auto',
+              mr: 2,
+            }}
+          >
+            {termToString[tb.term]}
+          </Typography>
+        </Stack>
         <CardActionArea
           onClick={() => {
             setTimetableIndex(index);
@@ -82,6 +157,7 @@ export default function TimetableCard({
 
         {isAuthor && (
           <CardActions sx={{ my: 0, py: 0 }}>
+            {/* <NavbarTooltip title={<Typography>Unlike</Typography>}> */}
             <IconButton onClick={() => handleAddFavourite(tb)}>
               {favTimetable && getMatchTimetable(tb.timetable) ? (
                 <FavoriteIcon sx={{ color: 'white' }} />
@@ -89,14 +165,21 @@ export default function TimetableCard({
                 <FavoriteBorderIcon sx={{ color: 'white' }} />
               )}
             </IconButton>
-            <IconButton
-              onClick={(e) => {
-                setAnchorEl(e.currentTarget);
-                setCurrentTimetableCompare(tb);
-              }}
+            {/* </NavbarTooltip> */}
+            <NavbarTooltip
+              title={
+                <Typography>Compare this timetable with a friend</Typography>
+              }
             >
-              <CompareIcon sx={{ color: 'white' }} />
-            </IconButton>
+              <IconButton
+                onClick={(e) => {
+                  setAnchorEl(e.currentTarget);
+                  setCurrentSelectedTimetable(tb);
+                }}
+              >
+                <CompareIcon sx={{ color: 'white' }} />
+              </IconButton>
+            </NavbarTooltip>
             <StyledPopover
               sx={{
                 '& .MuiPopover-paper': {
@@ -113,12 +196,80 @@ export default function TimetableCard({
             >
               <Box sx={{ p: 2 }}>
                 <strong>
-                  <Typography>Compare With a FrNiend</Typography>
+                  <Typography>Compare With a Friend</Typography>
                 </strong>
                 {userFriend ? (
                   userFriend.map((friend) => (
                     <Box key={friend._id} sx={{ my: 1 }}>
-                      <Typography>{`${friend.first} ${friend.last}`}</Typography>
+                      <Button
+                        sx={{
+                          width: '100%',
+                          color: 'white',
+                          justifyContent: 'start',
+                        }}
+                        onClick={(e) => {
+                          setCurrentFriend(friend._id);
+                          setAnchorElB(e.currentTarget);
+                        }}
+                      >
+                        <Typography>{`${friend.first} ${friend.last}`}</Typography>
+                      </Button>
+                      {friend._id === currentFriend && (
+                        <StyledPopover
+                          sx={{
+                            '& .MuiPopover-paper': {
+                              backgroundColor: 'gray',
+                            },
+                          }}
+                          open={openB}
+                          anchorEl={anchorElB}
+                          onClose={() => {
+                            setCurrentFriend(null);
+                            setAnchorElB(null);
+                          }}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                          }}
+                        >
+                          <Box sx={{ p: 2 }}>
+                            {friend.favoritedTimetables?.length > 0 ? (
+                              friend.favoritedTimetables.map(
+                                (friendTimetable) => (
+                                  <Box key={friendTimetable._id} sx={{ my: 1 }}>
+                                    <Button
+                                      sx={{
+                                        width: '100%',
+                                        color: 'white',
+                                        justifyContent: 'start',
+                                      }}
+                                      onClick={() => {
+                                        console.log(timetablesCompare);
+                                        setTimetablesCompare([
+                                          ...timetablesCompare,
+                                          {
+                                            owner: `${friend.first} ${friend.last}`,
+                                            timetable:
+                                              friendTimetable.timetable,
+                                          },
+                                        ]);
+                                      }}
+                                    >
+                                      <Typography>
+                                        {`${friendTimetable.name}-${
+                                          termToString[friendTimetable.term]
+                                        }`}
+                                      </Typography>
+                                    </Button>
+                                  </Box>
+                                )
+                              )
+                            ) : (
+                              <Typography>No Timetables</Typography>
+                            )}
+                          </Box>
+                        </StyledPopover>
+                      )}
                     </Box>
                   ))
                 ) : (
@@ -126,6 +277,20 @@ export default function TimetableCard({
                 )}
               </Box>
             </StyledPopover>
+            <NavbarTooltip title={<Typography>Edit timetable</Typography>}>
+              <IconButton
+                onClick={(e) => {
+                  // navigate to edit timetable page
+                  setCurrentSelectedTimetable(tb);
+                  setTab(0);
+                  setView('edit');
+                }}
+              >
+                <EventNoteIcon
+                  sx={{ color: theme.palette.primary.contrastText }}
+                />
+              </IconButton>
+            </NavbarTooltip>
           </CardActions>
         )}
       </Card>

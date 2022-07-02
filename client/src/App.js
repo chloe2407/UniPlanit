@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import useAuth from 'context/auth';
 import { Outlet } from 'react-router-dom';
-import ErrorFallback from 'globalComponents/error';
+import ErrorFallback from 'components/error';
 import { ErrorBoundary } from 'react-error-boundary';
 import './App.css';
 

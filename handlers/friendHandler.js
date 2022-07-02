@@ -105,7 +105,7 @@ module.exports = (io) => {
       );
       io.to(to).emit(
         'accepted friend',
-        `${friend.first} ${friend.last} has accepted your friend request`
+        `${user.first} ${user.last} has accepted your friend request`
       );
       io.to(socket.userId).emit('get friend request', user.friendRequests);
     } catch (e) {

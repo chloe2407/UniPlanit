@@ -1,4 +1,4 @@
-import Navbar from 'globalComponents/navbar/Navbar';
+import Navbar from 'navbar/Navbar';
 import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
 import ChatWidget from 'chat/ChatWidget';
@@ -7,6 +7,7 @@ import useFeedback from 'context/feedback';
 export default function Layout() {
   const [chats, setChats] = useState([]);
   const { SnackbarMsg } = useFeedback();
+
   const handleShowChat = (friend) => {
     if (!chats.includes(friend)) setChats([...chats, friend]);
   };

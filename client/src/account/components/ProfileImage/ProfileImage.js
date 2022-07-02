@@ -9,11 +9,11 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
-import initialToColor from 'globalComponents/InitialToColor';
+import initialToColor from 'components/InitialToColor';
 import FileUpload from './FileUpload';
-import ImageUpload from './ImageUpload';
+// import ImageUpload from './ImageUpload';
 
-const ProfileImage = ({ paramUser }) => {
+const ProfileImage = ({ paramUser, isEditing, handleChange }) => {
   const [updateImage, setUpdateImage] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -21,17 +21,6 @@ const ProfileImage = ({ paramUser }) => {
 
   const handleFileUpload = (img) => {
     console.log(img);
-    // fetch('/users/uploadImage', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //         image: img
-    //     })
-    // })
-    // .then(res => res.json())
-    // .catch(err => console.log(err))
   };
   return (
     <div>
@@ -58,33 +47,57 @@ const ProfileImage = ({ paramUser }) => {
             <Typography variant="h3">{`${paramUser.first[0]}${paramUser.last[0]}`}</Typography>
           </Avatar>
         )}
-
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            color: '#0583D2',
+            mt: '10px',
+            width: '110px',
+            background: 'white',
+            ':hover': {
+              backgroundColor: 'white',
+            },
+          }}
+        >
+          Upload File
+          <input type="file" hidden />
+        </Button>
         {/* {user._id === paramUser._id ? (
           <ImageUpload />
         ) : null} */}
         <Typography variant="h4" pt="10px" fontWeight="bold">
           {user.first} {user.last}
         </Typography>
-        <Typography variant="h7" pb="10px">
-          {user.email}
+        <Typography variant="subtitle1">
+          {user.email + ' | ' + user.university}
         </Typography>
-        <Typography variant="h7" pb="10px">
-          {user.university}
-        </Typography>
-        <TextField
-          id="outlined-multiline-static"
-          label="Bio"
-          multiline
-          rows={4}
-          // color="gray"
-          disabled={user._id === paramUser._id ? null : 'true'}
-          defaultValue="Say something!"
-        />
+        {user._id === paramUser._id ? (
+          <TextField
+            id="outlined-multiline-static"
+            label="Bio"
+            multiline
+            rows={4}
+            InputProps={{
+              readOnly: !isEditing,
+            }}
+            disabled={!isEditing}
+            defaultValue="Say something!"
+          />
+        ) : (
+          <TextField
+            id="outlined-multiline-static"
+            label="Bio"
+            multiline
+            rows={4}
+            InputProps={{
+              readOnly: !isEditing,
+            }}
+            disabled={true}
+            defaultValue="Say something!"
+          />
+        )}
       </Grid>
-      <Button variant="contained" component="label">
-        Upload File
-        <input type="file" hidden />
-      </Button>
     </div>
   );
 };

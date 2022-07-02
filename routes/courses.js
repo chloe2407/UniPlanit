@@ -1,9 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const { catchAsync } = require('../utils/catchAsync');
+const cors = require('cors');
 const { getCourse } = require('../controllers/courses');
 
 // handles course CRUD
+
+router.use(
+  cors({
+    origin: 'https://www.uniplanit.com',
+  })
+);
 
 /**
  * @swagger

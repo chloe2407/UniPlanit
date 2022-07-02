@@ -11,7 +11,7 @@ import MinimizeIcon from '@mui/icons-material/Minimize';
 import IconButton from '@mui/material/IconButton';
 import useSocket from 'context/socket';
 import useAuth from 'context/auth';
-import initialToColor from 'globalComponents/InitialToColor';
+import initialToColor from 'components/InitialToColor';
 import { getConversation } from 'chat/api/chatApi';
 
 export default function ChatWidget({ friendInfo, handleCloseChat }) {
@@ -111,7 +111,7 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
           >
             {conversation &&
               conversation.map((m) => (
-                <>
+                <Box key={m._id}>
                   {m.from === friendInfo._id ? (
                     <Box>
                       <Stack direction="row" alignItems={'center'}>
@@ -159,7 +159,7 @@ export default function ChatWidget({ friendInfo, handleCloseChat }) {
                       <Typography sx={{ mb: 1, mr: 4 }}>{m.message}</Typography>
                     </Box>
                   )}
-                </>
+                </Box>
               ))}
             <div ref={endRef} />
           </Box>

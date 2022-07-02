@@ -3,6 +3,7 @@ import '../about.css';
 import { Grid, Item, Typography } from '@mui/material';
 import AssistantPhotoIcon from '@mui/icons-material/AssistantPhoto';
 import GroupsIcon from '@mui/icons-material/Groups';
+import FadeIn from 'react-fade-in/lib/FadeIn';
 
 const AboutDescription = () => {
   const styles = {
@@ -13,89 +14,108 @@ const AboutDescription = () => {
   return (
     <div>
       <div className="md-lg">
-        <Grid
-          container
-          rowSpacing={1}
-          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-          sx={styles}
-        >
-          <Grid item xs={6}>
-            <AssistantPhotoIcon />
-          </Grid>
-          <Grid item xs={6}>
-            <GroupsIcon />
-          </Grid>
-          <Grid item xs={6}>
-            <Typography
-              sx={{
-                paddingX: '30px',
-              }}
-            >
-              Each year, university students go through the trouble of producing
-              a schedule that avoids conflicting lectures, tutorials, and labs,
-              that also conveniently satisfies their desired break times between
-              classes. MyCalendar's intelligent algorithm generates your best
-              potential schedules given your requirements: <br></br>
-              <br></br>No classes before 9AM? Want a lunch break at 12PM?{' '}
-              <br></br>We've got it for you, one click away.
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography
-              sx={{
-                paddingX: '30px',
-              }}
-            >
-              A group of Computer Science students at the University of Toronto
-              saw the high demand for this product, as well as what lacked in
-              similar applications: personalization.
-            </Typography>
-          </Grid>
-        </Grid>
-      </div>
-      <div className="xs-sm">
-        <Grid container sx={styles}>
-          <Grid item xs={12}>
-            <AssistantPhotoIcon />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Typography
-              sx={{
-                paddingX: '30px',
-              }}
-            >
-              University students face the difficulty of Lorem ipsum dolor sit
-              amet, consectetur adipiscing elit, sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit
-              amet, consectetur adipiscing elit, sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua
-            </Typography>
-          </Grid>
-
+        <FadeIn>
           <Grid
-            item
-            xs={12}
-            sx={{
-              paddingTop: '80px',
-            }}
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            sx={styles}
           >
-            <GroupsIcon />
+            <Grid item xs={6}>
+              <AssistantPhotoIcon />
+            </Grid>
+            <Grid item xs={6}>
+              <GroupsIcon />
+            </Grid>
+            <Grid item xs={6}>
+              <Typography
+                sx={{
+                  paddingX: '30px',
+                }}
+              >
+                <b>
+                  UniPlanit's intelligent algorithm generates your best
+                  schedules for you.{' '}
+                </b>{' '}
+                We help university students produce a customised timetable{' '}
+                <i>satisfying their needs</i> for desired lectures, reserved
+                break times, having classes with friends, and many more.
+                <br></br>
+                <br></br>No classes before 9AM? Want a lunch break at 12PM?{' '}
+                <br></br>We've got it for you, one click away.
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography
+                sx={{
+                  paddingX: '30px',
+                }}
+              >
+                A team of Computer Science students at the University of Toronto
+                sought to meet the high demand for this product given what
+                lacked in similar applications: customisation.
+                <br></br>
+                <br></br>
+                Reach us below for questions, comments, concerns, and
+                collaboration!
+              </Typography>
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Typography
+        </FadeIn>
+      </div>
+
+      <div className="xs-sm">
+        <FadeIn>
+          <Grid container sx={styles}>
+            <Grid item xs={12}>
+              <AssistantPhotoIcon />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Typography
+                sx={{
+                  paddingX: '30px',
+                }}
+              >
+                <b>
+                  UniPlanit's intelligent algorithm generates your best
+                  schedules for you.{' '}
+                </b>{' '}
+                We help university students produce a customised timetable{' '}
+                <i>satisfying their needs</i> for desired lectures, reserved
+                break times, having classes with friends, and many more.
+                <br></br>
+                <br></br>No classes before 9AM? Want a lunch break at 12PM?{' '}
+                <br></br>We've got it for you, one click away.
+              </Typography>
+            </Grid>
+
+            <Grid
+              item
+              xs={12}
               sx={{
-                paddingX: '30px',
+                paddingTop: '80px',
               }}
             >
-              Created in 2022 summer, Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-              dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-              dolore magna aliqua
-            </Typography>
+              <GroupsIcon />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography
+                sx={{
+                  paddingX: '30px',
+                }}
+              >
+                A team of Computer Science students at the University of Toronto
+                sought to meet the high demand for this product given what
+                lacked in similar applications: customisation.
+                <br></br>
+                <br></br>
+                Reach us below for questions, comments, concerns, and
+                collaboration!
+              </Typography>
+            </Grid>
           </Grid>
-        </Grid>
+        </FadeIn>
       </div>
     </div>
   );

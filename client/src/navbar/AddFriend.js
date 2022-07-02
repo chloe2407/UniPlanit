@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { NavbarMenu } from 'globalComponents/navbar/NavbarMenu';
+import { NavbarMenu } from 'navbar/NavbarMenu';
 import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import { Formik } from 'formik';
@@ -10,14 +10,15 @@ import * as yup from 'yup';
 import Box from '@mui/material/Box';
 import Badge from '@mui/material/Badge';
 import Typography from '@mui/material/Typography';
-import NavbarTooltip from 'globalComponents/navbar/NavbarTooltip';
+import NavbarTooltip from 'navbar/NavbarTooltip';
 import useSocket from 'context/socket';
+import theme from 'theme/theme';
 import {
   addFriend,
   getFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
-} from 'globalComponents/navbar/api/navbarApi';
+} from 'navbar/api/navbarApi';
 import useFeedback from 'context/feedback';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
@@ -125,10 +126,13 @@ export default function AddFriend({ sx }) {
           onClick={(e) => setAnchorEl(e.currentTarget)}
           sx={sx}
         >
-          <Badge badgeContent={223} color="success">
+          <Badge
+            badgeContent={friendRequest && friendRequest.length}
+            color="success"
+          >
             <Avatar
               sx={{
-                backgroundColor: 'black',
+                backgroundColor: theme.palette.primary.main,
                 width: 30,
                 height: 30,
               }}

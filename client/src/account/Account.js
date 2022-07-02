@@ -12,11 +12,19 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import ProfileTabs from './components/ProfileTabs/ProfileTabs';
 import FadeIn from 'react-fade-in';
+import { useNavigate } from 'react-router-dom';
 
 const Account = () => {
   const [imgUrl, loadImg] = useImg();
   const [paramUser, setParamUser] = useState();
+  const navigate = useNavigate();
   const params = useParams();
+
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleChange = () => {
+    setIsEditing(!isEditing);
+  };
 
   useEffect(() => {
     loadImg();
@@ -28,34 +36,60 @@ const Account = () => {
 
   useEffect(() => {
     getParamUserData(params.id).then((data) => {
+      if (data.err) {
+        navigate('/');
+      }
       setParamUser(data);
     });
   }, [params.id]);
 
+  console.log(paramUser);
+
   return (
     <>
-      <div
-        style={{
-          backgroundImage: imgUrl && `url(${imgUrl})`,
-          display: 'flex',
-          height: '17rem',
-          backgroundPosition: 'center',
-          backgroundSize: 'cover',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Typography variant="h3">Account Information</Typography>
-      </div>
+      {paramUser && (
+        <>
+          <div
+            style={{
+              backgroundImage: imgUrl && `url(${imgUrl})`,
+              display: 'flex',
+              height: '17rem',
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Typography variant="h3">Account Information</Typography>
+          </div>
 
-      <Grid container direction="row" justifyContent="center" paddingTop="70px">
-        <Grid item xs={12} md={5}>
-          {paramUser && <ProfileImage paramUser={paramUser} />}
-        </Grid>
-        <Grid item xs={12} md={6} p="0px">
-          {paramUser && <ProfileTabs paramUser={paramUser} />}
-        </Grid>
-      </Grid>
+          <Grid
+            container
+            direction="row"
+            justifyContent="center"
+            paddingTop="70px"
+          >
+            <Grid item xs={12} md={5}>
+              {paramUser && (
+                <ProfileImage
+                  paramUser={paramUser}
+                  isEditing={isEditing}
+                  handleChange={handleChange}
+                />
+              )}
+            </Grid>
+            <Grid item xs={12} md={6} p="0px">
+              {paramUser && (
+                <ProfileTabs
+                  paramUser={paramUser}
+                  isEditing={isEditing}
+                  handleChange={handleChange}
+                />
+              )}
+            </Grid>
+          </Grid>
+        </>
+      )}
     </>
   );
 };

@@ -21,13 +21,14 @@ const dayjs = require('dayjs');
 const { Background } = require('./models/background');
 const duration = require('dayjs/plugin/duration');
 const { createServer } = require('http');
+const sslRedirect = require('heroku-ssl-redirect').default;
 
 const app = express();
 const httpServer = createServer(app);
 
 const io = require('socket.io')(httpServer, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: ['https://www.uniplanit.com', 'http://localhost:3000'],
     methods: ['GET', 'POST'],
   },
 });
@@ -51,10 +52,12 @@ const {
   getFavTimetable,
   deleteFavTimetable,
   getBuildTimetable,
-  buildTimetable,
+  buildTimetableFromCourse,
   updateTimetable,
   getGeneratedTimetable,
   addFavTimetable,
+  updateFavTimetable,
+  updateSelectedTimetable,
 } = require('./handlers/courseHandler')(io);
 
 dayjs.extend(duration);
@@ -112,7 +115,7 @@ const swaggerSpec = swaggerJSDoc({
 });
 
 if (app.get('env') === 'production') {
-  app.set('trsut proxy', 1);
+  app.set('trust proxy', 1);
   sessionOptions.cookie.secure = true;
 }
 
@@ -125,25 +128,21 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser()); //session encoding
 passport.deserializeUser(User.deserializeUser()); //session decoding
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-app.get('/', (req, res) => {
-  res.render('index.jade', { title: 'work goddamit' });
-});
-
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(sslRedirect());
 
 app.use('/users', usersRouter);
 app.use('/courses', courseRouter);
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ['https://www.uniplanit.com', 'http://localhost:3000'],
+  })
+);
 
 app.get('/photo', async (req, res, next) => {
   // Return a background picture for login and sign up
@@ -200,22 +199,6 @@ app.get('/photo', async (req, res, next) => {
     res.json(lastSavedBackground.imgUrl);
   }
 });
-
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(new ExpressError('Page not found', 404));
-});
-
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // redirect to home page
-  res.redirect('localhost:3000');
-});
-
 // socket io
 
 const wrap = (middleware) => (socket, next) =>
@@ -254,12 +237,14 @@ io.on('connection', async (socket) => {
   socket.on('delete section', deleteCourseSection);
   socket.on('get generated timetable', getGeneratedTimetable);
   socket.on('get build timetable', getBuildTimetable);
-  socket.on('build timetable', buildTimetable);
+  socket.on('build timetable', buildTimetableFromCourse);
   socket.on('update timetable', updateTimetable);
   socket.on('generate timetable', generateTimetable);
   socket.on('add fav timetable', addFavTimetable);
   socket.on('get fav timetable', getFavTimetable);
   socket.on('delete fav timetable', deleteFavTimetable);
+  socket.on('update fav timetable', updateFavTimetable);
+  socket.on('update selected timetable', updateSelectedTimetable);
 });
 
 io.on('disconnect', (socket) => {
@@ -268,8 +253,29 @@ io.on('disconnect', (socket) => {
   });
 });
 
+app.use(express.static(path.join(__dirname, '/client/build')));
+
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, '/client/build/index.html'));
+});
+
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  next(new ExpressError('Page not found', 404));
+});
+
+// error handler
+app.use(function (err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // redirect to home page
+  res.redirect('localhost:3000');
+});
+
 httpServer.listen(port, () => {
-  console.log('listening on 3000');
+  console.log('listening on ' + port);
 });
 
 module.exports = app;
