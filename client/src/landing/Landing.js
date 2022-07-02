@@ -5,7 +5,7 @@ import Features from './components/Features';
 
 function Landing() {
   return (
-    <Box overflow="auto" flex={1} flexDirection="column" display="flex">
+    <Box overflow="hidden" flex={1} flexDirection="column" display="flex">
       <Mainframe />
       <Features />
     </Box>

@@ -9,6 +9,7 @@ import React, {
 import useSocket from 'context/socket';
 import useFeedback from 'context/feedback';
 import { getUserFriend } from 'calendar/api/sideMenuApi';
+import useAuth from 'context/auth';
 
 const CalendarContext = createContext();
 
@@ -24,6 +25,7 @@ export function CalendarProvider({ children }) {
   const [userCourse, setUserCourse] = useState();
   const [userFriend, setUserFriend] = useState();
   const [currentFriend, setCurrentFriend] = useState();
+  const { user } = useAuth();
   const { socket } = useSocket();
   const { setMsg } = useFeedback();
 
@@ -106,23 +108,27 @@ export function CalendarProvider({ children }) {
   useEffect(() => {
     currentSelectedTimetable &&
       setTimetablesCompare([
-        ...timetablesCompare,
         {
-          owner: 'me',
+          owner: `${user.first}${user.last}`,
+          ownerInitial: `${user.first[0]}${user.last[0]}`,
           timetable: currentSelectedTimetable.timetable,
         },
       ]);
   }, [currentSelectedTimetable]);
 
   useEffect(() => {
-    console.log(timetablesCompare);
-    const timetable = timetablesCompare.map((timetable) =>
-      timetable.timetable.map((course) => ({
-        ...course,
-        owner: timetable.owner,
-      }))
-    );
-    // setTimetable(timetable)
+    // want a list of all courses in all the timetable in timetablesCompare
+    const timetable = [];
+    timetablesCompare.forEach((t) => {
+      t.timetable.forEach((course) => {
+        timetable.push({
+          ...course,
+          owner: t.owner,
+          ownerInitial: t.ownerInitial,
+        });
+      });
+    });
+    setTimetable(timetable);
   }, [timetablesCompare]);
 
   useEffect(() => {

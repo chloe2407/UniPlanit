@@ -47,6 +47,7 @@ export default function TimetableCard({
   const { socket } = useSocket();
   const [isEditing, setIsEditing] = useState(false);
   const [nameValue, setNameValue] = useState(tb.name || 'Name this timetable');
+  const [friendTimetableSelected, setFriendTimetableSelected] = useState([]);
   const open = Boolean(anchorEl);
   const openB = Boolean(anchorElB);
 
@@ -59,6 +60,36 @@ export default function TimetableCard({
     tb.name = nameValue;
     updateFavTimetable(socket, tb);
     setIsEditing(false);
+  };
+
+  const handleSelectFriendTimetable = (friend, friendTimetable) => {
+    // if timetable includes friendTimetable, remove it
+    if (friendTimetableSelected.includes(friendTimetable._id)) {
+      setFriendTimetableSelected(
+        friendTimetableSelected.filter((tbId) => tbId !== friendTimetable._id)
+      );
+      // console.log(timetablesCompare);
+      setTimetablesCompare(
+        timetablesCompare.filter(
+          (timetable) => timetable._id !== friendTimetable._id
+        )
+      );
+    } else {
+      // otherwise, add it
+      setFriendTimetableSelected([
+        ...friendTimetableSelected,
+        friendTimetable._id,
+      ]);
+      setTimetablesCompare([
+        ...timetablesCompare,
+        {
+          owner: `${friend.first} ${friend.last}`,
+          ownerInitial: `${friend.first[0]}${friend.last[0]}`,
+          timetable: friendTimetable.timetable,
+          _id: friendTimetable._id,
+        },
+      ]);
+    }
   };
 
   return (
@@ -243,23 +274,21 @@ export default function TimetableCard({
                                         color: 'white',
                                         justifyContent: 'start',
                                       }}
-                                      onClick={() => {
-                                        console.log(timetablesCompare);
-                                        setTimetablesCompare([
-                                          ...timetablesCompare,
-                                          {
-                                            owner: `${friend.first} ${friend.last}`,
-                                            timetable:
-                                              friendTimetable.timetable,
-                                          },
-                                        ]);
-                                      }}
+                                      onClick={() =>
+                                        handleSelectFriendTimetable(
+                                          friend,
+                                          friendTimetable
+                                        )
+                                      }
                                     >
                                       <Typography>
                                         {`${friendTimetable.name}-${
                                           termToString[friendTimetable.term]
                                         }`}
                                       </Typography>
+                                      {friendTimetableSelected.includes(
+                                        friendTimetable._id
+                                      ) && <CheckIcon sx={{ ml: 2 }} />}
                                     </Button>
                                   </Box>
                                 )

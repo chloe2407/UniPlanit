@@ -27,7 +27,7 @@ const WeekView = ({ sx }) => {
   const matchSM = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   // just switch to "View on a desktop for the best experience"
   const WIDTH = matchMD ? '7rem' : '10vw';
-  const HEIGHT = '4rem';
+  const HEIGHT = '5rem';
 
   // build an object of all the time and courses
   // give warning when overlapping is detected
@@ -62,7 +62,7 @@ const WeekView = ({ sx }) => {
     setParsedTimetable({ ...days });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timetable]);
-  console.log(parsedTimetable);
+  // console.log(parsedTimetable);
 
   const createDay = () => {
     return days.reduce((acc, curr) => ((acc[curr] = createTime()), acc), {});
@@ -114,7 +114,7 @@ const WeekView = ({ sx }) => {
             event={event}
             sx={{
               width: WIDTH,
-              height: `${4 * event.duration}rem`,
+              height: `${5 * event.duration}rem`,
               overflowY: 'auto',
             }}
           />

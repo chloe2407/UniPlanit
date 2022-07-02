@@ -2,6 +2,7 @@ import React from 'react';
 import Grid from '@mui/material/Grid';
 import { Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
+import FadeIn from 'react-fade-in/lib/FadeIn';
 
 const Mainframe = () => {
   return (
@@ -12,48 +13,48 @@ const Mainframe = () => {
         justifyContent="center"
         alignItems="center"
         sx={{
-          width: '100%',
-          height: '800px',
-          alignItems: 'center',
+          height: '95vh',
           backgroundImage: 'url(./landing-images/background-15.jpg)',
           backgroundSize: 'cover',
         }}
       >
-        <Typography
-          sx={{
-            fontFamily: 'arial',
-            fontWeight: 'bold',
-            color: 'white',
-          }}
-          variant="h1"
-        >
-          UniPlanIt
-        </Typography>
-        <Typography
-          sx={{
-            fontFamily: 'arial',
-            fontWeight: 'bold',
-            color: 'white',
-          }}
-          variant="h5"
-        >
-          One stop shop for all your university planning needs.
-        </Typography>
-        <br></br>
-        <Button
-          component={Link}
-          to="/signup"
-          variant="contained"
-          sx={{
-            width: '100px',
-            fontFamily: 'arial',
-            color: 'white',
-            backgroundColor: '#89CFF0',
-            fontWeight: 'bold',
-          }}
-        >
-          Sign up.
-        </Button>
+        <FadeIn transitionDuration={500}>
+          <Typography
+            sx={{
+              fontFamily: 'arial',
+              fontWeight: 'bold',
+              color: 'white',
+            }}
+            variant="h1"
+          >
+            UniPlanit
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: 'arial',
+              fontWeight: 'bold',
+              color: 'white',
+            }}
+            variant="h5"
+          >
+            One stop shop for all your university planning needs.
+          </Typography>
+          <br></br>
+          <Button
+            component={Link}
+            to="/signup"
+            variant="contained"
+            sx={{
+              width: '100px',
+              fontFamily: 'arial',
+              color: 'white',
+              backgroundColor: '#89CFF0',
+              fontWeight: 'bold',
+            }}
+          >
+            Sign up.
+          </Button>
+        </FadeIn>
       </Grid>
     </div>
   );

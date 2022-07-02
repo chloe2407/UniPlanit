@@ -16,6 +16,9 @@ const Features = () => {
       <Grid
         container
         sx={{
+          height: '95vh',
+          justifyContent: 'center',
+          alignItems: 'center',
           backgroundImage: 'url(./landing-images/background-2.jpg)',
           backgroundSize: 'cover',
         }}

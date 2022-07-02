@@ -236,7 +236,7 @@ module.exports = (io) => {
           timetable: timetable,
         };
       });
-      console.log(user.lastGeneratedTimetables[0].timetable);
+      // console.log(user.lastGeneratedTimetables[0].timetable);
       await user.save();
       io.to(socket.userId).emit(
         'get generated timetable',

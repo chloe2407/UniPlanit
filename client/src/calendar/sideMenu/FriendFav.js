@@ -22,7 +22,6 @@ export default function FriendFav() {
           currentFriend?.favoritedTimetables?.length > 0 ? (
             currentFriend.favoritedTimetables.map((tb, index) => (
               <TimetableCard
-                sx={{ p: 2 }}
                 tb={tb}
                 key={index}
                 timetableIndex={timetableIndex}
