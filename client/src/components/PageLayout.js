@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
 import ChatWidget from 'chat/ChatWidget';
 import useFeedback from 'context/feedback';
+import Footer from 'components/Footer';
 
 export default function Layout() {
   const [chats, setChats] = useState([]);
@@ -28,6 +29,7 @@ export default function Layout() {
         : null}
       <Outlet />
       {SnackbarMsg}
+      <Footer />
     </>
   );
 }
