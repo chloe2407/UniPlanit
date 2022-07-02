@@ -15,6 +15,7 @@ export default function FriendCard({ friendInfo }) {
     <Card
       sx={{
         px: 2,
+        mb: 1,
         color: 'white',
         backgroundColor: theme.palette.primary.main,
       }}

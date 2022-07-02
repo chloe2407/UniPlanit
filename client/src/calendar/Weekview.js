@@ -2,12 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import EventCard from 'calendar/EventCard.js';
 import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
+import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
-import { StyledTableCell } from 'calendar/StyledTableCell';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import {
   useCourseMeetingTimeToEvent,
@@ -27,11 +23,10 @@ const WeekView = ({ sx }) => {
   const [parsedTimetable, setParsedTimetable] = useState(null);
   const { setMsg } = useFeedback();
   const { timetable } = useCalendar();
-  const matchSM = useMediaQuery((theme) => theme.breakpoints.down('md'));
-  const matchXS = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+  const matchMD = useMediaQuery((theme) => theme.breakpoints.down('md'));
+  const matchSM = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   // just switch to "View on a desktop for the best experience"
-  console.log(matchXS);
-  const WIDTH = matchSM ? '7rem' : '10vw';
+  const WIDTH = matchMD ? '7rem' : '10vw';
   const HEIGHT = '4rem';
 
   // build an object of all the time and courses
@@ -84,7 +79,6 @@ const WeekView = ({ sx }) => {
           height: 'fit-content',
           width: 'fit-content',
           my: 2,
-          borderBottom: '1px',
         }}
       >
         <Box
@@ -97,7 +91,7 @@ const WeekView = ({ sx }) => {
           <Typography>Time</Typography>
         </Box>
         {days.map((day) => (
-          <Typography sx={{ display: 'inline-block', width: WIDTH }}>
+          <Typography key={day} sx={{ display: 'inline-block', width: WIDTH }}>
             {day}
           </Typography>
         ))}
@@ -135,6 +129,7 @@ const WeekView = ({ sx }) => {
         <Box key={time} sx={{ height: HEIGHT, width: 'fit-content' }}>
           <Typography
             sx={{
+              mt: '-0.6rem',
               display: 'inline-block',
               width: '5rem',
               verticalAlign: 'top',
@@ -157,8 +152,25 @@ const WeekView = ({ sx }) => {
   return (
     <Box sx={sx}>
       <Container style={{ maxWidth: 'fit-content' }}>
-        <DayHeader />
-        <TableRow parsedTimetable={parsedTimetable} />
+        {matchSM ? (
+          <Stack
+            direction={'column'}
+            justifyContent="center"
+            sx={{ height: '50vh' }}
+          >
+            <Typography variant={'h6'}>
+              Sorry! We don't support mobile devices yet
+            </Typography>
+            <Typography variant={'h6'}>
+              Visit us on desktop for the best experience
+            </Typography>
+          </Stack>
+        ) : (
+          <>
+            <DayHeader />
+            <TableRow parsedTimetable={parsedTimetable} />
+          </>
+        )}
       </Container>
     </Box>
   );

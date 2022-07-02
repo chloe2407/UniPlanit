@@ -24,7 +24,7 @@ const Calendar = () => {
         sx={{
           '.MuiDrawer-paperAnchorLeft': {
             position: 'absolute',
-            top: '6.2em',
+            top: '6.4rem',
             height: '65rem',
           },
         }}
