@@ -24,6 +24,8 @@ const Contact = () => (
             Questions? Feedback? Collaboration?
           </Typography>
           <Typography variant="h4">Reach Us Here!</Typography>
+          <br></br>
+          <Typography variant="h6">Feedback form coming soon!</Typography>
         </Box>
         <Box sx={{ paddingY: '30px' }}>{/* <FeedbackForm /> */}</Box>
       </Grid>
