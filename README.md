@@ -18,7 +18,7 @@ The project is currently under development
 
 ## Technologies
 
-The app uses the MERN stack. 
+The app uses the MERN stack.
 
 ## Additional Resources
 
