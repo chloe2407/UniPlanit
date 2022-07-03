@@ -4,7 +4,6 @@ import CourseSelection from 'calendar/sideMenu/CourseSelection';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import TabPanel from 'calendar/sideMenu/components/TabPanel';
-import BuildTimetable from 'calendar/sideMenu/BuildTimetable';
 import SideMenuStart from 'calendar/sideMenu/SideMenuStart';
 import GenerateScreen from 'calendar/sideMenu/GenerateScreen';
 import FavTimetable from 'calendar/sideMenu/FavTimetable';
@@ -12,18 +11,11 @@ import useCalendar from 'context/calendar';
 import FriendSelect from 'calendar/sideMenu/FriendSelect';
 import FriendFav from 'calendar/sideMenu/FriendFav';
 import TermSelection from 'calendar/sideMenu/TermSelection';
-import EditExistingTimetable from 'calendar/sideMenu/EditExistingTimetable';
+import EditTimetable from 'calendar/sideMenu/EditTimetable';
 
 export default function SideMenu({ drawerWidth }) {
   const [tab, setTab] = useState(0);
-  const {
-    view,
-    setView,
-    generatedTimetable,
-    timetableIndex,
-    favTimetable,
-    setTimetableIndex,
-  } = useCalendar();
+  const { view, setView } = useCalendar();
   const [term, setTerm] = useState();
 
   const handleTabChange = (e, tab) => {
@@ -43,8 +35,8 @@ export default function SideMenu({ drawerWidth }) {
     >
       <Tabs variant="scrollable" value={tab} onChange={handleTabChange}>
         <Tab value={0} label={'Build'} />
-        <Tab value={1} label={'Favorites'} />
-        <Tab value={2} label={"Friend's Timetables"} />
+        <Tab value={1} label={'Favourites'} />
+        <Tab value={2} label={"Friends' Timetables"} />
       </Tabs>
       <TabPanel value={tab} index={0}>
         {view === 'start' ? (
@@ -53,27 +45,14 @@ export default function SideMenu({ drawerWidth }) {
           <TermSelection setTerm={(term) => setTerm(term)} />
         ) : view === 'select' ? (
           <CourseSelection term={term} />
-        ) : view === 'build' ? (
-          <BuildTimetable term={term} />
-        ) : view === 'generate' ? (
-          <GenerateScreen
-            favTimetable={favTimetable}
-            generatedTimetable={generatedTimetable}
-            timetableIndex={timetableIndex}
-            setTimetableIndex={setTimetableIndex}
-            setTab={(v) => setTab(v)}
-          />
         ) : view === 'edit' ? (
-          <EditExistingTimetable />
+          <EditTimetable />
+        ) : view === 'generate' ? (
+          <GenerateScreen setTab={(v) => setTab(v)} />
         ) : null}
       </TabPanel>
       <TabPanel value={tab} index={1}>
-        <FavTimetable
-          setTab={(v) => setTab(v)}
-          favTimetable={favTimetable}
-          timetableIndex={timetableIndex}
-          setTimetableIndex={setTimetableIndex}
-        />
+        <FavTimetable setTab={(v) => setTab(v)} />
       </TabPanel>
       <TabPanel value={tab} index={2}>
         {view === 'select friend' ? (
