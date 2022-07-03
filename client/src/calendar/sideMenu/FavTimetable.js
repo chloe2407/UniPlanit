@@ -1,61 +1,22 @@
 import React, { useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import {
-  deleteFavTimetable,
-  addFavTimetable,
-  getFavTimetable,
-} from 'calendar/api/sideMenuApi';
+import { getFavTimetable } from 'calendar/api/sideMenuApi';
 import useSocket from 'context/socket';
 import FadeContent from 'react-fade-in';
 import { FadeIn } from 'react-slide-fade-in';
 import ClipLoader from 'react-spinners/ClipLoader';
 import TimetableCard from 'calendar/sideMenu/components/TimetableCard';
+import useCalendar from 'context/calendar';
 
-const FavTimetable = ({
-  favTimetable,
-  timetableIndex,
-  setTimetableIndex,
-  setTab,
-}) => {
+const FavTimetable = ({ setTab }) => {
   const { socket } = useSocket();
+  const { favTimetable } = useCalendar();
 
   useEffect(() => {
     getFavTimetable(socket);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const getMatchTimetable = (tb) => {
-    for (const t of favTimetable) {
-      let allCourseMatch = true;
-      for (let i = 0; i < t.timetable.length; i++) {
-        if (
-          !(
-            tb[i]?.section?.sectionCode ===
-              t.timetable[i]?.section?.sectionCode &&
-            tb[i]?.tutorial?.tutorialCode ===
-              t.timetable[i]?.tutorial?.tutorialCode
-          )
-        ) {
-          allCourseMatch = false;
-        }
-      }
-      if (allCourseMatch) {
-        return t;
-      }
-    }
-  };
-
-  const handleAddFavourite = (tb) => {
-    // timetable matched
-    const matchTb = getMatchTimetable(tb.timetable);
-    if (matchTb) {
-      const filtered = favTimetable.filter((t) => t !== matchTb);
-      deleteFavTimetable(socket, filtered);
-    } else {
-      addFavTimetable(socket, tb);
-    }
-  };
 
   return (
     <FadeIn from="right" positionOffset={200} durationInMilliseconds={500}>
@@ -69,23 +30,12 @@ const FavTimetable = ({
         {favTimetable ? (
           favTimetable.length > 0 ? (
             favTimetable.map((tb, i) => (
-              <TimetableCard
-                key={i}
-                tb={tb}
-                isSaved={true}
-                setTab={setTab}
-                timetableIndex={timetableIndex}
-                handleAddFavourite={handleAddFavourite}
-                favTimetable={favTimetable}
-                getMatchTimetable={getMatchTimetable}
-                setTimetableIndex={setTimetableIndex}
-                index={i}
-              />
+              <TimetableCard key={tb._id} index={i} tb={tb} setTab={setTab} />
             ))
           ) : (
             <Typography sx={{ textAlign: 'start' }}>
               {' '}
-              No generated timetables found! Try generating a new one
+              No favorited timetables found! Try generating a new one
             </Typography>
           )
         ) : (

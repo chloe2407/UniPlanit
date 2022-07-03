@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import {
   getGenerateTimetable,
-  addFavTimetable,
-  deleteFavTimetable,
   getFavTimetable,
 } from 'calendar/api/sideMenuApi';
 import FadeContent from 'react-fade-in';
@@ -13,29 +11,17 @@ import TimetableCard from 'calendar/sideMenu/components/TimetableCard';
 import SideMenuTitle from 'calendar/sideMenu/components/SideMenuTitle';
 import useCalendar from 'context/calendar';
 import LoadingButton from '@mui/lab/LoadingButton';
+import ClipLoader from 'react-spinners/ClipLoader';
 
-const GenerateScreen = ({
-  generatedTimetable,
-  favTimetable,
-  timetableIndex,
-  setTimetableIndex,
-  setTab,
-}) => {
-  const [generateTime, setGenerateTime] = useState();
+const GenerateScreen = ({ setTab }) => {
+  const { generatedTimetable, timeElapsed } = useCalendar();
   const [pageCount, setPageCount] = useState(1);
   const hasMoreTimetable =
     generatedTimetable && pageCount * 10 < generatedTimetable.length;
   const { socket } = useSocket();
-  useEffect(() => {
-    socket.on('time elpased', (time) => {
-      setGenerateTime(time);
-    });
-    return () => socket.off('time elpased');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
-    getGenerateTimetable(socket);
+    !generatedTimetable && getGenerateTimetable(socket);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -44,68 +30,31 @@ const GenerateScreen = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // check tb against timetables in favTimetable and return the match
-  const getMatchTimetable = (tb) => {
-    for (const t of favTimetable) {
-      let allCourseMatch = true;
-      for (let i = 0; i < t.timetable.length; i++) {
-        if (
-          !(
-            tb[i]?.section?.sectionCode ===
-              t.timetable[i]?.section?.sectionCode &&
-            tb[i]?.tutorial?.tutorialCode ===
-              t.timetable[i]?.tutorial?.tutorialCode
-          )
-        ) {
-          allCourseMatch = false;
-        }
-      }
-      if (allCourseMatch) {
-        return t;
-      }
-    }
-  };
-  const handleAddFavourite = (tb) => {
-    // timetable matched
-    const matchTb = getMatchTimetable(tb.timetable);
-    if (matchTb) {
-      const filtered = favTimetable.filter((t) => t !== matchTb);
-      deleteFavTimetable(socket, filtered);
-    } else {
-      addFavTimetable(socket, tb);
-    }
-  };
   return (
     <FadeIn from="right" positionOffset={200} durationInMilliseconds={500}>
-      <SideMenuTitle title={'Generated Timetables'} backTo={'start'} />
+      <SideMenuTitle title={'Generated Timetables'} backTo={'term'} />
       <FadeContent delay={100} transitionDuration={400}>
         <Typography textAlign={'start'}>
           {' '}
           {generatedTimetable?.length > 0 &&
-            generateTime &&
-            `Generated ${generatedTimetable.length} timetables in ${generateTime} seconds`}
+            timeElapsed &&
+            `Generated ${generatedTimetable.length} timetables in ${timeElapsed} seconds`}
         </Typography>
         {generatedTimetable ? (
-          generatedTimetable
-            .slice(0, pageCount * 10)
-            .map((tb, i) => (
-              <TimetableCard
-                key={i}
-                tb={tb}
-                setTab={setTab}
-                timetableIndex={timetableIndex}
-                handleAddFavourite={handleAddFavourite}
-                favTimetable={favTimetable}
-                getMatchTimetable={getMatchTimetable}
-                index={i}
-                setTimetableIndex={setTimetableIndex}
-              />
-            ))
+          generatedTimetable.length > 0 ? (
+            generatedTimetable
+              .slice(0, pageCount * 10)
+              .map((tb, i) => (
+                <TimetableCard key={tb._id} index={i} tb={tb} setTab={setTab} />
+              ))
+          ) : (
+            <Typography sx={{ textAlign: 'start' }}>
+              {' '}
+              No generated timetables found! Try generating a new one
+            </Typography>
+          )
         ) : (
-          <Typography sx={{ textAlign: 'start' }}>
-            {' '}
-            No generated timetables found! Try generating a new one
-          </Typography>
+          <ClipLoader />
         )}
         {hasMoreTimetable ? (
           <LoadingButton

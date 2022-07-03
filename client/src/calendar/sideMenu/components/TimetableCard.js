@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -21,16 +21,12 @@ import { updateFavTimetable } from 'calendar/api/sideMenuApi';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import NavbarTooltip from 'navbar/NavbarTooltip';
 import Button from '@mui/material/Button';
+import { deleteFavTimetable, addFavTimetable } from 'calendar/api/sideMenuApi';
+import { CircularProgress } from '@mui/material';
 
 export default function TimetableCard({
-  timetableIndex,
   tb,
-  handleAddFavourite = null,
-  favTimetable = null,
-  getMatchTimetable = null,
-  setTimetableIndex,
   index,
-  isSaved = false,
   isAuthor = true,
   setTab = null,
 }) {
@@ -39,17 +35,26 @@ export default function TimetableCard({
     userFriend,
     setView,
     timetablesCompare,
+    timetableIndex,
+    favTimetable,
+    setTimetableIndex,
     setTimetablesCompare,
   } = useCalendar();
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElB, setAnchorElB] = useState(null);
   const [currentFriend, setCurrentFriend] = useState();
   const { socket } = useSocket();
   const [isEditing, setIsEditing] = useState(false);
-  const [nameValue, setNameValue] = useState(tb.name || 'Name this timetable');
+  const [nameValue, setNameValue] = useState(tb.name);
   const [friendTimetableSelected, setFriendTimetableSelected] = useState([]);
+  const [isChangingFavStatus, setIsChangingFavStatus] = useState(false);
   const open = Boolean(anchorEl);
   const openB = Boolean(anchorElB);
+
+  useEffect(() => {
+    setIsChangingFavStatus(false);
+  }, [favTimetable]);
 
   const termToString = {
     F: 'Fall',
@@ -92,6 +97,40 @@ export default function TimetableCard({
     }
   };
 
+  const getMatchTimetable = (tb) => {
+    for (const t of favTimetable) {
+      let allCourseMatch = true;
+      for (let i = 0; i < t.timetable.length; i++) {
+        if (
+          !(
+            tb[i]?.section?.sectionCode ===
+              t.timetable[i]?.section?.sectionCode &&
+            tb[i]?.tutorial?.tutorialCode ===
+              t.timetable[i]?.tutorial?.tutorialCode
+          )
+        ) {
+          allCourseMatch = false;
+        }
+      }
+      if (allCourseMatch) {
+        return t;
+      }
+    }
+  };
+  const handleAddFavourite = (tb) => {
+    // timetable matched
+    const matchTb = getMatchTimetable(tb.timetable);
+    if (matchTb) {
+      // get tb out immediately to prevent user clicking twice
+      const filtered = favTimetable.filter((t) => t !== matchTb);
+      setIsChangingFavStatus(true);
+      deleteFavTimetable(socket, filtered);
+    } else {
+      setIsChangingFavStatus(true);
+      addFavTimetable(socket, tb);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -124,11 +163,10 @@ export default function TimetableCard({
         key={index}
       >
         <Stack direction={'row'} justifyContent={'space-between'}>
-          {isAuthor && isSaved && (
+          {isAuthor && tb.isSaved && (
             <>
               <TextField
                 disabled={!isEditing}
-                placeholder="Name this timetable"
                 onChange={(e) => setNameValue(e.target.value)}
                 value={nameValue}
                 sx={{
@@ -172,13 +210,12 @@ export default function TimetableCard({
           <CardContent sx={{ pt: 1, pb: 0 }}>
             <Box>
               {tb.timetable.map((course) => (
-                <Box key={course.courseCode} sx={{ textAlign: 'start' }}>
+                <Box key={course?.courseCode} sx={{ textAlign: 'start' }}>
                   <Stack direction={'row'}>
                     <Typography sx={{}}>{course.courseCode}</Typography>
                     <Typography sx={{ ml: 'auto' }}>
-                      {course.section.sectionCode}
+                      {course?.section?.sectionCode}
                     </Typography>
-                    <Typography>{course.tutorial}</Typography>
                   </Stack>
                 </Box>
               ))}
@@ -189,8 +226,13 @@ export default function TimetableCard({
         {isAuthor && (
           <CardActions sx={{ my: 0, py: 0 }}>
             {/* <NavbarTooltip title={<Typography>Unlike</Typography>}> */}
-            <IconButton onClick={() => handleAddFavourite(tb)}>
-              {favTimetable && getMatchTimetable(tb.timetable) ? (
+            <IconButton
+              disabled={isChangingFavStatus}
+              onClick={() => handleAddFavourite(tb)}
+            >
+              {isChangingFavStatus ? (
+                <CircularProgress size={20} sx={{ color: 'white' }} />
+              ) : favTimetable && getMatchTimetable(tb.timetable) ? (
                 <FavoriteIcon sx={{ color: 'white' }} />
               ) : (
                 <FavoriteBorderIcon sx={{ color: 'white' }} />
