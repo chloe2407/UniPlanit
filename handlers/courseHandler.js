@@ -124,64 +124,6 @@ module.exports = (io) => {
     }
   };
 
-  const getBuildTimetable = async function () {
-    // returns the current work-in-progress timetable
-    socket = this;
-    try {
-      const user = await User.findById(socket.userId);
-      io.to(socket.userId).emit('get build timetable', user.selectedTimetable);
-    } catch (e) {
-      throw new Error(e.message);
-    }
-  };
-
-  const buildTimetableFromCourse = async function (term) {
-    // builds a new timetable with empty sections based on the current courses
-    socket = this;
-    try {
-      const user = await User.findById(socket.userId);
-      const courses = getFilteredCoursesByTerm(user.courses, term);
-      if (courses && courses.length > 0) {
-        user.selectedTimetable = {
-          timetable: courses.map((c) => {
-            delete c.tutorials;
-            delete c.lectures;
-            return c;
-          }),
-          term: term,
-        };
-      }
-      await user.save();
-      io.to(socket.userId).emit('get build timetable', user.selectedTimetable);
-    } catch (e) {
-      new Error(e.message);
-    }
-  };
-
-  // refractor this function
-  const updateTimetable = async function (buildTimetable, clear) {
-    socket = this;
-    try {
-      const user = await User.findById(socket.userId);
-      if (clear) {
-        // clear the timetable
-        user.selectedTimetable.timetable = user.selectedTimetable.timetable.map(
-          (c) => {
-            c.section = null;
-            c.tutorial = null;
-            return c;
-          }
-        );
-      } else {
-        user.selectedTimetable = buildTimetable;
-      }
-      await user.save();
-      io.to(socket.userId).emit('get build timetable', user.selectedTimetable);
-    } catch (e) {
-      throw new Error(e.message);
-    }
-  };
-
   const updateSelectedTimetable = async function (timetable, clear) {
     socket = this;
     try {
@@ -240,9 +182,9 @@ module.exports = (io) => {
       await user.save();
       io.to(socket.userId).emit(
         'get generated timetable',
-        user.lastGeneratedTimetables
+        user.lastGeneratedTimetables,
+        (end - start) / 1000
       );
-      io.to(socket.userId).emit('time elpased', (end - start) / 1000);
     } catch (e) {
       console.log('An error has occured');
       throw new Error(e.message);
@@ -258,10 +200,7 @@ module.exports = (io) => {
     deleteFavTimetable,
     deleteCourseSection,
     getGeneratedTimetable,
-    updateTimetable,
     updateSelectedTimetable,
-    buildTimetableFromCourse,
-    getBuildTimetable,
     generateTimetable,
     updateFavTimetable,
   };
