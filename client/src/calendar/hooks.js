@@ -31,12 +31,16 @@ export const useParseEventToTimetableObj = () => {
     const start = parseInt(event.startTime.slice(0, 2)).toString();
     // someone already has this course
     // console.log(event)
+    console.log(days[day][start]);
     if (
       days[day][start] &&
       days[day][start].course.section.sectionCode ===
         event.course.section.sectionCode
     ) {
-      if (!days[day][start].owner.includes(event.owner[0])) {
+      if (
+        days[day][start].owner &&
+        !days[day][start].owner.includes(event.owner)
+      ) {
         days[day][start].owner.push(event.owner[0]);
         days[day][start].ownerInitial.push(event.ownerInitial[0]);
       }
@@ -44,7 +48,7 @@ export const useParseEventToTimetableObj = () => {
       // there is an overlap
       return {
         snackVariant: 'error',
-        msg: `We detected a overlap between ${days[day][start].eventName} and ${event.eventName}! Timetable may not be accurate`,
+        msg: `We detected a overlap between ${days[day][start].eventName} and ${event.eventName} at ${event.day} from ${event.startTime} to ${event.endTime}!`,
       };
     else {
       // no event yet
