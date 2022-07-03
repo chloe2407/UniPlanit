@@ -8,7 +8,7 @@ import React, {
 
 import useSocket from 'context/socket';
 import useFeedback from 'context/feedback';
-import { getUserFriend } from 'calendar/api/sideMenuApi';
+import { getUserFriend, getFavTimetable } from 'calendar/api/sideMenuApi';
 import useAuth from 'context/auth';
 
 const CalendarContext = createContext();
@@ -52,11 +52,16 @@ export function CalendarProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    getFavTimetable(socket);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     socket.on('get generated timetable', (timetable, timeElapsed) => {
       if (timetable?.length > 0) {
         setGeneratedTimetable(timetable);
         setTimeElapsed(timeElapsed);
-        setTimetableIndex(0);
+        // setTimetableIndex(0);
         if (nextPage && nextPage !== view) {
           setView(nextPage);
           setNextPage(null);
@@ -121,19 +126,19 @@ export function CalendarProvider({ children }) {
   useEffect(() => {
     if (view === 'generate') {
       setTimetable(
-        generatedTimetable && generatedTimetable[timetableIndex].timetable
+        generatedTimetable && generatedTimetable[timetableIndex]?.timetable
       );
     } else if (view === 'edit') {
       setTimetable(currentSelectedTimetable?.timetable);
     } else if (view === 'fav') {
       console.log(favTimetable);
       setTimetable(
-        favTimetable?.length > 0 && favTimetable[timetableIndex].timetable
+        favTimetable?.length > 0 && favTimetable[timetableIndex]?.timetable
       );
     } else if (view === 'friend fav') {
       setTimetable(
         currentFriend?.favoritedTimetables?.length > 0 &&
-          currentFriend.favoritedTimetables[timetableIndex].timetable
+          currentFriend.favoritedTimetables[timetableIndex]?.timetable
       );
     } else {
       setTimetable(undefined);

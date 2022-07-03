@@ -15,11 +15,12 @@ import EditTimetable from 'calendar/sideMenu/EditTimetable';
 
 export default function SideMenu({ drawerWidth }) {
   const [tab, setTab] = useState(0);
-  const { view, setView } = useCalendar();
+  const { view, setView, setTimetableIndex } = useCalendar();
   const [term, setTerm] = useState();
 
   const handleTabChange = (e, tab) => {
     setTab(tab);
+    setTimetableIndex(0);
     if (tab === 0) setView('start');
     else if (tab === 1) setView('fav');
     else if (tab === 2) setView('select friend');
