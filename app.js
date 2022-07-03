@@ -51,9 +51,6 @@ const {
   generateTimetable,
   getFavTimetable,
   deleteFavTimetable,
-  getBuildTimetable,
-  buildTimetableFromCourse,
-  updateTimetable,
   getGeneratedTimetable,
   addFavTimetable,
   updateFavTimetable,
@@ -236,9 +233,6 @@ io.on('connection', async (socket) => {
   socket.on('delete course', deleteUserCourse);
   socket.on('delete section', deleteCourseSection);
   socket.on('get generated timetable', getGeneratedTimetable);
-  socket.on('get build timetable', getBuildTimetable);
-  socket.on('build timetable', buildTimetableFromCourse);
-  socket.on('update timetable', updateTimetable);
   socket.on('generate timetable', generateTimetable);
   socket.on('add fav timetable', addFavTimetable);
   socket.on('get fav timetable', getFavTimetable);

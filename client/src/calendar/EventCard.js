@@ -29,7 +29,7 @@ const EventCard = ({ event, sx }) => {
           <Typography>{event.course && event.type}</Typography>
           {event.ownerInitial && (
             <AvatarGroup max={3}>
-              {event.ownerInitial.map((ownerInitial) => {
+              {event.ownerInitial.map((ownerInitial, i) => {
                 return (
                   <Avatar
                     sx={{
@@ -37,7 +37,7 @@ const EventCard = ({ event, sx }) => {
                       width: 25,
                       backgroundColor: initialToColor(ownerInitial),
                     }}
-                    key={ownerInitial}
+                    key={i}
                   >
                     {ownerInitial}
                   </Avatar>
