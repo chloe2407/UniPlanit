@@ -14,32 +14,47 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import {
-  updateSelectedTimetable,
   getMultipleCourse,
   updateFavTimetable,
   deleteFavTimetable,
   addFavTimetable,
-  getFavTimetable,
 } from 'calendar/api/sideMenuApi';
 import useCalendar from 'context/calendar';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
-import EventNoteIcon from '@mui/icons-material/EventNote';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ClipLoader from 'react-spinners/ClipLoader';
+import CompareIcon from '@mui/icons-material/Compare';
+import { StyledPopover } from 'navbar/NavbarMenu';
+import NavbarTooltip from 'navbar/NavbarTooltip';
+import Button from '@mui/material/Button';
 
 export default function UserCourseSectionEdit() {
   const [courseCodeShow, setCourseCodeShow] = useState([]);
   const [userCourseObj, setUserCourseObj] = useState();
-  const [isLoading, setIsLoading] = useState();
+  const [btnIsLoading, setBtnIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const { currentSelectedTimetable, favTimetable } = useCalendar();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElB, setAnchorElB] = useState(null);
+  const [currentFriend, setCurrentFriend] = useState();
+  const [friendTimetableSelected, setFriendTimetableSelected] = useState([]);
+
+  const open = Boolean(anchorEl);
+  const openB = Boolean(anchorElB);
+
+  const {
+    userFriend,
+    currentSelectedTimetable,
+    setCurrentSelectedTimetable,
+    favTimetable,
+    timetablesCompare,
+    setTimetablesCompare,
+  } = useCalendar();
   const [nameValue, setNameValue] = useState(
-    currentSelectedTimetable.name || 'Name this timetable'
+    currentSelectedTimetable?.name || 'Name this timetable'
   );
   const { socket } = useSocket();
-
   const termToString = {
     F: 'Fall',
     S: 'Winter',
@@ -48,7 +63,6 @@ export default function UserCourseSectionEdit() {
   // get info of each course in current timetable
   // if the timetable is favorited, change in user.favoritedTimetables to save it
   useEffect(() => {
-    console.log(currentSelectedTimetable.timetable);
     const promises = getMultipleCourse(currentSelectedTimetable.timetable);
     Promise.all(promises).then((data) => {
       // turn user course into objects
@@ -58,33 +72,36 @@ export default function UserCourseSectionEdit() {
       }, {});
       setUserCourseObj(userCourseObj);
     });
-  }, [currentSelectedTimetable]);
+  }, []);
+
+  useEffect(() => {
+    setBtnIsLoading(null);
+  }, [favTimetable]);
 
   // add section/tutorials to a course in the current timetable
-  const handleAddCourseWithSection = (courseCode, type, sectionCode) => {
-    currentSelectedTimetable.timetable.forEach((course) => {
-      if (course.courseCode === courseCode) {
-        if (type === 'lec') {
-          userCourseObj[courseCode].sections.forEach((section) => {
-            if (section.sectionCode === sectionCode) {
-              course.section = section;
-            }
-          });
-          console.log(course);
-        } else if (type === 'tut') {
-          userCourseObj[courseCode].tutorials.forEach((tutorial) => {
-            if (tutorial.tutorialCode === sectionCode) {
-              course.tutorial = tutorial;
-            }
-          });
+
+  const handleUpdateTimetable = (courseCode, type, sectionCode) => {
+    setCurrentSelectedTimetable({
+      ...currentSelectedTimetable,
+      timetable: currentSelectedTimetable.timetable.map((course) => {
+        if (course.courseCode === courseCode) {
+          if (type === 'lec') {
+            userCourseObj[courseCode].sections.forEach((section) => {
+              if (section.sectionCode === sectionCode) {
+                course.section = section;
+              }
+            });
+          } else if (type === 'tut') {
+            userCourseObj[courseCode].tutorials.forEach((tutorial) => {
+              if (tutorial.tutorialCode === sectionCode) {
+                course.tutorial = tutorial;
+              }
+            });
+          }
         }
-      }
+        return course;
+      }),
     });
-    console.log('updating timetable');
-    if (currentSelectedTimetable.isSaved) {
-      updateFavTimetable(socket, currentSelectedTimetable);
-    }
-    updateSelectedTimetable(socket, currentSelectedTimetable);
   };
 
   const handleCourseCollapse = (courseCode) => {
@@ -94,8 +111,44 @@ export default function UserCourseSectionEdit() {
   };
 
   const handleClearAllSections = () => {
-    setIsLoading(true);
-    updateSelectedTimetable(socket, null, true);
+    setCurrentSelectedTimetable({
+      ...currentSelectedTimetable,
+      timetable: currentSelectedTimetable.timetable.map((course) => {
+        course.tutorial = null;
+        course.section = null;
+        return course;
+      }),
+    });
+  };
+
+  const handleSelectFriendTimetable = (friend, friendTimetable) => {
+    // if timetable includes friendTimetable, remove it
+    if (friendTimetableSelected.includes(friendTimetable._id)) {
+      setFriendTimetableSelected(
+        friendTimetableSelected.filter((tbId) => tbId !== friendTimetable._id)
+      );
+      // console.log(timetablesCompare);
+      setTimetablesCompare(
+        timetablesCompare.filter(
+          (timetable) => timetable._id !== friendTimetable._id
+        )
+      );
+    } else {
+      // otherwise, add it
+      setFriendTimetableSelected([
+        ...friendTimetableSelected,
+        friendTimetable._id,
+      ]);
+      setTimetablesCompare([
+        ...timetablesCompare,
+        {
+          owner: `${friend.first} ${friend.last}`,
+          ownerInitial: `${friend.first[0]}${friend.last[0]}`,
+          timetable: friendTimetable.timetable,
+          _id: friendTimetable._id,
+        },
+      ]);
+    }
   };
 
   const getCurrentLecture = (courseCode) => {
@@ -157,6 +210,16 @@ export default function UserCourseSectionEdit() {
     }
   };
 
+  const handleSaveTimetable = () => {
+    setBtnIsLoading(true);
+    const matchTb = getMatchTimetable(currentSelectedTimetable.timetable);
+    if (matchTb) {
+      updateFavTimetable(socket, currentSelectedTimetable);
+    } else {
+      addFavTimetable(socket, currentSelectedTimetable);
+    }
+  };
+
   const SelectLecture = ({ courseCode }) => {
     const currentLecture = getCurrentLecture(courseCode);
     const [lecture, setLecture] = useState(
@@ -171,7 +234,7 @@ export default function UserCourseSectionEdit() {
               value={lecture}
               onChange={(e) => {
                 setLecture(e.target.value);
-                handleAddCourseWithSection(courseCode, 'lec', e.target.value);
+                handleUpdateTimetable(courseCode, 'lec', e.target.value);
               }}
             >
               <MenuItem value={'Choose a Lecture'}>
@@ -214,7 +277,7 @@ export default function UserCourseSectionEdit() {
             value={tutorial}
             onChange={(e) => {
               setTutorial(e.target.value);
-              handleAddCourseWithSection(courseCode, 'tut', e.target.value);
+              handleUpdateTimetable(courseCode, 'tut', e.target.value);
             }}
           >
             <MenuItem value={'Choose a Tutorial'}>
@@ -276,9 +339,115 @@ export default function UserCourseSectionEdit() {
           >
             {isEditing ? <CheckIcon /> : <EditIcon />}
           </IconButton>
-          <IconButton>
-            <EventNoteIcon />
-          </IconButton>
+          <NavbarTooltip
+            title={
+              <Typography>Compare this timetable with a friend</Typography>
+            }
+          >
+            <IconButton
+              onClick={(e) => {
+                setAnchorEl(e.currentTarget);
+                setCurrentSelectedTimetable(currentSelectedTimetable);
+              }}
+            >
+              <CompareIcon />
+            </IconButton>
+          </NavbarTooltip>
+          <StyledPopover
+            sx={{
+              '& .MuiPopover-paper': {
+                backgroundColor: 'gray',
+              },
+            }}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={() => setAnchorEl(null)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+          >
+            <Box sx={{ p: 2 }}>
+              <strong>
+                <Typography>Compare With a Friend</Typography>
+              </strong>
+              {userFriend ? (
+                userFriend.map((friend) => (
+                  <Box key={friend._id} sx={{ my: 1 }}>
+                    <Button
+                      sx={{
+                        width: '100%',
+                        color: 'white',
+                        justifyContent: 'start',
+                      }}
+                      onClick={(e) => {
+                        setCurrentFriend(friend._id);
+                        setAnchorElB(e.currentTarget);
+                      }}
+                    >
+                      <Typography>{`${friend.first} ${friend.last}`}</Typography>
+                    </Button>
+                    {friend._id === currentFriend && (
+                      <StyledPopover
+                        sx={{
+                          '& .MuiPopover-paper': {
+                            backgroundColor: 'gray',
+                          },
+                        }}
+                        open={openB}
+                        anchorEl={anchorElB}
+                        onClose={() => {
+                          setCurrentFriend(null);
+                          setAnchorElB(null);
+                        }}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'right',
+                        }}
+                      >
+                        <Box sx={{ p: 2 }}>
+                          {friend.favoritedTimetables?.length > 0 ? (
+                            friend.favoritedTimetables.map(
+                              (friendTimetable) => (
+                                <Box key={friendTimetable._id} sx={{ my: 1 }}>
+                                  <Button
+                                    sx={{
+                                      width: '100%',
+                                      color: 'white',
+                                      justifyContent: 'start',
+                                    }}
+                                    onClick={() =>
+                                      handleSelectFriendTimetable(
+                                        friend,
+                                        friendTimetable
+                                      )
+                                    }
+                                  >
+                                    <Typography>
+                                      {`${friendTimetable.name}-${
+                                        termToString[friendTimetable.term]
+                                      }`}
+                                    </Typography>
+                                    {friendTimetableSelected.includes(
+                                      friendTimetable._id
+                                    ) && <CheckIcon sx={{ ml: 2 }} />}
+                                  </Button>
+                                </Box>
+                              )
+                            )
+                          ) : (
+                            <Typography>No Timetables</Typography>
+                          )}
+                        </Box>
+                      </StyledPopover>
+                    )}
+                  </Box>
+                ))
+              ) : (
+                <Typography>Your friends will show up here</Typography>
+              )}
+            </Box>
+          </StyledPopover>
           <IconButton
             onClick={() => handleAddFavourite(currentSelectedTimetable)}
           >
@@ -331,15 +500,23 @@ export default function UserCourseSectionEdit() {
           No courses yet. Start by adding a course!
         </Typography>
       )}
-      <LoadingButton
-        // loading={isLoading}
-        loading={false}
-        variant={'contained'}
-        sx={{ textTransform: 'capitalize', mt: 1 }}
-        onClick={() => handleClearAllSections()}
-      >
-        Clear all sections
-      </LoadingButton>
+      <Stack sx={{ mt: 2 }} spacing={1}>
+        <LoadingButton
+          loading={btnIsLoading}
+          variant={'contained'}
+          onClick={() => handleSaveTimetable(currentSelectedTimetable)}
+        >
+          Save to Favourites
+        </LoadingButton>
+        <LoadingButton
+          // loading={isLoading}
+          loading={false}
+          variant={'contained'}
+          onClick={() => handleClearAllSections()}
+        >
+          Clear all sections
+        </LoadingButton>
+      </Stack>
     </>
   );
 }

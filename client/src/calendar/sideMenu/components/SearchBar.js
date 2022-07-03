@@ -10,12 +10,14 @@ import FormLabel from '@mui/material/FormLabel';
 import FormGroup from '@mui/material/FormGroup';
 import LoadingButton from '@mui/lab/LoadingButton';
 import ClipLoader from 'react-spinners/ClipLoader';
+import Stack from '@mui/material/Stack';
 import useSocket from 'context/socket';
+import useCalendar from 'context/calendar';
 import {
   getCourse,
   addUserCourse,
   generateTimeTable,
-  buildTimetable,
+  updateSelectedTimetable,
 } from 'calendar/api/sideMenuApi';
 import useFeedback from 'context/feedback';
 
@@ -28,8 +30,9 @@ export default function SearchBar({ userCourse, term }) {
   const [isLoading, setIsLoading] = useState(false);
   const [btnIsLoading, setBtnIsLoading] = useState();
   const { socket } = useSocket();
-  const bottomRef = useRef();
   const { setMsg } = useFeedback();
+  const { setNextPage } = useCalendar();
+  const bottomRef = useRef();
 
   const filterOptions = createFilterOptions({
     limit: 15,
@@ -75,7 +78,34 @@ export default function SearchBar({ userCourse, term }) {
     addUserCourse(socket, searchData, term);
   };
 
+  const buildNewTimetable = () => {
+    if (userCourse?.length > 0) {
+      return {
+        timetable: userCourse.map((c) => {
+          delete c.tutorials;
+          delete c.lectures;
+          return c;
+        }),
+        term: term,
+      };
+    }
+  };
+
+  const handleBuildTimetable = () => {
+    setBtnIsLoading('build');
+    setNextPage('edit');
+    const timetable = buildNewTimetable();
+    updateSelectedTimetable(socket, timetable);
+  };
+
+  const handleGenerateTimetable = () => {
+    setBtnIsLoading('generate');
+    setNextPage('generate');
+    generateTimeTable(socket, term);
+  };
+
   const handleSubmit = (cb, type) => {
+    // build a clean timetable based on user courses and send it to the server
     setBtnIsLoading(type);
     if (userCourse.length > 0) {
       cb(socket, term);
@@ -90,12 +120,11 @@ export default function SearchBar({ userCourse, term }) {
 
   return (
     <>
-      <FormGroup sx={{ mb: 1 }}>
+      <FormGroup sx={{ mb: 2 }}>
         <FormLabel id="search-label" sx={{ textAlign: 'left', mb: 2 }}>
           Search Course
         </FormLabel>
         <Autocomplete
-          sx={{ mb: 2 }}
           disablePortal
           id="search-course"
           options={courseData}
@@ -140,24 +169,23 @@ export default function SearchBar({ userCourse, term }) {
         </Box>
       )}
       <div ref={bottomRef}></div>
+      <Stack spacing={1}>
+        <LoadingButton
+          loading={btnIsLoading === 'build'}
+          onClick={() => handleSubmit(handleBuildTimetable, 'build')}
+          variant={'contained'}
+        >
+          <Typography>Choose Sections</Typography>
+        </LoadingButton>
 
-      <LoadingButton
-        loading={btnIsLoading === 'build'}
-        sx={{ display: 'block', mb: 1 }}
-        onClick={() => handleSubmit(buildTimetable, 'build')}
-        variant={'contained'}
-      >
-        <Typography>Choose Sections</Typography>
-      </LoadingButton>
-
-      <LoadingButton
-        loading={btnIsLoading === 'generate'}
-        sx={{ ml: 'auto' }}
-        onClick={() => handleSubmit(generateTimeTable, 'generate')}
-        variant={'contained'}
-      >
-        <Typography>Generate Timetables</Typography>
-      </LoadingButton>
+        <LoadingButton
+          loading={btnIsLoading === 'generate'}
+          onClick={() => handleSubmit(handleGenerateTimetable, 'generate')}
+          variant={'contained'}
+        >
+          <Typography>Generate Timetables</Typography>
+        </LoadingButton>
+      </Stack>
     </>
   );
 }

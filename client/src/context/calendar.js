@@ -17,11 +17,12 @@ export function CalendarProvider({ children }) {
   const [timetable, setTimetable] = useState();
   const [view, setView] = useState('start');
   const [generatedTimetable, setGeneratedTimetable] = useState();
-  const [favTimetable, setFavTimetable] = useState();
-  const [buildTimetable, setBuildTimetable] = useState();
+  const [favTimetable, setFavTimetable] = useState([]);
   const [timetableIndex, setTimetableIndex] = useState(0);
   const [currentSelectedTimetable, setCurrentSelectedTimetable] = useState();
+  const [timeElapsed, setTimeElapsed] = useState(0);
   const [timetablesCompare, setTimetablesCompare] = useState([]);
+  const [nextPage, setNextPage] = useState();
   const [userCourse, setUserCourse] = useState();
   const [userFriend, setUserFriend] = useState();
   const [currentFriend, setCurrentFriend] = useState();
@@ -42,7 +43,6 @@ export function CalendarProvider({ children }) {
 
   useEffect(() => {
     socket.on('get user course', (userCourse) => {
-      // console.log(userCourse)
       setUserCourse(userCourse);
     });
     return () => {
@@ -52,11 +52,15 @@ export function CalendarProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    socket.on('get generated timetable', (timetable) => {
+    socket.on('get generated timetable', (timetable, timeElapsed) => {
       if (timetable?.length > 0) {
         setGeneratedTimetable(timetable);
+        setTimeElapsed(timeElapsed);
         setTimetableIndex(0);
-        setView('generate');
+        if (nextPage && nextPage !== view) {
+          setView(nextPage);
+          setNextPage(null);
+        }
       } else {
         notifyUser();
       }
@@ -65,23 +69,11 @@ export function CalendarProvider({ children }) {
       socket.off('get generated timetable');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    socket.on('get build timetable', (timetable) => {
-      setView('build');
-      setBuildTimetable(timetable);
-    });
-    return () => {
-      socket.off('get build timetable');
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [nextPage]);
 
   useEffect(() => {
     socket.on('get fav timetable', (timetable) => {
       setFavTimetable(timetable);
-      setTimetableIndex(0);
     });
     return () => {
       socket.off('get fav timetable');
@@ -90,20 +82,15 @@ export function CalendarProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    socket.on('update timetable', (timetable) => {
-      console.log(timetable);
-      setBuildTimetable(timetable);
-    });
-    return () => socket.off('update timetable');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     socket.on('update selected timetable', (timetable) => {
       setCurrentSelectedTimetable(timetable);
+      if (nextPage && nextPage !== view) {
+        setView(nextPage);
+        setNextPage(null);
+      }
     });
     return () => socket.off('update selected timetable');
-  }, []);
+  }, [nextPage]);
 
   useEffect(() => {
     currentSelectedTimetable &&
@@ -136,36 +123,22 @@ export function CalendarProvider({ children }) {
       setTimetable(
         generatedTimetable && generatedTimetable[timetableIndex].timetable
       );
-    } else if (view === 'build') {
-      setTimetable(buildTimetable && buildTimetable.timetable);
+    } else if (view === 'edit') {
+      setTimetable(currentSelectedTimetable?.timetable);
     } else if (view === 'fav') {
       console.log(favTimetable);
       setTimetable(
-        favTimetable &&
-          favTimetable.length > 0 &&
-          favTimetable[timetableIndex].timetable
+        favTimetable?.length > 0 && favTimetable[timetableIndex].timetable
       );
     } else if (view === 'friend fav') {
       setTimetable(
-        currentFriend.favoritedTimetables &&
-          currentFriend.favoritedTimetables.length > 0 &&
+        currentFriend?.favoritedTimetables?.length > 0 &&
           currentFriend.favoritedTimetables[timetableIndex].timetable
-      );
-    } else if (view === 'edit') {
-      setTimetable(
-        currentSelectedTimetable && currentSelectedTimetable.timetable
       );
     } else {
       setTimetable(undefined);
     }
-  }, [
-    view,
-    buildTimetable,
-    generatedTimetable,
-    favTimetable,
-    timetableIndex,
-    currentSelectedTimetable,
-  ]);
+  }, [view, favTimetable, timetableIndex]);
 
   useEffect(() => {
     socket.on('get user friend', (userFriend) => {
@@ -173,6 +146,8 @@ export function CalendarProvider({ children }) {
     });
     return () => socket.off('get user friend');
   }, []);
+
+  // console.log(currentSelectedTimetable)
 
   const memo = useMemo(
     () => ({
@@ -184,12 +159,15 @@ export function CalendarProvider({ children }) {
       generatedTimetable,
       timetablesCompare,
       setTimetablesCompare,
-      buildTimetable,
+      currentSelectedTimetable,
+      timeElapsed,
       userFriend,
+      setNextPage,
       currentFriend,
       setCurrentFriend,
       currentSelectedTimetable,
       setCurrentSelectedTimetable,
+      setFavTimetable,
       favTimetable,
       timetable,
     }),
@@ -199,11 +177,11 @@ export function CalendarProvider({ children }) {
       generatedTimetable,
       currentFriend,
       currentSelectedTimetable,
-      buildTimetable,
+      currentSelectedTimetable,
       favTimetable,
       timetableIndex,
       timetable,
-      ,
+      nextPage,
       timetablesCompare,
     ]
   );

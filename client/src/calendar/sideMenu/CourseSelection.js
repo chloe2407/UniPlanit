@@ -11,8 +11,6 @@ import useCalendar from 'context/calendar';
 export default function CourseSelection({ term }) {
   const { socket } = useSocket();
   const { userCourse } = useCalendar();
-  // console.log(userCourse)
-  // console.log(term)
   useEffect(() => {
     // console.log('Getting user courses')
     getUserCourse(socket, term);
