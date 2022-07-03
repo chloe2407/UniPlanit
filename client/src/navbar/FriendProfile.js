@@ -34,10 +34,10 @@ export default function FriendProfile({ sx, friendInfo, handleShowChat }) {
     setShowDeletePrompt(false);
   };
 
-  useEffect(() => {
-    // need to get unread messages
-    getConversation(friendInfo._id).then((data) => setMessageNum(data.length));
-  }, []);
+  // useEffect(() => {
+  //   // need to get unread messages
+  //   getConversation(friendInfo._id).then((data) => setMessageNum(data.length));
+  // }, []);
 
   const RemoveFriendPrompt = () => {
     return (

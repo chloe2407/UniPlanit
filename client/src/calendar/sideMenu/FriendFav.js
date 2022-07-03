@@ -6,15 +6,14 @@ import FadeContent from 'react-fade-in';
 import { FadeIn } from 'react-slide-fade-in';
 
 export default function FriendFav() {
-  const { currentFriend, timetableIndex, setTimetableIndex } = useCalendar();
+  const { currentFriend } = useCalendar();
 
-  console.log(currentFriend);
   return (
     // display user friend's first and last name
     <FadeIn from="right" positionOffset={200} durationInMilliseconds={500}>
       <FadeContent delay={100} transitionDuration={400}>
         <SideMenuTitle
-          title={`${currentFriend.first} ${currentFriend.last}'s Favorited Timetables`}
+          title={`${currentFriend.first} ${currentFriend.last}'s Favourited Timetables`}
           backTo={'select friend'}
         />
         {
@@ -24,15 +23,13 @@ export default function FriendFav() {
               <TimetableCard
                 tb={tb}
                 key={index}
-                timetableIndex={timetableIndex}
-                setTimetableIndex={setTimetableIndex}
                 index={index}
                 isAuthor={false}
               />
             ))
           ) : (
             <Typography sx={{ textAlign: 'start' }}>
-              {`${currentFriend.first} ${currentFriend.last} has no favorite timetables yet! `}
+              {`${currentFriend.first} ${currentFriend.last} has no favourite timetables yet! `}
             </Typography>
           )
         }

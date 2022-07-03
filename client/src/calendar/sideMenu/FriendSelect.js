@@ -19,7 +19,7 @@ export default function FriendSelect() {
   return (
     <FadeIn from="right" positionOffset={200} durationInMilliseconds={500}>
       <FadeContent delay={200} transitionDuration={400}>
-        <SideMenuTitle title={"Friend's Timetables"} backTo={null} />
+        <SideMenuTitle title={"Friends' Timetables"} backTo={null} />
         {userFriend ? (
           userFriend.map((f) => <FriendCard key={f._id} friendInfo={f} />)
         ) : (
