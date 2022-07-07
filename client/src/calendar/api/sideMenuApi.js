@@ -36,8 +36,8 @@ export const addUserCourse = (socket, course, term) => {
   socket.emit('add user course', course, term);
 };
 
-export const generateTimeTable = (socket, term) => {
-  socket.emit('generate timetable', term);
+export const generateTimeTable = (socket, term, timeFilter) => {
+  socket.emit('generate timetable', term, timeFilter);
 };
 
 export const getGenerateTimetable = (socket) => {

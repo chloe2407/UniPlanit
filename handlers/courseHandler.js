@@ -150,7 +150,7 @@ module.exports = (io) => {
     }
   };
 
-  const getGeneratedTimetable = async function (term) {
+  const getGeneratedTimetable = async function () {
     const socket = this;
     // limit to 10 time tables to send back at once
     try {
@@ -164,13 +164,39 @@ module.exports = (io) => {
     }
   };
 
-  const generateTimetable = async function (term) {
+  const filterSectionByTime = (courses, timeFilter) => {
+    const filteredCourses = [];
+    for (const course of courses) {
+      // only keep the sections which the meeting times match the time filter
+      const filtered = JSON.parse(JSON.stringify(course));
+      filtered.sections = course.sections.filter((s) => {
+        return !s.meetingTimes.some(
+          (m) =>
+            parseInt(m.startTime) <= timeFilter[0] ||
+            parseInt(m.endTime) >= timeFilter[1]
+        );
+      });
+      filteredCourses.push(filtered);
+    }
+    return filteredCourses;
+  };
+
+  const generateTimetable = async function (term, timeFilter) {
+    // console.log(timeFilter);
     const socket = this;
     try {
       const user = await User.findById(socket.userId);
       const courses = getFilteredCoursesByTerm(user.courses, term);
+      const originalLength = courses.length;
+      // put the courses through a filter to filter out the times
+      const filteredCourses = filterSectionByTime(courses, timeFilter);
+      const filteredLength = courses.length;
+      if (originalLength > filteredLength) {
+        io.to(socket.userId).emit('get generated timetable', null, null);
+      }
       const start = Date.now();
-      const validSchedules = getValidSchedules(courses, true);
+      const validSchedules = getValidSchedules(filteredCourses, true);
+      // console.log(validSchedules.length);
       const end = Date.now();
       user.lastGeneratedTimetables = validSchedules.map((timetable) => {
         return {

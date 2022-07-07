@@ -31,7 +31,7 @@ export const useParseEventToTimetableObj = () => {
     const start = parseInt(event.startTime.slice(0, 2)).toString();
     // someone already has this course
     // console.log(event)
-    console.log(days[day][start]);
+    // console.log(days[day][start]);
     if (
       days[day][start] &&
       days[day][start].course.section.sectionCode ===

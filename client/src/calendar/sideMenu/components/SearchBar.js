@@ -20,6 +20,7 @@ import {
   updateSelectedTimetable,
 } from 'calendar/api/sideMenuApi';
 import useFeedback from 'context/feedback';
+import Slider from '@mui/material/Slider';
 
 export default function SearchBar({ userCourse, term }) {
   const [input, setInput] = useState({
@@ -28,11 +29,16 @@ export default function SearchBar({ userCourse, term }) {
   });
   const [searchData, setSearchData] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const [btnIsLoading, setBtnIsLoading] = useState();
+  const [btnIsLoading, setBtnIsLoading] = useState(null);
+  const [timeFilter, setTimeFilter] = useState([0, 100]);
   const { socket } = useSocket();
   const { setMsg } = useFeedback();
   const { setNextPage } = useCalendar();
   const bottomRef = useRef();
+  const times = Array.from({ length: 16 }, (_, i) => ({
+    value: (100 / 15) * i * 1,
+    label: `${i * 1 + 7}`,
+  }));
 
   const filterOptions = createFilterOptions({
     limit: 15,
@@ -100,8 +106,12 @@ export default function SearchBar({ userCourse, term }) {
 
   const handleGenerateTimetable = () => {
     setBtnIsLoading('generate');
+    setTimeout(() => {
+      setBtnIsLoading(null);
+    }, 2000);
     setNextPage('generate');
-    generateTimeTable(socket, term);
+    const convertedTimeFilter = timeFilter.map((v) => 7 + (v / 100) * 15);
+    generateTimeTable(socket, term, convertedTimeFilter);
   };
 
   const handleSubmit = (cb, type) => {
@@ -118,24 +128,48 @@ export default function SearchBar({ userCourse, term }) {
     }
   };
 
+  const handleTimeFilterChange = (event, newValue, activeThumb) => {
+    if (activeThumb === 0) {
+      setTimeFilter([
+        Math.min(newValue[0], timeFilter[1] - 100 / 15),
+        timeFilter[1],
+      ]);
+    } else {
+      setTimeFilter([
+        timeFilter[0],
+        Math.max(newValue[1], timeFilter[0] + 100 / 15),
+      ]);
+    }
+  };
+
   return (
     <>
-      <FormGroup sx={{ mb: 2 }}>
-        <FormLabel id="search-label" sx={{ textAlign: 'left', mb: 2 }}>
-          Search Course
-        </FormLabel>
-        <Autocomplete
-          disablePortal
-          id="search-course"
-          options={courseData}
-          filterOptions={filterOptions}
-          onChange={(e, v) => handleInputChange('code', v)}
-          renderInput={(params) => (
-            <TextField {...params} label="Search Course" />
-          )}
-        />
-      </FormGroup>
-
+      <Stack spacing={1} sx={{ my: 2 }}>
+        <FormGroup>
+          <FormLabel id="search-label" sx={{ textAlign: 'left', mb: 1 }}>
+            Search Course
+          </FormLabel>
+          <Autocomplete
+            disablePortal
+            id="search-course"
+            options={courseData}
+            filterOptions={filterOptions}
+            onChange={(e, v) => handleInputChange('code', v)}
+            renderInput={(params) => (
+              <TextField {...params} label="Search Course" />
+            )}
+          />
+        </FormGroup>
+        <FormGroup>
+          <FormLabel id="time-filter">Time Filter</FormLabel>
+          <Slider
+            step={100 / 15}
+            marks={times}
+            value={timeFilter}
+            onChange={handleTimeFilterChange}
+          />
+        </FormGroup>
+      </Stack>
       {searchData === undefined ? (
         isLoading ? (
           <>
@@ -149,17 +183,17 @@ export default function SearchBar({ userCourse, term }) {
           {searchData ? (
             <>
               <Typography>Course</Typography>
-              <Box sx={{ display: 'flex', m: 1 }}>
-                <Typography variant="h6">{`${searchData.courseTitle} - ${searchData.term}`}</Typography>
+              <Stack spacing={1}>
+                <Typography>{`${searchData.courseTitle} - ${searchData.term}`}</Typography>
                 <LoadingButton
                   loading={btnIsLoading === 'add'}
                   variant="contained"
-                  sx={{ ml: 'auto' }}
+                  fullWidth
                   onClick={() => handleAddCourse()}
                 >
                   Add this course
                 </LoadingButton>
-              </Box>
+              </Stack>
             </>
           ) : (
             <Typography align="center">

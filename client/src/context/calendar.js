@@ -33,7 +33,7 @@ export function CalendarProvider({ children }) {
   const notifyUser = () => {
     setMsg({
       snackVariant: 'error',
-      msg: "Sorry! We couldn't generate a timetable with the selected courses",
+      msg: "Sorry! We couldn't generate a timetable with the selected courses and filter options",
     });
   };
 
@@ -67,6 +67,7 @@ export function CalendarProvider({ children }) {
           setNextPage(null);
         }
       } else {
+        setNextPage(null);
         notifyUser();
       }
     });
