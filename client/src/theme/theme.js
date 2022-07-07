@@ -6,7 +6,8 @@ import { createTheme } from '@mui/material/styles';
 // import '@fontsource/josefin-sans/500.css';
 // import '@fontsource/josefin-sans/600.css';
 // import '@fontsource/josefin-sans/700.css';
-import '@fontsource/spectral';
+// import '@fontsource/spectral';
+import '@fontsource/noto-sans';
 
 const theme = createTheme({
   // test
@@ -20,7 +21,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: ['Spectral'],
+    fontFamily: ['Noto Sans'],
   },
   components: {
     MuiButton: {
