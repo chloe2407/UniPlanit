@@ -41,7 +41,7 @@ const WeekView = ({ sx }) => {
             const event = courseMeetingTimeToEvent(
               course,
               meetingTime,
-              'Lecture'
+              'section'
             );
             const res = parseEventToTimetableObj(days, event);
             res && setMsg(res);
@@ -52,7 +52,7 @@ const WeekView = ({ sx }) => {
             const event = courseMeetingTimeToEvent(
               course,
               meetingTime,
-              'Tutorial'
+              'tutorial'
             );
             const res = parseEventToTimetableObj(days, event);
             res && setMsg(res);

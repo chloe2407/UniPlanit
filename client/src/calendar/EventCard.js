@@ -13,6 +13,14 @@ import initialToColor from 'components/InitialToColor';
 const EventCard = ({ event, sx }) => {
   const [anchorEl, setAnchorEl] = useState();
   const open = Boolean(anchorEl);
+  let eventCode;
+  if (event.course) {
+    if (event.type === 'section') {
+      eventCode = event.course[event.type].sectionCode;
+    } else if (event.type === 'tutorial') {
+      eventCode = event.course[event.type].tutorialCode;
+    }
+  }
   return (
     <Card
       style={{ position: 'absolute' }}
@@ -26,7 +34,7 @@ const EventCard = ({ event, sx }) => {
           <Typography>
             <strong>{event.eventName}</strong>
           </Typography>
-          <Typography>{event.course && event.type}</Typography>
+          <Typography>{eventCode}</Typography>
           {event.ownerInitial && (
             <AvatarGroup max={3}>
               {event.ownerInitial.map((ownerInitial, i) => {
