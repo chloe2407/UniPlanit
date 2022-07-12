@@ -176,13 +176,13 @@ module.exports = (io) => {
             parseInt(m.endTime) >= timeFilter[1]
         );
       });
-      filteredCourses.push(filtered);
+      filtered.sections.length > 0 && filteredCourses.push(filtered);
     }
     return filteredCourses;
   };
 
   const generateTimetable = async function (term, timeFilter) {
-    // console.log(timeFilter);
+    console.log(timeFilter);
     const socket = this;
     try {
       const user = await User.findById(socket.userId);
@@ -190,8 +190,9 @@ module.exports = (io) => {
       const originalLength = courses.length;
       // put the courses through a filter to filter out the times
       const filteredCourses = filterSectionByTime(courses, timeFilter);
-      const filteredLength = courses.length;
+      const filteredLength = filteredCourses.length;
       if (originalLength > filteredLength) {
+        console.log('No timetables');
         io.to(socket.userId).emit('get generated timetable', null, null);
       }
       const start = Date.now();
