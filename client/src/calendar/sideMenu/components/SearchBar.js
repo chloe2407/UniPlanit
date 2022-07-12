@@ -108,7 +108,7 @@ export default function SearchBar({ userCourse, term }) {
     setBtnIsLoading('generate');
     setTimeout(() => {
       setBtnIsLoading(null);
-    }, 2000);
+    }, 5000);
     setNextPage('generate');
     const convertedTimeFilter = timeFilter.map((v) => 7 + (v / 100) * 15);
     generateTimeTable(socket, term, convertedTimeFilter);

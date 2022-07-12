@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -11,7 +11,7 @@ import ClipLoader from 'react-spinners/ClipLoader';
 
 export default function UserCourses({ userCourse, term }) {
   const { socket } = useSocket();
-
+  const [currentDelete, setCurrentDelete] = useState(null);
   return (
     <>
       {userCourse ? (
@@ -24,16 +24,24 @@ export default function UserCourses({ userCourse, term }) {
                   <Typography>{course.courseCode}</Typography>
                   <Box sx={{ ml: 'auto' }}>
                     <IconButton
-                      onClick={() =>
+                      onClick={() => {
                         deleteCourse(
                           socket,
                           course.courseCode,
                           course.term,
                           term
-                        )
-                      }
+                        );
+                        setCurrentDelete(course.courseCode);
+                        setTimeout(() => {
+                          setCurrentDelete(null);
+                        }, 3000);
+                      }}
                     >
-                      <DeleteOutlineIcon />
+                      {currentDelete === course.courseCode ? (
+                        <ClipLoader size={15} color={'black'} loading={true} />
+                      ) : (
+                        <DeleteOutlineIcon />
+                      )}
                     </IconButton>
                   </Box>
                 </Box>
