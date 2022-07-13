@@ -34,10 +34,10 @@ export const useParseEventToTimetableObj = () => {
     // console.log(days[day][start]);
     if (
       days[day][start] &&
-      (days[day][start].course.section.sectionCode ===
-        event.course.section.sectionCode ||
-        days[day][start].course.tutorial.tutorialCode ===
-          event.course.tutorial.tutorialCode)
+      (days[day][start].course?.section?.sectionCode ===
+        event.course?.section?.sectionCode ||
+        days[day][start].course?.tutorial?.tutorialCode ===
+          event.course?.tutorial?.tutorialCode)
     ) {
       if (
         days[day][start].owner &&
