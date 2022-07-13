@@ -172,7 +172,7 @@ module.exports = (io) => {
       filtered.sections = course.sections.filter((s) => {
         return !s.meetingTimes.some(
           (m) =>
-            parseInt(m.startTime) <= timeFilter[0] ||
+            parseInt(m.startTime) <= timeFilter[0] - 1 ||
             parseInt(m.endTime) >= timeFilter[1]
         );
       });

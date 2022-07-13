@@ -34,8 +34,10 @@ export const useParseEventToTimetableObj = () => {
     // console.log(days[day][start]);
     if (
       days[day][start] &&
-      days[day][start].course.section.sectionCode ===
-        event.course.section.sectionCode
+      (days[day][start].course.section.sectionCode ===
+        event.course.section.sectionCode ||
+        days[day][start].course.tutorial.tutorialCode ===
+          event.course.tutorial.tutorialCode)
     ) {
       if (
         days[day][start].owner &&
@@ -44,13 +46,13 @@ export const useParseEventToTimetableObj = () => {
         days[day][start].owner.push(event.owner[0]);
         days[day][start].ownerInitial.push(event.ownerInitial[0]);
       }
-    } else if (days[day][start])
+    } else if (days[day][start]) {
       // there is an overlap
       return {
         snackVariant: 'error',
         msg: `We detected a overlap between ${days[day][start].eventName} and ${event.eventName} at ${event.day} from ${event.startTime} to ${event.endTime}!`,
       };
-    else {
+    } else {
       // no event yet
       days[day][start] = event;
     }
