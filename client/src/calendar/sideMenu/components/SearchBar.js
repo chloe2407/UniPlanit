@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import courseData from 'calendar/data/course_and_title.json';
+import uoftData from 'calendar/data/course_and_title.json';
+import uvicData from 'calendar/data/uvic_title.json';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { createFilterOptions } from '@mui/material/Autocomplete';
@@ -13,6 +14,7 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import Stack from '@mui/material/Stack';
 import useSocket from 'context/socket';
 import useCalendar from 'context/calendar';
+import useAuth from 'context/auth';
 import {
   getCourse,
   addUserCourse,
@@ -23,9 +25,11 @@ import useFeedback from 'context/feedback';
 import Slider from '@mui/material/Slider';
 
 export default function SearchBar({ userCourse, term }) {
+  const { user } = useAuth();
+  const courseData = user?.university === 'uvic' ? uvicData : uoftData;
   const [input, setInput] = useState({
     courseCode: '',
-    university: 'uoft',
+    university: user?.university,
   });
   const [searchData, setSearchData] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +54,7 @@ export default function SearchBar({ userCourse, term }) {
       setIsLoading(true);
       setSearchData(undefined);
       getCourse({
-        courseCode: input.courseCode.slice(0, 8),
+        courseCode: input.courseCode.slice(0, input.courseCode.indexOf(' ')),
         university: input.university,
         term: term,
       }).then((data) => {

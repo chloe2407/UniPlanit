@@ -10,7 +10,7 @@ const courseSchema = new mongoose.Schema({
   university: {
     type: String,
     lowercase: true,
-    enum: ['uoft'],
+    enum: ['uoft', 'uvic'],
   },
   term: {
     type: String,
@@ -110,7 +110,7 @@ module.exports.courseOneSectionSchema = new mongoose.Schema({
   university: {
     type: String,
     lowercase: true,
-    enum: ['uoft'],
+    enum: ['uoft', 'uvic'],
   },
   term: {
     type: String,

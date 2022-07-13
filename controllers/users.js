@@ -37,7 +37,7 @@ module.exports.register = async (req, res, next) => {
     last: req.body.lastName,
     courses: [],
     friends: [],
-    university: 'utsg',
+    university: req.body.university,
     events: [],
     profileImg: '',
   };

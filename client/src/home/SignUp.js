@@ -73,7 +73,7 @@ const SignUp = () => {
               lastName: '',
               password: '',
               confirmPassword: '',
-              university: 'utsg',
+              university: 'uoft',
             }}
             validationSchema={signupSchema}
             onSubmit={(values, { setSubmitting }) => {
@@ -141,24 +141,23 @@ const SignUp = () => {
                   <Grid item xs={12}>
                     <Autocomplete
                       fullWidth
-                      options={['utsg']}
+                      options={['uoft', 'uvic']}
                       name="university"
                       id="university"
                       label="University"
-                      onChange={(e, value) =>
-                        setFieldValue(
-                          'univeristy',
-                          value !== null ? value : values.university
-                        )
-                      }
+                      onChange={(e, value) => {
+                        setFieldValue('university', value);
+                      }}
                       value={values.university}
-                      renderInput={(params) => (
-                        <TextField
-                          name="univeristy"
-                          {...params}
-                          label="University"
-                        />
-                      )}
+                      renderInput={(params) => {
+                        return (
+                          <TextField
+                            name="university"
+                            label="University"
+                            {...params}
+                          />
+                        );
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12}>
