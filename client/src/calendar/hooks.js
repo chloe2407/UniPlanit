@@ -47,7 +47,6 @@ export const useParseEventToTimetableObj = () => {
   const parseEventToTimetableObj = (days, event) => {
     const day = event.day;
     const startIn5Minutes = convert24HourTo5Minutes(event.startTime);
-    const start = parseInt(event.startTime.slice(0, 2)).toString();
     // someone already has this course
     // console.log(event)
     // console.log(days[day][start]);
@@ -69,7 +68,7 @@ export const useParseEventToTimetableObj = () => {
       // there is an overlap
       return {
         snackVariant: 'error',
-        msg: `We detected a overlap between ${days[day][start].eventName} and ${event.eventName} at ${event.day} from ${event.startTime} to ${event.endTime}!`,
+        msg: `We detected a overlap between ${days[day][startIn5Minutes].eventName} and ${event.eventName} at ${event.day} from ${event.startTime} to ${event.endTime}!`,
       };
     } else {
       // no event yet
