@@ -11,10 +11,15 @@ import {
 } from 'calendar/hooks';
 import useFeedback from 'context/feedback';
 import useCalendar from 'context/calendar';
+import dayjs from 'dayjs';
+import objectSupport from 'dayjs/plugin/objectSupport';
+dayjs.extend(objectSupport);
 
 const WeekView = ({ sx }) => {
   // const classes = useStyles();
-  const times = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
+  // const times = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
+  // generate a list of numbers from 0 to 15 * 12, each indicates 5 minutes passed since 7:00
+  const times = [...Array(15 * 12)].map((_, i) => i);
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   // const times = [7, 8];
 
@@ -27,7 +32,7 @@ const WeekView = ({ sx }) => {
   const matchSM = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   // just switch to "View on a desktop for the best experience"
   const WIDTH = matchMD ? '7rem' : '10vw';
-  const HEIGHT = '5rem';
+  const HEIGHT = '0.45rem';
 
   // build an object of all the time and courses
   // give warning when overlapping is detected
@@ -72,6 +77,12 @@ const WeekView = ({ sx }) => {
     return times.reduce((acc, curr) => ((acc[curr] = null), acc), {});
   };
 
+  const convertTime = (time) => {
+    const dayStart = dayjs({ hour: 7, minute: 0 });
+    const newTime = dayStart.add(time * 5, 'minute');
+    return newTime.format('HH:mm');
+  };
+
   const DayHeader = () => {
     return (
       <Box
@@ -99,12 +110,12 @@ const WeekView = ({ sx }) => {
     );
   };
 
-  const TableSlot = ({ event }) => {
+  const TableSlot = ({ sx, event }) => {
     return (
       <Box
         display={'inline-block'}
         sx={{
-          borderTop: '1px solid rgba(224, 224, 224, 1)',
+          ...sx,
           width: WIDTH,
           height: HEIGHT,
         }}
@@ -114,7 +125,7 @@ const WeekView = ({ sx }) => {
             event={event}
             sx={{
               width: WIDTH,
-              height: `${5 * event.duration}rem`,
+              height: `${(0.45 * event.duration) / 5}rem`,
               overflowY: 'auto',
             }}
           />
@@ -129,16 +140,22 @@ const WeekView = ({ sx }) => {
         <Box key={time} sx={{ height: HEIGHT, width: 'fit-content' }}>
           <Typography
             sx={{
-              mt: '-0.6rem',
+              mt: '-0.3rem',
               display: 'inline-block',
               width: '5rem',
               verticalAlign: 'top',
             }}
-          >{`${time}:00`}</Typography>
+          >
+            {time % 6 === 0 && convertTime(time)}
+          </Typography>
           {parsedTimetable &&
             days.map((day) => {
               return (
                 <TableSlot
+                  sx={{
+                    borderTop:
+                      time % 6 === 0 && '1px solid rgba(224, 224, 224, 1)',
+                  }}
                   key={`${time}${day}`}
                   event={parsedTimetable[day][time]}
                 />

@@ -25,11 +25,14 @@ const EventCard = ({ event, sx }) => {
     <Card
       style={{ position: 'absolute' }}
       sx={{
+        ...sx,
         borderRadius: 0,
-        opacity: 0.5,
       }}
     >
-      <CardActionArea sx={sx} onClick={(e) => setAnchorEl(e.currentTarget)}>
+      <CardActionArea
+        sx={{ ...sx }}
+        onClick={(e) => setAnchorEl(e.currentTarget)}
+      >
         <CardContent sx={{ textAlign: 'center', p: 0 }}>
           <Typography>
             <strong>{event.eventName}</strong>
