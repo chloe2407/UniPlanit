@@ -1,0 +1,33 @@
+{
+  "files": {
+    "main.css": "/UniPlanit/static/css/main.48e47b31.css",
+    "main.js": "/UniPlanit/static/js/main.d13d7e0d.js",
+    "static/media/example1.png": "/UniPlanit/static/media/example1.2b88549f70eae109270c.png",
+    "static/media/example2.png": "/UniPlanit/static/media/example2.2b88549f70eae109270c.png",
+    "static/media/example3.png": "/UniPlanit/static/media/example3.2b88549f70eae109270c.png",
+    "static/media/example4.png": "/UniPlanit/static/media/example4.2b88549f70eae109270c.png",
+    "static/media/noto-sans-latin-ext-400-normal.woff": "/UniPlanit/static/media/noto-sans-latin-ext-400-normal.d188e0cf9c680bfddc2f.woff",
+    "static/media/noto-sans-devanagari-400-normal.woff": "/UniPlanit/static/media/noto-sans-devanagari-400-normal.b35e703d6127904c7d9a.woff",
+    "static/media/noto-sans-latin-ext-400-normal.woff2": "/UniPlanit/static/media/noto-sans-latin-ext-400-normal.c917fd3b4fe80e280341.woff2",
+    "static/media/noto-sans-devanagari-400-normal.woff2": "/UniPlanit/static/media/noto-sans-devanagari-400-normal.cf7bb28d2362c943b223.woff2",
+    "static/media/noto-sans-cyrillic-ext-400-normal.woff": "/UniPlanit/static/media/noto-sans-cyrillic-ext-400-normal.77c43ef63fe1f74a41b6.woff",
+    "static/media/noto-sans-cyrillic-ext-400-normal.woff2": "/UniPlanit/static/media/noto-sans-cyrillic-ext-400-normal.7923aca3fed261d1de8b.woff2",
+    "static/media/noto-sans-latin-400-normal.woff": "/UniPlanit/static/media/noto-sans-latin-400-normal.922d5bfc3e062a052081.woff",
+    "static/media/noto-sans-latin-400-normal.woff2": "/UniPlanit/static/media/noto-sans-latin-400-normal.f5cd7b617bcb047bfaa4.woff2",
+    "static/media/noto-sans-greek-400-normal.woff": "/UniPlanit/static/media/noto-sans-greek-400-normal.111a424f22a09b147f97.woff",
+    "static/media/noto-sans-cyrillic-400-normal.woff": "/UniPlanit/static/media/noto-sans-cyrillic-400-normal.32aca3d2fe788546e66c.woff",
+    "static/media/noto-sans-greek-400-normal.woff2": "/UniPlanit/static/media/noto-sans-greek-400-normal.d768f457d714d0a634af.woff2",
+    "static/media/noto-sans-vietnamese-400-normal.woff": "/UniPlanit/static/media/noto-sans-vietnamese-400-normal.da91c40bceb7c4714c06.woff",
+    "static/media/noto-sans-cyrillic-400-normal.woff2": "/UniPlanit/static/media/noto-sans-cyrillic-400-normal.326b1d919c8b5b326084.woff2",
+    "static/media/noto-sans-greek-ext-400-normal.woff": "/UniPlanit/static/media/noto-sans-greek-ext-400-normal.53c2d2383ca903091b3d.woff",
+    "static/media/noto-sans-vietnamese-400-normal.woff2": "/UniPlanit/static/media/noto-sans-vietnamese-400-normal.3270de793c8dec0897e0.woff2",
+    "static/media/noto-sans-greek-ext-400-normal.woff2": "/UniPlanit/static/media/noto-sans-greek-ext-400-normal.58b632843bdad4b1bff0.woff2",
+    "index.html": "/UniPlanit/index.html",
+    "main.48e47b31.css.map": "/UniPlanit/static/css/main.48e47b31.css.map",
+    "main.d13d7e0d.js.map": "/UniPlanit/static/js/main.d13d7e0d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.48e47b31.css",
+    "static/js/main.d13d7e0d.js"
+  ]
+}
