@@ -12,6 +12,7 @@
     "@fontsource/adamina": "^4.5.7",
     "@fontsource/josefin-sans": "^4.5.9",
     "@fontsource/lato": "^4.5.8",
+    "@fontsource/noto-sans": "^5.2.7",
     "@fontsource/open-sans": "^4.5.10",
     "@fontsource/saira-semi-condensed": "^4.5.8",
     "@fontsource/spectral": "^4.5.9",
@@ -26,6 +27,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.27.2",
     "cloudinary": "^1.30.0",
+    "dayjs": "^1.11.13",
     "drag-react": "^1.1.0",
     "emotion": "^11.0.0",
     "firebase": "^9.8.4",
@@ -47,6 +49,7 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-slide-fade-in": "^1.0.7",
+    "react-spinners": "^0.17.0",
     "react-timetable-events": "^1.1.0",
     "socket.io-client": "^4.5.1",
     "web-vitals": "^2.1.4",
@@ -59,7 +62,6 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
-
   },
   "eslintConfig": {
     "extends": [
